@@ -54,6 +54,7 @@ export default function CardCarousel({
   const [providerFilter, setProviderFilter] = useState('all');
   // The query submitted on the landing hero, carried into the results bar.
   const [lastQuery, setLastQuery] = useState('');
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   // Landing state: on first load show only the centered search + filters; the
   // deck appears once the user searches or picks a filter.
   const [started, setStarted] = useState(startWithResults);
@@ -253,7 +254,17 @@ export default function CardCarousel({
               }
             />
           </div>
-          <BubbleFilters activeFilters={activeFilters} onFiltersChange={setActiveFilters} />
+          {/* On phones the chips would push the card below the fold, so they
+              live behind a toggle that shows how many are active. */}
+          <button
+            onClick={() => setMobileFiltersOpen((o) => !o)}
+            aria-expanded={mobileFiltersOpen}
+            className="h-8 px-4 rounded-full border border-[var(--cl-hairline-strong)] text-xs font-medium text-[var(--cl-ink)] flex items-center gap-1.5"
+          >
+            Refine{activeFilters.length ? ` · ${activeFilters.length} active` : ''}
+            <ChevronDown className={`w-3.5 h-3.5 transition-transform ${mobileFiltersOpen ? 'rotate-180' : ''}`} />
+          </button>
+          {mobileFiltersOpen && <BubbleFilters activeFilters={activeFilters} onFiltersChange={setActiveFilters} />}
         </div>
       )}
       {activeCard ? (
@@ -301,8 +312,10 @@ export default function CardCarousel({
                     rotateX: reducedMotion ? 0 : isCenter ? 2.4 : 0.8,
                     rotateZ: reducedMotion ? 0 : isCenter ? 1.2 : offset * -2,
                     z: isCenter ? 130 : -170,
-                    opacity: isCenter ? 1 : 0.42,
-                    filter: `blur(${isCenter ? 0 : 6}px) saturate(${isCenter ? 1 : 0.74}) brightness(${isCenter ? 1 : 1.16})`,
+                    // Neighbours stay recognisable (lighter blur/fade) so it's
+                    // obvious there are more cards to swipe through.
+                    opacity: isCenter ? 1 : 0.6,
+                    filter: `blur(${isCenter ? 0 : 2}px) saturate(${isCenter ? 1 : 0.8}) brightness(${isCenter ? 1 : 1.08})`,
                   }}
                   transition={cardTransition}
                   className={`absolute origin-center will-change-transform ${isCenter ? 'z-20 cursor-default' : depth === 1 ? 'z-10 cursor-pointer' : 'z-0 cursor-pointer'}`}
@@ -318,11 +331,11 @@ export default function CardCarousel({
           </AnimatePresence>
           </div>
           </div>
-          <div className="mt-1 flex items-center justify-center gap-3 lg:hidden" aria-hidden="true">
-            <span className="h-2.5 w-2.5 rounded-full bg-[var(--cl-hairline-strong)]" />
-            <span className="h-2.5 w-2.5 rounded-full bg-black" />
-            <span className="h-2.5 w-2.5 rounded-full bg-[var(--cl-hairline-strong)]" />
-          </div>
+          {cards.length > 1 && (
+            <p className="relative z-10 -mt-3 mb-5 text-xs font-medium tabular-nums text-[var(--cl-muted)]" aria-live="polite">
+              {currentIndex + 1} of {cards.length}
+            </p>
+          )}
           {/* Carousel controls, right below the main card: prev · watchlist ·
               visit · next. Labels reveal on hover. */}
           <div className="shrink-0 -mt-4 flex items-center justify-center gap-4">

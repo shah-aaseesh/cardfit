@@ -82,7 +82,8 @@ function concisePerk(text: string): string {
     .replace(/[.;,]+$/, '')
     .trim();
 
-  const sentenceEnd = s.search(/[.!?]\s/);
+  // Same abbreviation guard as rewardBullets: "U.S. supermarkets" isn't a sentence end.
+  const sentenceEnd = s.search(/(?<!\b[A-Z])(?<!\b(?:Inc|Ltd|Corp|Co|No|etc))[.!?]\s/);
   if (sentenceEnd > 0) {
     s = s.slice(0, sentenceEnd).trim();
     shortened = true;
@@ -111,6 +112,22 @@ function concisePerk(text: string): string {
  * present, otherwise splits the prose; [] only when there's no real data
  * (callers then fall back to the raw text).
  */
+// Issuer filler that adds length but no facts. Each only trims words; rates,
+// categories and caps are never touched.
+const FILLER: [RegExp, string][] = [
+  [/\s+(?:is|are) just the beginning\b.*$/i, ''],
+  [/,?\s+(?:and\s+)?enjoy\b.*$/i, ''],
+  [/,?\s+(?:with\s+)?no limits?\b(?: to [^,]*| or category restrictions)?/i, ''],
+  [/,?\s+with no expiration on points as long as[^,]*/i, ''],
+  [/,\s+every time\b/i, ''],
+  [/,?\s+automatically$/i, ''],
+  [/\s+for every \$1 (?:you )?spen[dt]\b/i, ' per $1'],
+];
+
+function stripFiller(bullet: string): string {
+  return FILLER.reduce((s, [re, sub]) => s.replace(re, sub), bullet).trim();
+}
+
 export function cardRewardBullets(facts: {
   rewards: string;
   rewardsBullets?: string[];
@@ -118,7 +135,7 @@ export function cardRewardBullets(facts: {
   const bullets = (facts.rewardsBullets?.length
     ? facts.rewardsBullets
     : rewardBullets(facts.rewards)
-  ).map((b) => tidy(leadWithNumber(b)));
+  ).map((b) => tidy(stripFiller(leadWithNumber(b))));
   // Rate bullets only — descriptive trailers ("Points don't expire…") are
   // dropped when real rates exist. A card with no numeric rewards at all
   // (e.g. a pure low-APR card) keeps its descriptive text as the list.
@@ -128,15 +145,26 @@ export function cardRewardBullets(facts: {
 
 /**
  * The Top Perk cell: show the actual benefit in a reduced, number-first form.
- * If the crawler's top perk is just the sign-up bonus restated, use the bonus
- * clause itself instead of a generic "The sign-up bonus" label.
+ * Older crawls filled top_perk with the sign-up bonus, which already has its
+ * own cell right next to it — so when the perk merely restates the bonus (or
+ * is a placeholder), show the card's strongest earn rate instead.
  */
-export function topPerkDisplay(facts: { topPerk: string; bonus: string }): string {
+export function topPerkDisplay(facts: { topPerk: string; bonus: string; rewards: string; rewardsBullets?: string[] }): string {
   const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
   const perk = norm(facts.topPerk);
   const bonus = norm(facts.bonus);
-  if (perk && bonus && (perk === bonus || perk.includes(bonus) || bonus.includes(perk))) {
-    return concisePerk(facts.bonus);
+  const restatesBonus = perk && bonus && (perk === bonus || perk.includes(bonus) || bonus.includes(perk));
+  if (restatesBonus || !perk || /see issuer/i.test(facts.topPerk)) {
+    // Booking-portal-only rates ("through Chase Travel") rank last: they're
+    // the biggest numbers but the least representative.
+    const portal = (b: string) => /through (?:the )?[a-z ]*travel\b/i.test(b) && !/directly with/i.test(b);
+    const strongest = cardRewardBullets(facts)
+      .filter((b) => /^\$?\d/.test(b))
+      .sort((a, b) =>
+        Number(portal(a)) - Number(portal(b)) ||
+        parseFloat(b.replace(/^\$/, '')) - parseFloat(a.replace(/^\$/, '')))[0];
+    if (strongest) return concisePerk(strongest);
+    return restatesBonus ? concisePerk(facts.bonus) : 'See issuer site';
   }
   return concisePerk(facts.topPerk);
 }

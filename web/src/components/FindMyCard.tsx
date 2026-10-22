@@ -3,7 +3,6 @@ import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { ChevronLeft, ChevronRight, X, Search, Plus } from 'lucide-react';
 import { normalizeFilters } from '../lib/filters';
 import { loadProfile } from '../lib/profile';
-import { loadRemoteProfile } from '../lib/remoteProfile';
 import { cardMatchesQuery } from '../lib/cardSearch';
 import { useCards } from '../hooks/useCards';
 import type { MatchResult } from '../App';
@@ -72,9 +71,6 @@ export default function FindMyCard({ open, onClose, onComplete }: FindMyCardProp
   const reducedMotion = useReducedMotion();
   const [answers, setAnswers] = useState<Answers>(BLANK);
   const [index, setIndex] = useState(0);
-  // True once we've matched the typed email to a saved Supabase profile and
-  // prefilled the rest of the questionnaire from it.
-  const [welcomeBack, setWelcomeBack] = useState(false);
 
   // Prefill a returning visitor's details each time the sheet opens —
   // including every prior answer (credit, type, rewards, fee, spend), so the
@@ -125,39 +121,18 @@ export default function FindMyCard({ open, onClose, onComplete }: FindMyCardProp
 
   const set = (patch: Partial<Answers>) => setAnswers(prev => ({ ...prev, ...patch }));
 
-  // Returning-visitor recall: when the email loses focus, look it up in
-  // Supabase and prefill every saved answer so they can skim or tweak.
-  const lookupEmail = async (email: string) => {
-    const remote = await loadRemoteProfile(email);
-    if (!remote) { setWelcomeBack(false); return; }
-    const a = remote.answers || {};
-    const [first = '', ...rest] = (remote.name || '').split(' ');
-    setAnswers(prev => ({
-      ...prev,
-      firstName: first || prev.firstName,
-      lastName: rest.join(' ') || prev.lastName,
-      email,
-      ownedCards: remote.ownedCards?.length ? remote.ownedCards : prev.ownedCards,
-      hasCard: typeof a.hasCard === 'boolean' ? a.hasCard : (remote.ownedCards?.length ? true : prev.hasCard),
-      credit: typeof a.credit === 'string' ? a.credit : prev.credit,
-      type: typeof a.type === 'string' ? a.type : prev.type,
-      rewards: typeof a.rewards === 'string' ? a.rewards : prev.rewards,
-      maxFee: typeof a.maxFee === 'number' ? a.maxFee : prev.maxFee,
-      spend: a.spend && typeof a.spend === 'object' ? a.spend as Record<string, number> : prev.spend,
-    }));
-    setWelcomeBack(true);
-  };
-
-  // The step order branches on whether they already hold a card.
+  // The step order branches on whether they already hold a card. Questions
+  // come first; saving (name + email) is an optional last step, so nobody
+  // has to hand over an email before seeing any value.
   const steps = useMemo(() => {
     const owns = answers.hasCard === true ? ['ownedCards', 'credit'] : [];
-    return ['email', 'hasCard', ...owns, 'type', 'rewards', 'fee', 'spend'];
+    return ['hasCard', ...owns, 'type', 'rewards', 'fee', 'spend', 'email'];
   }, [answers.hasCard]);
 
   const step = steps[Math.min(index, steps.length - 1)];
   const isLast = index >= steps.length - 1;
 
-  // Every step except the email intro is required to advance.
+  // Every question is required to advance; the closing save step is optional.
   const answered = (() => {
     switch (step) {
       case 'email': return true;
@@ -172,11 +147,12 @@ export default function FindMyCard({ open, onClose, onComplete }: FindMyCardProp
 
   const go = (n: number) => setIndex(Math.max(0, Math.min(steps.length - 1, n)));
 
-  const finish = () => onComplete({
+  // `save: false` is the "skip" path: matches without storing name/email.
+  const finish = (save = true) => onComplete({
     filters: deriveFilters(answers),
     ownedCards: answers.ownedCards,
-    name: `${answers.firstName} ${answers.lastName}`.trim() || undefined,
-    email: answers.email || undefined,
+    name: save ? `${answers.firstName} ${answers.lastName}`.trim() || undefined : undefined,
+    email: save ? answers.email || undefined : undefined,
     answers: { credit: answers.credit, type: answers.type, rewards: answers.rewards, maxFee: answers.maxFee, spend: answers.spend, hasCard: answers.hasCard },
   });
 
@@ -216,7 +192,7 @@ export default function FindMyCard({ open, onClose, onComplete }: FindMyCardProp
               transition={{ duration: reducedMotion ? 0.16 : 0.28, ease: [0.16, 1, 0.3, 1] }}
               className="w-full flex flex-col items-center text-center"
             >
-              {step === 'email' && <EmailStep answers={answers} set={set} onEmailBlur={lookupEmail} welcomeBack={welcomeBack} />}
+              {step === 'email' && <EmailStep answers={answers} set={set} />}
               {step === 'hasCard' && <HasCardStep answers={answers} set={set} />}
               {step === 'ownedCards' && <OwnedCardsStep answers={answers} set={set} />}
               {step === 'credit' && <CreditStep answers={answers} set={set} />}
@@ -230,29 +206,31 @@ export default function FindMyCard({ open, onClose, onComplete }: FindMyCardProp
               {step === 'email' ? (
                 <>
                   <button
-                    onClick={() => go(index + 1)}
+                    onClick={() => finish(false)}
                     className="px-6 py-3 rounded-full bg-transparent border border-[var(--cl-hairline-strong)] text-[var(--cl-muted)] hover:text-[var(--cl-ink)] hover:border-[var(--cl-ink)] font-medium transition-colors"
                   >
-                    Skip for now
+                    Skip — just show matches
                   </button>
                   <button
-                    onClick={() => go(index + 1)}
-                    className="px-7 py-3 rounded-full bg-[var(--cl-pill)] text-[var(--cl-pill-ink)] hover:opacity-90 font-semibold flex items-center gap-2 transition-opacity"
+                    onClick={() => finish(true)}
+                    className="px-8 py-3 rounded-full bg-[var(--cl-pill)] text-[var(--cl-pill-ink)] hover:opacity-90 font-bold flex items-center gap-2 transition-opacity"
                   >
-                    Continue <ChevronRight className="w-4 h-4" />
+                    Save & see matches <ChevronRight className="w-4 h-4" />
                   </button>
                 </>
               ) : (
                 <>
-                  <button
-                    onClick={() => go(index - 1)}
-                    className="px-6 py-3 rounded-full bg-transparent border border-[var(--cl-hairline-strong)] text-[var(--cl-muted)] hover:text-[var(--cl-ink)] hover:border-[var(--cl-ink)] font-medium flex items-center gap-2 transition-colors"
-                  >
-                    <ChevronLeft className="w-4 h-4" /> Back
-                  </button>
+                  {index > 0 && (
+                    <button
+                      onClick={() => go(index - 1)}
+                      className="px-6 py-3 rounded-full bg-transparent border border-[var(--cl-hairline-strong)] text-[var(--cl-muted)] hover:text-[var(--cl-ink)] hover:border-[var(--cl-ink)] font-medium flex items-center gap-2 transition-colors"
+                    >
+                      <ChevronLeft className="w-4 h-4" /> Back
+                    </button>
+                  )}
                   {isLast ? (
                     <button
-                      onClick={finish}
+                      onClick={() => finish()}
                       className="px-8 py-3 rounded-full bg-[var(--cl-pill)] text-[var(--cl-pill-ink)] hover:opacity-90 font-bold flex items-center gap-2 transition-opacity"
                     >
                       Find My Matches <ChevronRight className="w-4 h-4" />
@@ -274,7 +252,7 @@ export default function FindMyCard({ open, onClose, onComplete }: FindMyCardProp
 
             {/* Returning visitor: jump straight back to the matches from their
                 last completed run, without redoing the questionnaire. */}
-            {step === 'email' && hasPriorMatch && (
+            {index === 0 && hasPriorMatch && (
               <button
                 onClick={seePriorMatches}
                 className="mt-8 text-sm font-medium text-[var(--cl-muted)] hover:text-[var(--cl-ink)] underline underline-offset-4 decoration-[var(--cl-hairline-strong)] hover:decoration-[var(--cl-ink)] transition-colors"
@@ -303,11 +281,11 @@ function Heading({ title, hint }: { title: string; hint?: string }) {
 
 interface StepProps { answers: Answers; set: (p: Partial<Answers>) => void; }
 
-function EmailStep({ answers, set, onEmailBlur, welcomeBack }: StepProps & { onEmailBlur: (email: string) => void; welcomeBack: boolean }) {
+function EmailStep({ answers, set }: StepProps) {
   const inputClass = 'flex-1 min-w-0 h-12 px-4 rounded-2xl bg-[var(--cl-bg)] border border-[var(--cl-hairline-strong)] text-[var(--cl-ink)] placeholder-[var(--cl-muted)] text-[15px] focus:outline-none focus:border-[var(--cl-gold)] transition-colors';
   return (
     <div className="w-full flex flex-col items-center">
-      <Heading title="Save your progress" hint="Drop your name and email so we remember your cards and matches next time you visit on this device." />
+      <Heading title="Save your matches?" hint="Optional. Add your name and email and we'll remember your cards and answers next time you visit on this device." />
       <div className="w-full max-w-md flex flex-col gap-3">
         <div className="flex gap-3">
           <input
@@ -327,15 +305,10 @@ function EmailStep({ answers, set, onEmailBlur, welcomeBack }: StepProps & { onE
           type="email"
           value={answers.email}
           onChange={e => set({ email: e.target.value })}
-          onBlur={e => e.target.value.includes('@') && onEmailBlur(e.target.value)}
           placeholder="Email address"
           className="w-full h-12 px-4 rounded-2xl bg-[var(--cl-bg)] border border-[var(--cl-hairline-strong)] text-[var(--cl-ink)] placeholder-[var(--cl-muted)] text-[15px] focus:outline-none focus:border-[var(--cl-gold)] transition-colors"
         />
-        {welcomeBack ? (
-          <p className="text-xs font-medium text-[var(--cl-gold)] mt-1">Welcome back — we found your saved preferences and filled them in.</p>
-        ) : (
-          <p className="text-xs text-[var(--cl-muted)] mt-1">No account, no password. We just use this to remember you.</p>
-        )}
+        <p className="text-xs text-[var(--cl-muted)] mt-1">No account, no password. We just use this to remember you.</p>
       </div>
     </div>
   );
