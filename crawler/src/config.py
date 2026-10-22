@@ -31,12 +31,17 @@ def _default_model() -> str:
         return "gemini-2.5-flash-lite"
     if provider == "openai":
         return "gpt-4o-mini"
+    if provider == "xai":
+        # Cheap, fast Grok tier; override with EXTRACT_MODEL / CLASSIFY_MODEL
+        # if the account lists a different name at GET /v1/models.
+        return "grok-3-mini"
     return "llama-3.3-70b-versatile"  # groq
 
 
 @dataclass
 class Settings:
-    # Which LLM backend to use: "gemini", "groq", or "openai". Gemini/Groq
+    # Which LLM backend to use: "gemini", "groq", "openai" or "xai" (Grok,
+    # OpenAI-compatible API; paid, needs account credits). Gemini/Groq
     # have free tiers; OpenAI is paid (pay-as-you-go) and is the best pick for
     # a one-time high-quality backfill (e.g. gpt-4o-mini, ~$0.30 for a full
     # crawl) before switching back to a free provider for cheap re-checks.
@@ -44,6 +49,7 @@ class Settings:
     gemini_api_key: str = field(default_factory=lambda: os.getenv("GEMINI_API_KEY", ""))
     groq_api_key: str = field(default_factory=lambda: os.getenv("GROQ_API_KEY", ""))
     openai_api_key: str = field(default_factory=lambda: os.getenv("OPENAI_API_KEY", ""))
+    xai_api_key: str = field(default_factory=lambda: os.getenv("XAI_API_KEY", ""))
     slack_webhook_url: Optional[str] = field(default_factory=lambda: os.getenv("SLACK_WEBHOOK_URL"))
 
     # Supabase (Postgres) — when both are set, storage.py publishes accepted
@@ -69,7 +75,7 @@ class Settings:
     # Flash-Lite: ~15 RPM). This delay is applied between LLM calls specifically,
     # separate from request_delay_s which paces HTTP fetches of issuer pages.
     llm_call_delay_s: float = float(
-        os.getenv("LLM_CALL_DELAY_S", "0.3" if os.getenv("LLM_PROVIDER", "gemini") == "openai" else "4.5")
+        os.getenv("LLM_CALL_DELAY_S", "0.3" if os.getenv("LLM_PROVIDER", "gemini") in ("openai", "xai") else "4.5")
     )
     llm_max_retries: int = int(os.getenv("LLM_MAX_RETRIES", "3"))
 
