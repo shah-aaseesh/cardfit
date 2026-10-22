@@ -20,7 +20,7 @@ either way, so nothing upstream in the pipeline needs to know or care.
 import json
 import logging
 import re
-from datetime import date
+from datetime import date, datetime, timezone
 from pathlib import Path
 
 from src.config import DATA_DIR, settings
@@ -45,6 +45,49 @@ def _get_supabase_client():
 
 def _slug(text: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")[:80]
+
+
+# Marketing marks and generic suffixes that vary between an issuer's own
+# pages for the same product ("Chase Sapphire Preferred" vs "Chase Sapphire
+# Preferred® Credit Card"). Stripped only for the dedupe key, never for display.
+_NAME_NOISE = re.compile(r"[®™℠©]|\b(credit card|charge card|card)\b", re.I)
+
+
+def card_key(record: dict) -> str:
+    name = record.get("card_name") or record["url"]
+    return re.sub(r"[^a-z0-9+]+", " ", _NAME_NOISE.sub(" ", name).lower()).strip()
+
+
+def dedupe_records(provider_name: str, records: list[dict]) -> list[dict]:
+    """Issuers often publish the same card at multiple URLs (a brand landing
+    page plus the canonical product page — e.g. Chase's /sapphire and
+    /sapphire/preferred both describe Sapphire Preferred). Each URL
+    legitimately classifies as a single-card page, so collapse by normalized
+    card name: keep the highest-confidence extraction, tie-breaking to the
+    longer (more specific, likely canonical) URL. "+" is kept in the key so
+    distinct products like One Key and One Key+ stay separate."""
+    by_name: dict[str, dict] = {}
+    for record in records:
+        key = card_key(record)
+        current = by_name.get(key)
+        if current is None:
+            by_name[key] = record
+            continue
+        better = (
+            record.get("extraction_confidence") or 0,
+            len(record["url"]),
+        ) > (
+            current.get("extraction_confidence") or 0,
+            len(current["url"]),
+        )
+        if better:
+            by_name[key] = record
+    if len(by_name) < len(records):
+        logger.info(
+            f"[{provider_name}] deduped {len(records) - len(by_name)} same-card "
+            f"records published under multiple URLs"
+        )
+    return list(by_name.values())
 
 
 def provider_dir(provider_name: str) -> Path:
@@ -87,37 +130,10 @@ def _publish_to_supabase(provider_name: str, accepted_records: list[dict]) -> No
         return
 
     today = date.today().isoformat()
+    now = datetime.now(timezone.utc).isoformat()
+    # Already deduped by save_run; a losing URL's old row, if any, is
+    # soft-deleted by the is_active sweep below.
     enriched = [enrich(dict(r)) for r in accepted_records]
-
-    # Issuers often publish the same card at multiple URLs (a brand landing
-    # page plus the canonical product page — e.g. Chase's /aircanada and
-    # /aircanada/aeroplan both describe the Aeroplan Card). Each URL
-    # legitimately classifies as a single-card page, so dedupe by card name
-    # here: keep the extraction with the highest confidence, tie-breaking
-    # to the longer (more specific, likely canonical) URL. The losing URL's
-    # old row, if any, is soft-deleted by the is_active sweep below.
-    by_name: dict[str, dict] = {}
-    for record in enriched:
-        key = (record.get("card_name") or record["url"]).strip().lower()
-        current = by_name.get(key)
-        if current is None:
-            by_name[key] = record
-            continue
-        better = (
-            record.get("extraction_confidence") or 0,
-            len(record["url"]),
-        ) > (
-            current.get("extraction_confidence") or 0,
-            len(current["url"]),
-        )
-        if better:
-            by_name[key] = record
-    if len(by_name) < len(enriched):
-        logger.info(
-            f"[{provider_name}] deduped {len(enriched) - len(by_name)} same-name "
-            f"records published under multiple URLs"
-        )
-    enriched = list(by_name.values())
     seen_urls = [r["url"] for r in enriched]
 
     # Upsert current state (insert new cards, update existing ones by URL).
@@ -142,8 +158,12 @@ def _publish_to_supabase(provider_name: str, accepted_records: list[dict]) -> No
             "best_for": record.get("best_for"),
             "top_perk": record.get("top_perk"),
             "image_url": record.get("image_url"),
+            "reward_rates": record.get("reward_rates") or [],
             "is_active": True,
-            "last_seen_at": "now()",
+            # A real timestamp: PostgREST sends values as literals, so the
+            # old "now()" string was never evaluated as a function call.
+            "last_seen_at": now,
+            "last_verified_at": record.get("last_verified_at") or now,
         }
         client.table("cards").upsert(row, on_conflict="url").execute()
 
@@ -177,6 +197,7 @@ def save_run(provider_name: str, accepted_records: list[dict], raw_html_by_url: 
     into Supabase."""
     pdir = provider_dir(provider_name)
     today = date.today().isoformat()
+    accepted_records = dedupe_records(provider_name, accepted_records)
 
     with open(pdir / "latest.json", "w") as f:
         json.dump(accepted_records, f, indent=2)

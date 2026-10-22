@@ -26,7 +26,8 @@ function hasDebugShape(debug: RankingDebugOutput): boolean {
 }
 
 console.log(`Loaded ${cards.length} cards from snapshot.`);
-assert(cards.length === 162, `Expected 162 snapshot cards, got ${cards.length}.`);
+// 162 crawled rows minus 3 same-card duplicates (scripts/clean-snapshot.ts).
+assert(cards.length === 159, `Expected 159 snapshot cards, got ${cards.length}.`);
 
 const groceryCash = getTop15Cards(cards, {
   filters: ['personal', 'cashback', 'no-fee', 'gas'],
@@ -110,6 +111,16 @@ const poorUser: UserProfile = {
 const approval = computeApprovalLikelihood(poorUser, premium);
 assert(approval === 10, `Expected poor-vs-excellent approval likelihood of 10, got ${approval}.`);
 console.log(`Approval likelihood OK: poor user vs ${premium.name} (${premium.creditBand}) => ${approval}.`);
+
+// Points are valued in cents, not 1:1 with cash back (lib/pointValues.ts).
+const aspireCard = cards.find((card) => /hilton honors american express aspire/i.test(card.name));
+assert(aspireCard, 'Expected the Hilton Aspire card in the snapshot.');
+const aspire = deriveRankingCard(aspireCard);
+assert(aspire.pointValueCents < 1, `Expected Hilton points valued below 1c, got ${aspire.pointValueCents}.`);
+assert(aspire.travelRate <= 8, `Expected Aspire's 14x travel to score as ~7% value, got ${aspire.travelRate}.`);
+// "175,000 ... Points after you spend $6,000": the bonus is the points, not the spend.
+assert(Math.round(aspire.welcomeBonusValue) === 875, `Expected Aspire bonus ~$875, got ${aspire.welcomeBonusValue}.`);
+console.log(`Point valuation OK: ${aspire.name} travel=${aspire.travelRate}% bonus=$${aspire.welcomeBonusValue}.`);
 
 const sample = nextCard.recommendations[0];
 console.log('Sample explanation:', sample.explanation.join(' | '));

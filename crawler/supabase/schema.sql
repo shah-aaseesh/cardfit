@@ -54,6 +54,12 @@ create table if not exists cards (
 -- `create table if not exists` above won't alter an existing table).
 alter table cards add column if not exists apr_intro text;
 alter table cards add column if not exists apr_regular text;
+-- Structured, page-backed earn rates: [{category, rate, unit, cap, quote}]
+-- (see crawler/src/extract.py). The frontend prefers these over parsing
+-- rewards_summary prose.
+alter table cards add column if not exists reward_rates jsonb not null default '[]'::jsonb;
+-- When the card's facts were last confirmed against the live page.
+alter table cards add column if not exists last_verified_at timestamptz;
 
 create index if not exists cards_provider_idx on cards (provider);
 create index if not exists cards_is_active_idx on cards (is_active);
@@ -127,15 +133,19 @@ create policy "public read active cards"
 -- ---------------------------------------------------------------------
 -- user_profiles: account-free "remember me" for the Find Me a Card flow.
 --
--- Keyed by email (the only identity we have — no auth). Stores the user's
--- name, owned cards, derived filters, and raw questionnaire answers so a
--- returning visitor who re-enters their email gets everything prefilled,
--- even on a new device.
+-- Keyed by email, but an email alone is NOT a credential: anyone can type
+-- anyone's address. Each profile is claimed by a random secret token the
+-- browser generates on first save (lib/remoteProfile.ts) and keeps in
+-- localStorage; only its SHA-256 is stored here. Reads and overwrites both
+-- require email + token, so knowing someone's email reveals nothing and
+-- can't clobber their profile.
 --
--- Privacy: RLS is on and NO direct anon access is granted. All reads/writes
--- go through the two SECURITY DEFINER functions below, so the public anon
--- key can only fetch ONE profile by exact email — it can never enumerate or
--- dump every user's email/preferences.
+-- Trade-off: recall now works per browser (or wherever the token is
+-- copied), not on any device from the email alone. Real cross-device sync
+-- needs Supabase Auth (magic link) keyed by auth.uid() — the right next step.
+--
+-- RLS is on and NO direct anon access is granted. All reads/writes go
+-- through the two SECURITY DEFINER functions below.
 -- ---------------------------------------------------------------------
 create table if not exists user_profiles (
   email       text primary key,
@@ -143,42 +153,73 @@ create table if not exists user_profiles (
   owned_cards jsonb not null default '[]'::jsonb,
   filters     jsonb not null default '[]'::jsonb,
   answers     jsonb not null default '{}'::jsonb,
+  token_hash  bytea,
   created_at  timestamptz not null default now(),
   updated_at  timestamptz not null default now()
 );
+
+alter table user_profiles add column if not exists token_hash bytea;
 
 alter table user_profiles enable row level security;
 -- (intentionally no anon/authenticated policies — table is reachable only
 --  through the SECURITY DEFINER functions below.)
 
--- Fetch a single profile by exact email (case/whitespace-insensitive).
-create or replace function get_user_profile(p_email text)
-returns user_profiles
+-- Drop the old email-only signatures so they can't still be called.
+drop function if exists get_user_profile(text);
+drop function if exists upsert_user_profile(text, text, jsonb, jsonb, jsonb);
+
+-- Fetch a profile only when the caller holds its token. Legacy rows saved
+-- before tokens existed (token_hash null) are never returned.
+create or replace function get_user_profile(p_email text, p_token text)
+returns table (name text, owned_cards jsonb, filters jsonb, answers jsonb)
 language sql
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
-  select * from user_profiles where email = lower(trim(p_email));
+  select name, owned_cards, filters, answers
+  from user_profiles
+  where email = lower(trim(p_email))
+    and token_hash is not null
+    and length(coalesce(p_token, '')) >= 32
+    and token_hash = digest(p_token, 'sha256');
 $$;
 
--- Insert or update the caller's own profile, keyed by email.
+-- Insert a new profile (claiming it with the token), or update one the
+-- caller already owns. Returns false when the email is taken by another
+-- token, so a stranger can't overwrite someone else's profile. Legacy
+-- token-less rows are claimed by the first token-bearing save.
 create or replace function upsert_user_profile(
   p_email       text,
+  p_token       text,
   p_name        text,
   p_owned_cards jsonb,
   p_filters     jsonb,
   p_answers     jsonb
-) returns void
-language sql
+) returns boolean
+language plpgsql
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
-  insert into user_profiles (email, name, owned_cards, filters, answers, updated_at)
+declare
+  v_email text := lower(trim(p_email));
+  v_hash  bytea;
+  v_rows  int;
+begin
+  if v_email !~ '^[^@\s]+@[^@\s]+\.[^@\s]+$' or length(v_email) > 254 then
+    return false;
+  end if;
+  if length(coalesce(p_token, '')) < 32 then
+    return false;
+  end if;
+  v_hash := digest(p_token, 'sha256');
+
+  insert into user_profiles as u (email, name, owned_cards, filters, answers, token_hash, updated_at)
   values (
-    lower(trim(p_email)), p_name,
+    v_email, left(p_name, 120),
     coalesce(p_owned_cards, '[]'::jsonb),
     coalesce(p_filters,     '[]'::jsonb),
     coalesce(p_answers,     '{}'::jsonb),
+    v_hash,
     now()
   )
   on conflict (email) do update set
@@ -186,11 +227,17 @@ as $$
     owned_cards = excluded.owned_cards,
     filters     = excluded.filters,
     answers     = excluded.answers,
-    updated_at  = now();
+    token_hash  = excluded.token_hash,
+    updated_at  = now()
+  where u.token_hash is null or u.token_hash = excluded.token_hash;
+
+  get diagnostics v_rows = row_count;
+  return v_rows > 0;
+end;
 $$;
 
 -- Only these two functions are callable by the browser; nothing else.
-revoke all on function get_user_profile(text) from public;
-revoke all on function upsert_user_profile(text, text, jsonb, jsonb, jsonb) from public;
-grant execute on function get_user_profile(text) to anon, authenticated;
-grant execute on function upsert_user_profile(text, text, jsonb, jsonb, jsonb) to anon, authenticated;
+revoke all on function get_user_profile(text, text) from public;
+revoke all on function upsert_user_profile(text, text, text, jsonb, jsonb, jsonb) from public;
+grant execute on function get_user_profile(text, text) to anon, authenticated;
+grant execute on function upsert_user_profile(text, text, text, jsonb, jsonb, jsonb) to anon, authenticated;

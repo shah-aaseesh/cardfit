@@ -868,7 +868,7 @@
     "url": "https://cards.barclaycardus.com/banking/cards/aarp-essential-rewards-mastercard/",
     "provider": "barclays",
     "card_name": "AARP® Essential Rewards Mastercard®",
-    "issuer": "Barclays",
+    "issuer": "Barclays US",
     "annual_fee": 0,
     "apr_range": "0% introductory APR for the first 15 billing cycles following each balance transfer that posts to your account within 45 days of account opening. After that, a variable APR will apply: 20.24% to 29.99%, based on your creditworthiness and other factors.",
     "apr_intro": "0% introductory APR for the first 15 billing cycles following each balance transfer that posts to your account within 45 days of account opening.",
@@ -892,7 +892,7 @@
     "url": "https://cards.barclaycardus.com/banking/cards/aarp-travel-rewards-mastercard/",
     "provider": "barclays",
     "card_name": "AARP® Travel Rewards Mastercard®",
-    "issuer": "Barclays",
+    "issuer": "Barclays US",
     "annual_fee": 0,
     "apr_range": "0% introductory APR for the first 15 billing cycles following each balance transfer that posts to your account within 45 days of account opening. After that, your APR will be 20.24% to 29.99%, based on your creditworthiness and other factors.",
     "apr_intro": "0% introductory APR for the first 15 billing cycles following each balance transfer that posts to your account within 45 days of account opening.",
@@ -1190,7 +1190,7 @@
     "url": "https://cards.barclaycardus.com/banking/cards/jetblue-business-card/",
     "provider": "barclays",
     "card_name": "JetBlue Business Card",
-    "issuer": "Barclays Bank Delaware",
+    "issuer": "Barclays US",
     "annual_fee": 99,
     "apr_range": "None; 19.49% to 29.49% Variable",
     "apr_intro": "None",
@@ -1205,7 +1205,7 @@
     ],
     "best_for": "Foodies",
     "top_perk": "Earn 50,000 bonus points after qualifying account activity.",
-    "image_url": "https://bat.bing.com/action/0?ti=5103746&tm=gtm002&Ver=2&mid=901a1c37-1bea-4af6-a279-1c558eb28820&bo=1&sid=a1ad4bc0788511f18be0a1bca9c3d48b&vid=a1ad6e80788511f194ce91778bb2e9ec&vids=1&msclkid=N&uach=pv%3D&pi=0&lg=en-US&sw=1400&sh=1000&sc=24&nwd=1&tl=Apply%20for%20the%20JetBlue%20Business%20Card%20%7C%20Barclays%20US&p=https%3A%2F%2Fcards.barclaycardus.com%2Fbanking%2Fcards%2Fjetblue-business-card%2F&r=&lt=721&evt=pageLoad&sv=2&cdb=AQER&rn=695227"
+    "image_url": null
   },
   {
     "id": "484141a4-a426-450b-b936-001d3fe76c95",
@@ -1229,7 +1229,7 @@
     ],
     "best_for": "Foodies",
     "top_perk": "Earn 10,000 bonus points after qualifying purchases.",
-    "image_url": "https://bat.bing.com/action/0?ti=5103746&tm=gtm002&Ver=2&mid=53559143-b222-4fca-8716-d1901b1cdf04&bo=1&sid=79631e70788511f1937d7f6b4a8b3bc2&vid=79633b70788511f1b5bb59def8443f7f&vids=1&msclkid=N&uach=pv%3D&pi=0&lg=en-US&sw=1400&sh=1000&sc=24&nwd=1&tl=See%20if%20you%20pre-qualify%20for%20the%20JetBlue%20Card%20%7C%20Barclays%20US&p=https%3A%2F%2Fcards.barclaycardus.com%2Fbanking%2Fcards%2Fjetblue-card%2F&r=&lt=670&evt=pageLoad&sv=2&cdb=AQER&rn=901775"
+    "image_url": null
   },
   {
     "id": "f1f12706-0fae-4e1c-a93f-86a2e1456828",
@@ -1252,7 +1252,7 @@
     ],
     "best_for": "Foodies",
     "top_perk": "Earn 60,000 bonus points after spending $1,000 on purchases and paying the annual fee in full, both within the first 90 days.",
-    "image_url": "https://action.dstillery.com/orbserv/nspix?adv=cl1026240&ns=4124&nc=JetBlueCard_SiteVisitor&ncv=27&dstOrderId=[OrderId]&dstOrderAmount=[OrderAmount]"
+    "image_url": null
   },
   {
     "id": "c91d68cf-9908-4330-bb88-bda59944aee4",
@@ -1276,7 +1276,7 @@
     ],
     "best_for": "Foodies",
     "top_perk": "Earn 100,000 bonus points after spending $5,000 on purchases and paying the annual fee in full, both within the first 90 days.",
-    "image_url": "https://bat.bing.com/action/0?ti=5103746&tm=gtm002&Ver=2&mid=6a926c74-0ff5-4fb4-b71f-da5ae69dc3f9&bo=1&sid=3a716210788511f1ae46afa2c3e7ca31&vid=3a7163b0788511f19bfef9885169f827&vids=1&msclkid=N&uach=pv%3D&pi=0&lg=en-US&sw=1400&sh=1000&sc=24&nwd=1&tl=See%20if%20you%20pre-qualify%20for%20the%20JetBlue%20Premier%20Card%20%7C%20Barclays%20US&p=https%3A%2F%2Fcards.barclaycardus.com%2Fbanking%2Fcards%2Fjetblue-premier-card%2F&r=&lt=669&evt=pageLoad&sv=2&cdb=AQER&rn=963085"
+    "image_url": null
   },
   {
     "id": "8d157b85-27dc-4fc9-ac00-a928cb46d67c",
@@ -1327,7 +1327,7 @@
     "url": "https://cards.barclaycardus.com/banking/cards/rci-elite-rewards-mastercard/",
     "provider": "barclays",
     "card_name": "RCI® Elite Rewards® World Mastercard®",
-    "issuer": "Barclays Bank Delaware",
+    "issuer": "Barclays US",
     "annual_fee": 0,
     "apr_range": "0% introductory APR for the first fifteen billing cycles following each balance transfer that posts to your account within 45 days of account opening. After that, (and for balance transfers that do not post to your account within 45 days of account opening) your APR will be 19.24% to 29.49%, based on your creditworthiness and other factors. This APR will vary with the market based on the Prime Rate.",
     "apr_intro": "0% introductory APR for the first fifteen billing cycles following each balance transfer that posts to your account within 45 days of account opening.",
@@ -1469,7 +1469,7 @@
     "url": "https://www.capitalone.com/credit-cards/club-business/",
     "provider": "capital_one",
     "card_name": "Bass Pro Shops and Cabela's CLUB Business card",
-    "issuer": "Capital One, N.A.",
+    "issuer": "Capital One",
     "annual_fee": 0,
     "apr_range": "Purchases made with Bass Pro Shops and Cabela’s will qualify for a 7.99% APR.",
     "apr_intro": "None",
@@ -2115,28 +2115,6 @@
     "image_url": "https://creditcards.chase.com/bcs/images.ctfassets.net/8qmz0ef3xzub/7iFzyweepMTrfGn2VrDdL5/74581d943a86bbe5c2e5800760def68f/sapphire_preferred_card.webp"
   },
   {
-    "id": "b2019900-f9a6-449c-a1de-f6f3d74f0cf4",
-    "url": "https://creditcards.chase.com/rewards-credit-cards/sapphire",
-    "provider": "chase",
-    "card_name": "Chase Sapphire Preferred® Credit Card",
-    "issuer": "Chase",
-    "annual_fee": 95,
-    "apr_range": "None 19.24%–27.49% variable",
-    "apr_intro": "None",
-    "apr_regular": "19.24%–27.49% variable",
-    "rewards_summary": "Earn 5x points on Chase Travel purchases and 2x points on all other travel.",
-    "signup_bonus": "Earn 100,000 points after you spend $6,000 on purchases in the first 3 months from account opening.",
-    "recommended_credit_score": null,
-    "foreign_transaction_fee": null,
-    "tags": [
-      "travel",
-      "personal"
-    ],
-    "best_for": "Casual Travelers",
-    "top_perk": "Earn 100,000 points after you spend $6,000 on purchases in the first 3 months from account opening.",
-    "image_url": "https://creditcards.chase.com/bcs/images.ctfassets.net/8qmz0ef3xzub/7iFzyweepMTrfGn2VrDdL5/74581d943a86bbe5c2e5800760def68f/sapphire_preferred_card.webp"
-  },
-  {
     "id": "29473313-ebb5-4289-a6b0-8404afeea884",
     "url": "https://creditcards.chase.com/rewards-credit-cards/sapphire/reserve",
     "provider": "chase",
@@ -2191,7 +2169,7 @@
     "url": "https://creditcards.chase.com/rewards-credit-cards/disney/inspire",
     "provider": "chase",
     "card_name": "Disney Inspire Visa Card",
-    "issuer": "JPMorgan Chase Bank, N.A.",
+    "issuer": "Chase",
     "annual_fee": 149,
     "apr_range": "0% promotional APR for 6 months on select Disney vacation packages from the date of purchase, after that a variable APR of 18.24%-27.74%",
     "apr_intro": "0% promotional APR for 6 months on select Disney vacation packages from the date of purchase",
@@ -3335,7 +3313,7 @@
     "url": "https://www.synchrony.com/business/b2b/financing-solutions/credit-cards/car-care-resources/napa",
     "provider": "synchrony",
     "card_name": "NAPA Credit Card",
-    "issuer": "Synchrony Car Care",
+    "issuer": "Synchrony Bank",
     "annual_fee": 0,
     "apr_range": null,
     "apr_intro": "None",
@@ -3497,7 +3475,7 @@
     ],
     "best_for": "Foodies",
     "top_perk": "Earn 20,000 bonus points after spending $1,000 in Net Purchases in the first 90 days.",
-    "image_url": "https://bat.bing.com/action/0?ti=5697122&Ver=2&mid=29908645-af8e-4166-a2f1-f51b1751b869&bo=2&sid=c3da3a30788511f1b963ab9412c75b4c&vid=c3da4100788511f186034752f036e914&vids=1&msclkid=N&uach=pv%3D&pi=0&lg=en-US&sw=1400&sh=1000&sc=24&nwd=1&tl=U.S.%20Bank%20Altitude%C2%AE%20Go%20Visa%20Credit%20Card&p=https%3A%2F%2Fwww.usbank.com%2Fcredit-cards%2Faltitude-go-visa-signature-credit-card.html&r=&lt=912&evt=pageLoad&sv=2&asc=G&cdb=AQwR&rn=670659"
+    "image_url": null
   },
   {
     "id": "9c89ab97-17dc-4aeb-ab71-bc4f74a5f745",
@@ -3571,14 +3549,14 @@
     ],
     "best_for": "Maximizing Cash Back",
     "top_perk": "Earn unlimited 2% cash back on every purchase with no caps.",
-    "image_url": "https://bat.bing.com/action/0?ti=5697122&Ver=2&mid=1709e3f7-2fb1-45fa-92a9-d142e3238292&bo=2&sid=bf2f2eb0788511f193c86f53b7374889&vid=bf2f3190788511f1aa29bbc038d62f3a&vids=1&msclkid=N&uach=pv%3D&pi=0&lg=en-US&sw=1400&sh=1000&sc=24&nwd=1&tl=U.S.%20Bank%20Smartly%E2%84%A2%20Visa%20Cash%20Back%20Credit%20Card&p=https%3A%2F%2Fwww.usbank.com%2Fcredit-cards%2Fbank-smartly-visa-signature-credit-card.html&r=&lt=1014&evt=pageLoad&sv=2&asc=G&cdb=AQwR&rn=865612"
+    "image_url": null
   },
   {
     "id": "11f06205-cdd9-42b1-9fa2-aecb077c3f5b",
     "url": "https://www.wellsfargo.com/credit-cards/choice-select/terms/?FPID=0123CBIXP10000&app_source=WELLS_FARGO_COM&product_code=CC&subproduct_code=CE&cx_nm=CXNAME_CSMHP_MC&sub_channel=WEB&vendor_code=WF",
     "provider": "wells_fargo",
     "card_name": "Choice Privileges® Select World Elite Mastercard®",
-    "issuer": "Wells Fargo Bank, N.A.",
+    "issuer": "Wells Fargo",
     "annual_fee": 95,
     "apr_range": "None; 19.74%, 25.49%, or 28.49%",
     "apr_intro": "None",
@@ -3601,7 +3579,7 @@
     "url": "https://www.wellsfargo.com/credit-cards/choice/terms/?FPID=0124CEIXP10000&app_source=WELLS_FARGO_COM&product_code=CC&subproduct_code=CP&cx_nm=CXNAME_CSMHP_MC&sub_channel=WEB&vendor_code=WF",
     "provider": "wells_fargo",
     "card_name": "Choice Privileges® World Elite Mastercard®",
-    "issuer": "Wells Fargo Bank, N.A.",
+    "issuer": "Wells Fargo",
     "annual_fee": 0,
     "apr_range": "19.74%, 24.49%, or 28.49%, based on your creditworthiness.",
     "apr_intro": "None",
@@ -3625,7 +3603,7 @@
     "url": "https://www.wellsfargo.com/credit-cards/terms/onekeyplus/?FPID=21271KIXE50000&product_code=CC&subproduct_code=OF&cx_nm=CXNAME_CSMHP_MC&sub_channel=WEB&vendor_code=WF",
     "provider": "wells_fargo",
     "card_name": "One Key+™ Mastercard®",
-    "issuer": "Wells Fargo Bank, N.A.",
+    "issuer": "Wells Fargo",
     "annual_fee": 99,
     "apr_range": "18.49%, 23.49%, or 28.49%, based on your creditworthiness.",
     "apr_intro": null,
@@ -3646,7 +3624,7 @@
     "url": "https://www.wellsfargo.com/credit-cards/terms/onekey/?FPID=21231JIXE50000&product_code=CC&subproduct_code=OW&cx_nm=CXNAME_CSMHP_MC&sub_channel=WEB&vendor_code=WF",
     "provider": "wells_fargo",
     "card_name": "One Key™ Mastercard®",
-    "issuer": "Wells Fargo Bank, N.A.",
+    "issuer": "Wells Fargo",
     "annual_fee": 0,
     "apr_range": "18.49%, 23.49%, or 28.49%, based on your creditworthiness.",
     "apr_intro": "None",
@@ -3668,31 +3646,9 @@
     "url": "https://www.wellsfargo.com/credit-cards/active-cash/terms/?FPID=0126D7I6F40000&product_code=CC&subproduct_code=AC&cx_nm=CXNAME_CSMHP_MC&sub_channel=WEB&vendor_code=WF",
     "provider": "wells_fargo",
     "card_name": "Wells Fargo Active Cash",
-    "issuer": "Wells Fargo Bank, N.A.",
+    "issuer": "Wells Fargo",
     "annual_fee": 0,
     "apr_range": "0% introductory APR for 12 months from date of account opening. After that, your APR will be 18.49%, 24.49%, or 28.49%, based on your creditworthiness. This APR will vary with the market based on the U.S. Prime Rate.",
-    "apr_intro": "0% introductory APR for 12 months from date of account opening.",
-    "apr_regular": "18.49%, 24.49%, or 28.49%",
-    "rewards_summary": "Earn unlimited 2% cash rewards on purchases.",
-    "signup_bonus": "$200 Cash Rewards bonus after spending $1,000 in the first 3 months.",
-    "recommended_credit_score": "Good/Excellent",
-    "foreign_transaction_fee": "3%",
-    "tags": [
-      "no-fee",
-      "personal"
-    ],
-    "best_for": "Everyday Spend",
-    "top_perk": "$200 Cash Rewards bonus after spending $1,000 in the first 3 months.",
-    "image_url": null
-  },
-  {
-    "id": "a97c79ff-6913-433a-aaa8-f951a2db4005",
-    "url": "https://www.wellsfargo.com/credit-cards/active-cash/terms/?FPID=0126D7I6F40000&product_code=CC&subproduct_code=AC&sub_channel=WEB&vendor_code=WF&cx_nm=CXNAME_CSMHP_MC",
-    "provider": "wells_fargo",
-    "card_name": "Wells Fargo Active Cash Credit Card",
-    "issuer": "Wells Fargo Bank, N.A.",
-    "annual_fee": 0,
-    "apr_range": "0% introductory APR for 12 months from date of account opening. After that, your APR will be 18.49%, 24.49%, or 28.49%, based on your creditworthiness.",
     "apr_intro": "0% introductory APR for 12 months from date of account opening.",
     "apr_regular": "18.49%, 24.49%, or 28.49%",
     "rewards_summary": "Earn unlimited 2% cash rewards on purchases.",
@@ -3712,7 +3668,7 @@
     "url": "https://www.wellsfargo.com/credit-cards/autograph-journey-visa/terms/?FPID=0127E1I0P10000&product_code=CC&subproduct_code=MT&sub_channel=WEB&vendor_code=WF&cx_nm=CXNAME_CSMHP_MC",
     "provider": "wells_fargo",
     "card_name": "Wells Fargo Autograph Journey Visa® Card",
-    "issuer": "Wells Fargo Bank, N.A.",
+    "issuer": "Wells Fargo",
     "annual_fee": 95,
     "apr_range": "None; 19.49%, 25.49%, or 28.49%",
     "apr_intro": "None",
@@ -3726,31 +3682,6 @@
     ],
     "best_for": "Everyday Spend",
     "top_perk": "60,000 Rewards Points bonus",
-    "image_url": null
-  },
-  {
-    "id": "0e8d6b30-50a5-4a07-8c5a-2144bfc37f25",
-    "url": "https://www.wellsfargo.com/credit-cards/autograph-visa/terms/?FPID=012988I6P10000&product_code=CC&subproduct_code=AU&cx_nm=CXNAME_CSMHP_MC&sub_channel=WEB&vendor_code=WF",
-    "provider": "wells_fargo",
-    "card_name": "Wells Fargo Autograph Visa",
-    "issuer": "Wells Fargo Bank, N.A.",
-    "annual_fee": 0,
-    "apr_range": "0% introductory APR for 12 months from date of account opening. After that, your APR will be 18.49%, 24.49%, or 28.49%, based on your creditworthiness.",
-    "apr_intro": "0% introductory APR for 12 months from date of account opening.",
-    "apr_regular": "18.49%, 24.49%, or 28.49%",
-    "rewards_summary": "Earn 3x points on restaurants, travel, gas stations, and popular streaming services, and 1x points on all other purchases.",
-    "signup_bonus": "20,000 Rewards Points bonus after spending $1,000 in the first 3 months.",
-    "recommended_credit_score": "Good/Excellent",
-    "foreign_transaction_fee": "None",
-    "tags": [
-      "travel",
-      "dining",
-      "gas",
-      "no-fee",
-      "personal"
-    ],
-    "best_for": "Casual Travelers",
-    "top_perk": "20,000 Rewards Points bonus after spending $1,000 in the first 3 months.",
     "image_url": null
   },
   {
@@ -3780,7 +3711,7 @@
     "url": "https://www.wellsfargo.com/credit-cards/reflect-visa/terms/?FPID=013000IGF80000&product_code=CC&subproduct_code=VV&cx_nm=CXNAME_CSMHP_MC&sub_channel=WEB&vendor_code=WF",
     "provider": "wells_fargo",
     "card_name": "Wells Fargo Reflect Visa",
-    "issuer": "Wells Fargo Bank, N.A.",
+    "issuer": "Wells Fargo",
     "annual_fee": 0,
     "apr_range": "0% introductory APR for 21 months from date of account opening. After that, your APR will be 17.49%, 23.99%, or 28.24%, based on your creditworthiness.",
     "apr_intro": "0% introductory APR for 21 months from date of account opening.",

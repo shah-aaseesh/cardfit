@@ -40,7 +40,7 @@ function parity(card: CreditCard): { label: string; state: Tri }[] {
   const f = card.facts;
   const noFee: Tri = /see issuer|not specified/i.test(f.annualFee) ? null : /\$\s*0\b/.test(f.annualFee);
   const rewards: Tri = /see issuer/i.test(f.rewards) ? null : f.rewards.trim().length > 0;
-  const bonus: Tri = /see issuer/i.test(f.bonus) ? null : !/^(none|no\b|n\/a)/i.test(f.bonus.trim());
+  const bonus: Tri = /see issuer|not specified/i.test(f.bonus) ? null :!/^(none|no\b|n\/a)/i.test(f.bonus.trim());
   const ff = f.foreignFee.toLowerCase();
   const noForeign: Tri = /not specified|see issuer/.test(ff)
     ? null

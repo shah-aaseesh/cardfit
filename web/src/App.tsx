@@ -85,7 +85,8 @@ export default function App() {
     };
     saveProfile(profile);
     setIsFirstTime(false);
-    // Also persist to Supabase (keyed by email) for cross-device recall.
+    // Also persist to Supabase (email + this browser's secret token, see
+    // lib/remoteProfile.ts) so the profile survives cleared site data.
     // Fire-and-forget: localStorage already has it if this fails.
     void saveRemoteProfile(profile);
     setFindOpen(false);

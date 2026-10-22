@@ -10,12 +10,17 @@
 // - Derived: audience, rewardSystem, annualFee/tier, creditBand, product
 //   level/family, category earn rates, APR intro months, bonus value
 //   heuristic, simplicity/flexibility, student/business/secured flags.
+// - Earn rates and bonuses are in cash-equivalent terms: points/miles are
+//   converted with lib/pointValues.ts, so "14x Hilton" (≈0.5c/pt) scores as
+//   ≈7%, not 14%. Structured crawler rates (facts.rewardRates) are preferred
+//   over parsing prose when present.
 // - Stubbed as 0/undefined because source data is absent: annualCreditsValue,
 //   perksValue, userExperienceScore, employee-card features, expense tools,
 //   balance transfer fee %, exact spend requirement.
 
 import { FILTER_BY_ID } from './filters';
 import { getPerks, PerkCategory } from './perks';
+import { pointValue } from './pointValues';
 import { CreditCard } from '../types';
 
 export type Audience = 'personal' | 'student' | 'business';
@@ -50,6 +55,9 @@ export interface RankingCard {
   secured: boolean;
   cardFamily?: string;
   productLevel: ProductLevel;
+  /** Cents one reward unit is worth: 1 for cash back, an estimate for
+   *  points/miles. Every *Rate below is already multiplied by it. */
+  pointValueCents: number;
   baseRate: number;
   gasRate: number;
   diningRate: number;
@@ -288,14 +296,22 @@ function parseIntroMonths(text: string | undefined): number | undefined {
   return months.length ? Math.max(...months) : undefined;
 }
 
-function bonusValue(card: CreditCard): number {
+function bonusValue(card: CreditCard, centsPerPoint: number): number {
   const text = card.facts.bonus || '';
-  if (/^(none|no\b|n\/a)/i.test(text)) return 0;
+  if (/^(none|no\b|n\/a|not specified)/i.test(text)) return 0;
+  // "60,000 bonus points after you spend $4,000": the points are the bonus
+  // and the dollars are the spend requirement, so points take precedence.
+  // Allow the program name in between: "175,000 Hilton Honors Bonus Points".
+  const points = text.match(/(\d[\d,]{2,})\s+(?:[A-Za-z®™℠-]+\s+){0,4}?(?:points|miles|avios)\b/i);
+  if (points) return Math.min(parseInt(points[1].replace(/,/g, ''), 10) * centsPerPoint / 100, 1500);
   const dollars = text.match(/\$([\d,]+)/);
   if (dollars) return Math.min(parseInt(dollars[1].replace(/,/g, ''), 10), 1500);
-  const points = text.match(/([\d,]+)\s+(?:bonus\s+)?(?:points|miles|avios|thankyou)/i);
-  if (points) return Math.min(parseInt(points[1].replace(/,/g, ''), 10) * 0.01, 1500);
   return 0;
+}
+
+/** A structured crawler rate for a category the prose parser doesn't cover. */
+function structuredRate(card: CreditCard, category: 'streaming' | 'drugstores'): number | undefined {
+  return card.facts.rewardRates?.find((r) => r.category === category)?.rate;
 }
 
 function rate(perks: ReturnType<typeof getPerks>, cat: PerkCategory): number {
@@ -305,6 +321,8 @@ function rate(perks: ReturnType<typeof getPerks>, cat: PerkCategory): number {
 export function deriveRankingCard(card: CreditCard): RankingCard {
   const fee = parseAnnualFee(card);
   const perks = getPerks(card);
+  const cpp = perks.currency === 'points' ? pointValue(card.name, card.facts.rewards).cents : 1;
+  const valued = (n: number) => n * cpp;
   const aprText = `${card.facts.aprIntro || ''} ${card.facts.aprRegular || card.facts.apr || ''}`;
   const aprs = parseAprNumbers(aprText);
   const tags = cardTags(card);
@@ -330,19 +348,20 @@ export function deriveRankingCard(card: CreditCard): RankingCard {
     secured,
     cardFamily: familyFor(card),
     productLevel: productLevelFor(card, fee),
-    baseRate: perks.rates.other ?? (isCash ? 1 : 1),
-    gasRate: rate(perks, 'gas'),
-    diningRate: rate(perks, 'dining'),
-    groceryRate: rate(perks, 'groceries'),
-    travelRate: rate(perks, 'travel'),
-    drugstoreRate: /drugstore|pharmacy/i.test(card.facts.rewards) ? Math.max(perks.rates.other ?? 1, 3) : 0,
-    streamingRate: /streaming/i.test(card.facts.rewards) ? Math.max(perks.rates.other ?? 1, 3) : 0,
+    pointValueCents: cpp,
+    baseRate: valued(perks.rates.other ?? 1),
+    gasRate: valued(rate(perks, 'gas')),
+    diningRate: valued(rate(perks, 'dining')),
+    groceryRate: valued(rate(perks, 'groceries')),
+    travelRate: valued(rate(perks, 'travel')),
+    drugstoreRate: valued(structuredRate(card, 'drugstores') ?? (/drugstore|pharmacy/i.test(card.facts.rewards) ? Math.max(perks.rates.other ?? 1, 3) : 0)),
+    streamingRate: valued(structuredRate(card, 'streaming') ?? (/streaming/i.test(card.facts.rewards) ? Math.max(perks.rates.other ?? 1, 3) : 0)),
     introAprMonths: parseIntroMonths(aprText),
     balanceTransferIntroAprMonths: /balance transfer/i.test(aprText) ? parseIntroMonths(aprText) : undefined,
     purchaseIntroAprMonths: /purchase/i.test(aprText) ? parseIntroMonths(aprText) : undefined,
     regularAprMin: aprs.length ? Math.min(...aprs) : undefined,
     regularAprMax: aprs.length ? Math.max(...aprs) : undefined,
-    welcomeBonusValue: bonusValue(card),
+    welcomeBonusValue: bonusValue(card, cpp),
     annualCreditsValue: 0,
     perksValue: 0,
     redemptionFlexibilityScore: isTravel ? 75 : isCash ? 90 : 50,
@@ -710,7 +729,15 @@ function personalizedExplanation(card: RankingCard, user: UserProfile, approval:
     ['travel', card.travelRate],
     ['all purchases', card.baseRate],
   ].sort((a, b) => Number(b[1]) - Number(a[1]))[0];
-  if (Number(bestCategory[1]) > 1) lines.push(`Strong ${bestCategory[1]}${card.rewardSystem === 'cash_back' ? '%' : 'x'} rewards on ${bestCategory[0]}.`);
+  // Rates are cash-equivalent; show the issuer's own number ("14x") and,
+  // for points, the estimated value it works out to.
+  const value = Number(bestCategory[1]);
+  const issuerRate = Math.round((value / card.pointValueCents) * 10) / 10;
+  if (value > 1) {
+    lines.push(card.pointValueCents === 1
+      ? `Strong ${issuerRate}${card.rewardSystem === 'cash_back' ? '%' : 'x'} rewards on ${bestCategory[0]}.`
+      : `Strong ${issuerRate}x rewards on ${bestCategory[0]} (≈${Math.round(value * 10) / 10}% est. value).`);
+  }
   lines.push(approvalLanguage(approval));
   return lines;
 }

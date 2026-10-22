@@ -1,31 +1,51 @@
-// Cross-device "remember me" backed by Supabase, layered on top of the
-// localStorage profile (lib/profile.ts). Same StoredProfile shape.
+// "Remember me" backed by Supabase, layered on top of the localStorage
+// profile (lib/profile.ts). Same StoredProfile shape.
 //
-// Identity is the email the user types — there's no auth. All access goes
-// through two SECURITY DEFINER RPCs (get_user_profile / upsert_user_profile,
-// see credit-card-crawler/supabase/schema.sql), so the public anon key can
-// only fetch ONE profile by exact email and can never enumerate the table.
+// There's no auth, and an email alone is not a credential — anyone can type
+// anyone's address. So each profile is claimed by a random secret token this
+// browser generates on first save and keeps in localStorage (syncToken). Both
+// RPCs (get_user_profile / upsert_user_profile, see
+// crawler/supabase/schema.sql) require email + token; the server stores only
+// the token's hash. A stranger who knows your email gets nothing back and
+// can't overwrite your profile.
 //
 // Every call degrades to a no-op when Supabase isn't configured, so the app
 // works identically on the committed snapshot with no backend.
 
 import { supabase } from './supabaseClient';
-import { StoredProfile } from './profile';
+import { loadProfile, saveProfile, StoredProfile } from './profile';
 
 const emailKey = (email?: string) => (email || '').trim().toLowerCase();
 
-/** Fetch a saved profile by email. Returns null if none / not configured. */
+function newToken(): string {
+  const bytes = new Uint8Array(32);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+/** This browser's profile token, created (and persisted) on first use. */
+function syncToken(create: boolean): string | undefined {
+  const existing = loadProfile().syncToken;
+  if (existing || !create) return existing;
+  const token = newToken();
+  saveProfile({ syncToken: token });
+  return token;
+}
+
+/** Fetch a saved profile by email + this browser's token. Returns null if
+ *  none / no token / not configured. */
 export async function loadRemoteProfile(email: string): Promise<StoredProfile | null> {
   const key = emailKey(email);
-  if (!supabase || !key) return null;
+  const token = syncToken(false);
+  if (!supabase || !key || !token) return null;
   try {
-    const { data, error } = await supabase.rpc('get_user_profile', { p_email: key });
+    const { data, error } = await supabase.rpc('get_user_profile', { p_email: key, p_token: token });
     if (error) return null;
     const row = Array.isArray(data) ? data[0] : data;
-    if (!row || !row.email) return null;
+    if (!row) return null;
     return {
       name: row.name ?? undefined,
-      email: row.email,
+      email: key,
       ownedCards: (row.owned_cards as string[]) ?? [],
       filters: (row.filters as string[]) ?? [],
       answers: (row.answers as Record<string, unknown>) ?? {},
@@ -35,13 +55,15 @@ export async function loadRemoteProfile(email: string): Promise<StoredProfile | 
   }
 }
 
-/** Upsert the user's profile, keyed by email. No-op without an email. */
+/** Upsert the user's profile, keyed by email and claimed by this browser's
+ *  token. No-op without an email. */
 export async function saveRemoteProfile(p: StoredProfile): Promise<void> {
   const key = emailKey(p.email);
   if (!supabase || !key) return;
   try {
     await supabase.rpc('upsert_user_profile', {
       p_email: key,
+      p_token: syncToken(true),
       p_name: p.name ?? null,
       p_owned_cards: p.ownedCards ?? [],
       p_filters: p.filters ?? [],

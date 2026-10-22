@@ -73,10 +73,36 @@ _IMAGE_BLOCKLIST = (
 )
 
 
+# Ad/analytics beacons render as <img> too. Their URLs have no image
+# extension and no blocklisted word (bat.bing.com/action/0?..., dstillery
+# /orbserv/nspix), so six cards shipped a 1x1 Bing pixel as their "card art".
+_TRACKER_HOSTS = (
+    "bat.bing.com", "dstillery.com", "doubleclick.net", "google-analytics.com",
+    "googletagmanager.com", "facebook.com", "facebook.net", "analytics.",
+    "demdex.net", "omtrdc.net", "adsrvr.org", "criteo.", "taboola.",
+    "pinterest.com", "linkedin.com", "tiktok.com", "snapchat.com", "pixel.",
+)
+_RASTER_EXT = (".png", ".jpg", ".jpeg", ".webp", ".avif")
+
+
+def _looks_like_image_url(parts) -> bool:
+    """Real card art either has a raster extension or goes through an image
+    endpoint that names one (Chase's /bcs/image?url=...card.png)."""
+    path = parts.path
+    if path.endswith(_RASTER_EXT):
+        return True
+    return "image" in path and any(ext in parts.query for ext in _RASTER_EXT)
+
+
 def _is_bad_asset(src: str) -> bool:
-    s = src.lower()
-    path = urlsplit(s).path
-    return path.endswith((".svg", ".gif")) or any(term in s for term in _IMAGE_BLOCKLIST)
+    s = src.strip().lower()
+    parts = urlsplit(s)
+    if any(t in parts.netloc for t in _TRACKER_HOSTS):
+        return True
+    # Only absolute URLs can be judged by shape; relative srcs pass through.
+    if parts.netloc and not _looks_like_image_url(parts):
+        return True
+    return parts.path.endswith((".svg", ".gif")) or any(term in s for term in _IMAGE_BLOCKLIST)
 
 
 def _clean_img_url(src: str) -> str:

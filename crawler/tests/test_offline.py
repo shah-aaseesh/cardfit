@@ -15,10 +15,12 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from src.config import settings
-from src.discovery import coarse_filter
+from src.discovery import coarse_filter, canonical_url
 from src.validate import validate_card, _parse_apr_high
-from src.extract import CardData, _parse_dollar
-from src.storage import _slug
+from src.extract import CardData, _parse_dollar, _clean_reward_rates, _norm
+from src.fetch import _is_bad_asset
+from src.storage import _slug, dedupe_records
+from src.tagging import infer_top_perk
 
 
 def test_providers_yaml_loads():
@@ -107,6 +109,69 @@ def test_dollar_parsing():
 def test_slug_generation():
     assert _slug("Chase Sapphire Preferred® Card") == "chase-sapphire-preferred-card"
     print("OK: slug generation")
+
+
+def test_canonical_url_collapses_tracking_param_order():
+    # The two Wells Fargo Active Cash URLs that shipped as duplicate cards.
+    a = ("https://www.wellsfargo.com/credit-cards/active-cash/terms/?FPID=0126D7I6F40000&product_code=CC"
+         "&subproduct_code=AC&cx_nm=CXNAME_CSMHP_MC&sub_channel=WEB&vendor_code=WF")
+    b = ("https://www.wellsfargo.com/credit-cards/active-cash/terms/?FPID=0126D7I6F40000&product_code=CC"
+         "&subproduct_code=AC&sub_channel=WEB&vendor_code=WF&cx_nm=CXNAME_CSMHP_MC")
+    assert canonical_url(a) == canonical_url(b)
+    assert canonical_url("https://x.com/card/?utm_source=t#top") == "https://x.com/card/"
+    print("OK: canonical_url collapses tracking-param variants")
+
+
+def test_tracking_pixels_are_not_card_art():
+    assert _is_bad_asset("https://bat.bing.com/action/0?ti=5103746&tm=gtm002&Ver=2")
+    assert _is_bad_asset("https://action.dstillery.com/orbserv/nspix?adv=cl1026240")
+    assert not _is_bad_asset("https://icm.aexp-static.com/acquisition/card-art/NUS000000237_480x304_straight_withname.png")
+    assert not _is_bad_asset(
+        "https://creditcards.chase.com/bcs/image?url=%2Fbcs%2Fimages.ctfassets.net%2Fx%2Fworld_of_hyatt_card.png&w=640"
+    )
+    print("OK: tracking pixels rejected, real card art kept")
+
+
+def test_reward_rates_require_page_quote():
+    page = _norm("Earn 3% cash back on dining. Earn 1% cash back on all other purchases.")
+    rates, dropped = _clean_reward_rates([
+        {"category": "dining", "rate": 3, "unit": "percent", "quote": "3% cash back on dining"},
+        {"category": "other", "rate": "1%", "unit": "percent", "quote": "1% cash back on all other purchases"},
+        {"category": "groceries", "rate": 6, "unit": "percent", "quote": "6% cash back at grocery stores"},  # not on page
+        {"category": "gas", "rate": 50, "unit": "percent", "quote": "3% cash back on dining"},  # implausible
+        {"category": "pets", "rate": 2, "unit": "percent", "quote": "3% cash back on dining"},  # unknown category
+    ], page)
+    assert {r["category"]: r["rate"] for r in rates} == {"dining": 3.0, "other": 1.0}
+    assert dropped == 3
+    print("OK: reward_rates keep only plausible, page-backed entries")
+
+
+def test_validate_flags_unverified_fields():
+    card = CardData(url="x", provider="test", card_name="Test Card", annual_fee=95,
+                    extraction_confidence=0.9, unverified_fields=["annual_fee"])
+    result = validate_card(card, None)
+    assert result.accepted is True
+    assert any("annual_fee not backed" in f for f in result.flags)
+    print("OK: unverified fields are flagged for review")
+
+
+def test_top_perk_never_falls_back_to_bonus():
+    record = {"signup_bonus": "Earn 60,000 bonus points after $4,000 spend", "rewards_summary": "3x on dining."}
+    assert infer_top_perk(record) is None
+    assert infer_top_perk({**record, "top_perk": "Airport lounge access"}) == "Airport lounge access"
+    print("OK: top_perk no longer duplicates the signup bonus")
+
+
+def test_dedupe_by_normalized_name_keeps_distinct_products():
+    records = [
+        {"url": "https://c.com/sapphire", "card_name": "Chase Sapphire Preferred® Credit Card", "extraction_confidence": 0.9},
+        {"url": "https://c.com/sapphire/preferred", "card_name": "Chase Sapphire Preferred", "extraction_confidence": 0.9},
+        {"url": "https://w.com/onekey", "card_name": "One Key™ Mastercard®", "extraction_confidence": 0.9},
+        {"url": "https://w.com/onekeyplus", "card_name": "One Key+™ Mastercard®", "extraction_confidence": 0.9},
+    ]
+    kept = {r["url"] for r in dedupe_records("test", records)}
+    assert kept == {"https://c.com/sapphire/preferred", "https://w.com/onekey", "https://w.com/onekeyplus"}, kept
+    print("OK: dedupe merges marketing-mark variants but keeps One Key vs One Key+")
 
 
 def run_all():

@@ -12,7 +12,7 @@ import logging
 import re
 import time
 import xml.etree.ElementTree as ET
-from urllib.parse import urljoin, urlparse
+from urllib.parse import parse_qsl, urlencode, urljoin, urlparse, urlsplit, urlunsplit
 
 import requests
 from bs4 import BeautifulSoup
@@ -23,6 +23,29 @@ logger = logging.getLogger("discovery")
 
 SITEMAP_NS = {"ns": "http://www.sitemaps.org/schemas/sitemap/0.9"}
 HEADERS = {"User-Agent": settings.user_agent}
+
+# Campaign/attribution params that never change which product a page shows.
+# Wells Fargo alone published Active Cash twice because the same params came
+# in a different order; canonicalizing collapses those to one URL (= one row,
+# since `cards.url` is the upsert key).
+_TRACKING_PARAMS = re.compile(
+    r"^(utm_.*|gclid|fbclid|msclkid|dclid|cid|cx_nm|sub_channel|vendor_code|"
+    r"channel|source|src|ref|referrer|intcmp|iq_id|sourcecode|campaign)$",
+    re.I,
+)
+
+
+def canonical_url(url: str) -> str:
+    """Lowercases scheme/host, drops the fragment and tracking params, and
+    sorts the remaining query params so equivalent URLs compare equal. The
+    path is left untouched: `url` keys existing rows (and so card ids users
+    have saved), so only genuinely duplicate forms should change."""
+    parts = urlsplit(url.strip())
+    query = sorted(
+        (k, v) for k, v in parse_qsl(parts.query, keep_blank_values=True)
+        if not _TRACKING_PARAMS.match(k)
+    )
+    return urlunsplit((parts.scheme.lower(), parts.netloc.lower(), parts.path, urlencode(query), ""))
 
 
 def _get(url: str) -> requests.Response | None:
@@ -96,7 +119,7 @@ def coarse_filter(urls: list[str], provider: dict) -> list[str]:
             return False
         return True
 
-    filtered = [u for u in urls if keep(u)]
+    filtered = [canonical_url(u) for u in urls if keep(u)]
     # de-dupe, cap volume so one provider can't dominate a run
     seen = set()
     deduped = []

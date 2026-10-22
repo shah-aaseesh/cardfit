@@ -55,7 +55,29 @@ const CATEGORY_WORDS: Record<PerkCategory, RegExp> = {
 
 const CATEGORIES = Object.keys(CATEGORY_WORDS) as PerkCategory[];
 
+/** Structured, page-backed rates from the crawler (reward_rates) — exact
+ *  numbers, so no prose parsing is needed. */
+function perksFromRates(card: CreditCard): CardPerks | null {
+  const structured = card.facts.rewardRates;
+  if (!structured?.length) return null;
+  const rates: CardPerks['rates'] = {};
+  let cashSignals = 0;
+  let pointSignals = 0;
+  for (const r of structured) {
+    if (r.unit === 'percent') cashSignals++;
+    else pointSignals++;
+    if ((CATEGORIES as string[]).includes(r.category)) {
+      const cat = r.category as PerkCategory;
+      rates[cat] = Math.max(rates[cat] ?? 0, r.rate);
+    }
+  }
+  return { currency: cashSignals >= pointSignals ? 'cashback' : 'points', rates };
+}
+
 function parsePerks(card: CreditCard): CardPerks {
+  const fromRates = perksFromRates(card);
+  if (fromRates) return fromRates;
+
   const tiers = card.facts.rewardsBullets?.length
     ? card.facts.rewardsBullets
     : rewardBullets(card.facts.rewards);

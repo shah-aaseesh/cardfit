@@ -72,6 +72,13 @@ def validate_card(new: CardData, previous: dict | None) -> ValidationResult:
     if new.extraction_confidence < 0.5:
         flags.append(f"low extraction confidence ({new.extraction_confidence:.2f})")
 
+    # The model stated these but its supporting quote isn't on the page.
+    for field_name in new.unverified_fields:
+        flags.append(f"{field_name} not backed by a quote found on the page")
+
+    if not new.reward_rates and new.rewards_summary:
+        flags.append("no page-backed reward_rates extracted (ranker falls back to parsing prose)")
+
     # --- soft flags: compare against previous known-good value ---
     if previous:
         prev_fee = previous.get("annual_fee")

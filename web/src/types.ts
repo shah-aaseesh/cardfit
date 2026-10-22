@@ -1,3 +1,12 @@
+export interface RewardRate {
+  category: 'other' | 'dining' | 'groceries' | 'gas' | 'travel' | 'streaming' | 'drugstores';
+  rate: number;
+  unit: 'percent' | 'points' | 'miles';
+  cap?: string | null;
+  /** Verbatim issuer-page text the rate was extracted from. */
+  quote?: string;
+}
+
 export interface CardFacts {
   annualFee: string;
   rewards: string;
@@ -6,6 +15,9 @@ export interface CardFacts {
    *  to splitting `rewards` client-side (see lib/rewards.ts). */
   rewardsBullets?: string[];
   bonus: string;
+  /** Structured, page-backed earn rates from the crawler (reward_rates).
+   *  When present, ranking uses these instead of parsing `rewards` prose. */
+  rewardRates?: RewardRate[];
   /** Full APR statement (legacy / fallback). Prefer the split fields. */
   apr: string;
   /** Introductory/promotional APR, when the card has one. */

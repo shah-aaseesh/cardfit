@@ -1,8 +1,9 @@
 // Lightweight, account-free "remember me": the Find Me a Card flow collects
 // a name + email (optional) and stores the user's owned cards and stated
 // preferences in localStorage, so a returning visitor on the same browser
-// keeps their setup. No auth, no backend — swap the read/write pair for a
-// Supabase `leads` table keyed by email if cross-device memory is ever wanted.
+// keeps their setup. lib/remoteProfile.ts mirrors it to Supabase, claimed by
+// a per-browser secret token (an email alone is not proof of identity).
+// True cross-device memory needs real auth (Supabase magic link).
 
 export interface StoredProfile {
   name?: string;
@@ -11,6 +12,8 @@ export interface StoredProfile {
   filters?: string[];
   answers?: Record<string, unknown>;
   hasSeenCardsIntro?: boolean;
+  /** Secret that claims this browser's Supabase profile (lib/remoteProfile.ts). */
+  syncToken?: string;
 }
 
 const KEY = 'cardscope.profile.v1';

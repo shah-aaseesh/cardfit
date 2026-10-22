@@ -104,17 +104,13 @@ def infer_best_for(tags: list[str], record: dict) -> str:
     return "Everyday Spend"
 
 
-def infer_top_perk(record: dict) -> str:
-    signup_bonus = (record.get("signup_bonus") or "").strip()
-    if signup_bonus and signup_bonus.lower() != "none":
-        return signup_bonus
-
-    rewards_summary = (record.get("rewards_summary") or "").strip()
-    if rewards_summary:
-        first_sentence = re.split(r"(?<=[.!?])\s", rewards_summary)[0]
-        return first_sentence[:120]
-
-    return "See issuer site for full benefits"
+def infer_top_perk(record: dict) -> str | None:
+    """The extractor's own top_perk (an ongoing benefit, never the bonus).
+    This used to fall back to signup_bonus, which made 122 of 162 cards show
+    their welcome offer twice; the bonus already has its own field, so no
+    stated perk now means None and the UI says so."""
+    perk = (record.get("top_perk") or "").strip()
+    return perk or None
 
 
 def enrich(record: dict) -> dict:

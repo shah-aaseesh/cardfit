@@ -20,7 +20,7 @@ from src.cache import load_cache, save_cache, content_hash
 from src.config import settings, LOG_DIR
 from src.discovery import discover_urls
 from src.classify import classify_batch
-from src.extract import extract_card_data, CardData
+from src.extract import extract_card_data, CardData, EXTRACT_VERSION
 from src.fetch import extract_card_image
 from src.validate import validate_batch
 from src.storage import load_latest, save_run, save_rejections
@@ -71,7 +71,11 @@ def run_provider(provider: dict) -> dict:
             entry = cache["urls"].setdefault(result.url, {})
             page_hash = content_hash(result.cleaned_text or "")
 
-            if entry.get("content_hash") == page_hash and entry.get("record"):
+            if (
+                entry.get("content_hash") == page_hash
+                and entry.get("record")
+                and entry.get("extract_version") == EXTRACT_VERSION
+            ):
                 card_data = CardData(**entry["record"])
                 reused += 1
             else:
@@ -79,6 +83,7 @@ def run_provider(provider: dict) -> dict:
                 if card_data.extraction_method != "llm_failed" and card_data.card_name:
                     entry["content_hash"] = page_hash
                     entry["record"] = card_data.to_dict()
+                    entry["extract_version"] = EXTRACT_VERSION
                 time.sleep(settings.request_delay_s)
 
             # Card art comes from the page's own <img>/og:image tags —
@@ -86,6 +91,12 @@ def run_provider(provider: dict) -> dict:
             # records in case the issuer rotated the asset.
             if result.raw_html:
                 card_data.image_url = extract_card_image(result.raw_html, result.url) or card_data.image_url
+
+            # The LLM copies whatever legal entity the page names ("Barclays
+            # US", "Barclays Bank Delaware", "JPMorgan Chase Bank, N.A."), so
+            # one issuer showed up under up to three names. The provider's
+            # curated display_name is the canonical issuer.
+            card_data.issuer = provider.get("display_name") or card_data.issuer
 
             extracted.append(card_data)
             raw_html_by_url[result.url] = result.raw_html

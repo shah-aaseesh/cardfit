@@ -1,4 +1,4 @@
-import { CreditCard } from '../types';
+import { CreditCard, RewardRate } from '../types';
 
 // Row shape returned by Supabase's `cards` table (see
 // credit-card-crawler/supabase/schema.sql). Crawled data has no concept of
@@ -15,6 +15,7 @@ export interface CardRow {
   apr_regular: string | null;
   rewards_summary: string | null;
   rewards_bullets: string[] | null;
+  reward_rates?: RewardRate[] | null;
   signup_bonus: string | null;
   recommended_credit_score: string | null;
   foreign_transaction_fee: string | null;
@@ -85,7 +86,10 @@ export function mapRowToCard(row: CardRow): CreditCard {
       annualFee: formatAnnualFee(row.annual_fee),
       rewards: row.rewards_summary || 'See issuer site for rewards details',
       rewardsBullets: row.rewards_bullets && row.rewards_bullets.length > 0 ? row.rewards_bullets : undefined,
-      bonus: row.signup_bonus || 'None',
+      // null means the page didn't say — not "no bonus". The crawler stores
+      // the literal "None" only when the issuer states there isn't one.
+      bonus: row.signup_bonus || 'Not specified',
+      rewardRates: row.reward_rates?.length ? row.reward_rates : undefined,
       apr: row.apr_regular || row.apr_range || 'See issuer site',
       aprIntro: row.apr_intro || undefined,
       // Un-recrawled rows have no split field yet — fall back to apr_range so
