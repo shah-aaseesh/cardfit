@@ -1,27 +1,46 @@
 name: Daily Credit Card Crawl
 
-# Refreshes the Supabase `cards` table that the live site reads from.
-# The site updates automatically once this runs — no redeploy needed, since
-# card data lives in Supabase, not in the frontend bundle.
+# Refreshes the site's card data entirely in the cloud (GitHub Actions) —
+# nothing runs on a personal machine.
+#
+#   crawl    10 parallel jobs, one per issuer, each on its own runner (so the
+#            JS-rendering issuers' headless browsers never compete for
+#            memory). Wall time ≈ the slowest issuer, not the sum.
+#   publish  merges the 10 results into web/src/cards.snapshot.json
+#            (crawler/scripts/export_snapshot.py: stable card ids, issuers
+#            that failed keep their current cards), self-hosts any new card
+#            art, and commits the change — which redeploys the site if the
+#            repo is connected to Vercel.
+#
+# Setup: add repo secret OPENAI_API_KEY (Settings -> Secrets and variables ->
+# Actions). Optional: SUPABASE_URL + SUPABASE_SERVICE_KEY to also publish to
+# Supabase, SLACK_WEBHOOK_URL for failure alerts.
 
 on:
   schedule:
-    # 9:00 AM UTC daily — adjust for your audience's timezone
+    # 9:00 AM UTC daily — adjust for your audience's timezone.
     - cron: "0 9 * * *"
-  workflow_dispatch: {}  # manual trigger from the Actions tab for testing
+  workflow_dispatch: {}  # "Run workflow" button in the Actions tab
 
 # Never let two crawls run at once (a slow run overlapping the next schedule).
 concurrency:
   group: daily-crawl
   cancel-in-progress: false
 
+permissions:
+  contents: write  # the publish job commits the refreshed snapshot
+
 jobs:
   crawl:
+    name: crawl (${{ matrix.provider }})
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    strategy:
+      fail-fast: false  # one issuer failing must not cancel the others
+      matrix:
+        provider: [chase, amex, capital_one, citi, discover, bank_of_america, wells_fargo, us_bank, barclays, synchrony]
     defaults:
       run:
-        # The crawler is a subdirectory of this monorepo; run everything from it.
         working-directory: crawler
 
     steps:
@@ -30,57 +49,107 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+          cache: pip
+          cache-dependency-path: crawler/requirements.txt
 
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      # Amex, Bank of America, U.S. Bank and Barclays are render_js providers:
-      # their card lists only exist after JavaScript runs. Without a browser
-      # the crawler silently falls back to static HTML and finds a fraction of
-      # their cards (Amex: 3 of 22).
+      # Amex, Bank of America, U.S. Bank and Barclays are render_js
+      # providers: their card lists only exist after JavaScript runs. Without
+      # a browser the crawler silently falls back to static HTML and finds a
+      # fraction of their cards (Amex: 3 of 22).
       - name: Install headless Chromium
+        if: contains(fromJSON('["amex","bank_of_america","us_bank","barclays"]'), matrix.provider)
         run: python -m playwright install --with-deps chromium
 
-      # Persist the crawl cache across runs so we only spend LLM tokens on
-      # new/changed pages. Keyed per-run with a rolling restore so each run
-      # loads the most recent previous cache, then saves an updated one.
-      # This replaces the old "commit data back to git" step — committing to
-      # main daily would trigger a needless Vercel redeploy every morning.
+      # Per-issuer crawl cache (classification verdicts + content hashes), so
+      # later runs only spend LLM calls on new or changed pages. Rolling
+      # restore: each run loads the most recent previous cache for its issuer.
       - name: Restore crawl cache
         uses: actions/cache@v4
         with:
-          path: crawler/data
-          key: crawl-cache-${{ github.run_id }}
+          path: crawler/data/${{ matrix.provider }}/crawl_cache.json
+          key: crawl-cache-${{ matrix.provider }}-${{ github.run_id }}
           restore-keys: |
-            crawl-cache-
+            crawl-cache-${{ matrix.provider }}-
 
-      - name: Run crawler pipeline
+      - name: Run crawler
         env:
-          LLM_PROVIDER: groq
-          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-          # 8B keeps a full multi-provider run inside Groq's free tier —
-          # daily token limits are per model, and the 70B runs out mid-run.
-          CLASSIFY_MODEL: llama-3.1-8b-instant
-          EXTRACT_MODEL: llama-3.1-8b-instant
+          LLM_PROVIDER: openai
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        run: python -m src.pipeline
+        run: python -m src.pipeline --provider ${{ matrix.provider }}
 
-      - name: Upload logs as artifact
+      - name: Upload results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: crawl-logs-${{ github.run_id }}
-          path: crawler/logs/
+          name: crawl-${{ matrix.provider }}
+          path: |
+            crawler/data/${{ matrix.provider }}/latest.json
+            crawler/data/${{ matrix.provider }}/history/
+            crawler/logs/
           retention-days: 14
           if-no-files-found: ignore
 
-# Setup notes:
-#   1. Add these repo secrets (Settings -> Secrets and variables -> Actions):
-#        GROQ_API_KEY          required, free — https://console.groq.com/keys
-#        SUPABASE_URL          your Supabase project URL (the cardscope DB)
-#        SUPABASE_SERVICE_KEY  Supabase service_role key (server-side only)
-#        SLACK_WEBHOOK_URL     optional, for failure alerts
-#   2. Trigger a manual run anytime from the Actions tab ("Run workflow")
-#      to update on demand without waiting for the 9 AM schedule.
+  publish:
+    needs: crawl
+    if: always()  # publish whatever issuers succeeded
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: crawler
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: crawler/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Download crawl results
+        uses: actions/download-artifact@v4
+        with:
+          pattern: crawl-*
+          path: crawler/artifacts
+
+      # Each artifact holds data/<provider>/latest.json; put them where
+      # export_snapshot.py looks (crawler/data/<provider>/latest.json).
+      - name: Collect results
+        run: |
+          mkdir -p data
+          for dir in artifacts/crawl-*; do
+            provider="${dir#artifacts/crawl-}"
+            src=$(find "$dir" -name latest.json -path "*/$provider/*" | head -1)
+            if [ -n "$src" ]; then
+              mkdir -p "data/$provider" && cp "$src" "data/$provider/latest.json"
+              echo "collected $provider"
+            fi
+          done
+
+      - name: Export snapshot and card art
+        run: |
+          python scripts/export_snapshot.py
+          python scripts/cache_card_art.py
+
+      - name: Commit refreshed card data
+        working-directory: .
+        run: |
+          git config user.name "cardfit-crawler[bot]"
+          git config user.email "cardfit-crawler[bot]@users.noreply.github.com"
+          git add web/src/cards.snapshot.json web/src/lib/snapshot.ts web/public/card-art
+          if git diff --cached --quiet; then
+            echo "No card changes today."
+          else
+            git commit -m "Card data refresh $(date -u +%Y-%m-%d)"
+            git push
+          fi
