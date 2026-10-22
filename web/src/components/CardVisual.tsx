@@ -6,8 +6,10 @@ interface CardVisualProps {
   card: CreditCardType;
   // 'fluid' scales the card with the viewport (used in the results carousel so
   // it fits every desktop size). 'default' is a fixed landscape face used where
-  // the card is scaled by a transform (Compare thumbnails).
-  variant?: 'default' | 'fluid' | 'fill';
+  // the card is scaled by a transform. 'thumb' is a small list thumbnail
+  // (search results, card pickers): fills its box, lazy-loads, and falls
+  // back to a plain mini card face without text.
+  variant?: 'default' | 'fluid' | 'fill' | 'thumb';
 }
 
 // Landscape card proportions (~1.586:1). Fluid variant is height-driven so the
@@ -17,6 +19,7 @@ const SIZE = {
   // min() with 40vw keeps the whole card inside the stage on phones.
   fluid: 'h-[min(clamp(180px,23vh,300px),40vw)] aspect-[420/266]',
   fill: 'w-full h-full',
+  thumb: 'w-full h-full',
 } as const;
 
 // Assets that aren't a flat card face. We rotate art 90° to stand it up in
@@ -32,7 +35,7 @@ function isLikelyCardArt(url?: string): boolean {
 
 /** Real cards don't print "Credit Card" or trademark marks on the face. */
 function faceName(name: string): string {
-  return name.replace(/[®™℠]/g, '').replace(/s+(credits+)?card$/i, '').trim();
+  return name.replace(/[®™℠]/g, '').replace(/\s+(credit\s+)?card$/i, '').trim();
 }
 
 export default function CardVisual({ card, variant = 'default' }: CardVisualProps) {
@@ -43,6 +46,29 @@ export default function CardVisual({ card, variant = 'default' }: CardVisualProp
   const [maxArtWidth, setMaxArtWidth] = useState<number | undefined>();
   const showArt = isLikelyCardArt(card.imageUrl) && !artFailed;
   const size = SIZE[variant];
+
+  // List thumbnail: the real art when we have it, otherwise a mini violet
+  // card face with just a chip (text would be unreadable at this size).
+  if (variant === 'thumb') {
+    return (
+      <div className="relative h-full w-full overflow-hidden rounded-[0.4rem] border border-[var(--cl-ink)]">
+        {showArt ? (
+          <img
+            src={card.imageUrl}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            onError={() => setArtFailed(true)}
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          <div className="warm-card-face h-full w-full !border-0 p-[12%]">
+            <div className="h-[34%] aspect-[5/6] rounded-[2px] bg-gradient-to-br from-amber-100 via-amber-200 to-amber-400" />
+          </div>
+        )}
+      </div>
+    );
+  }
 
   // Real card art shown in its natural landscape orientation (flat card face,
   // ~1.586:1). Issuer art is already landscape, so no rotation is needed.

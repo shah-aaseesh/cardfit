@@ -292,7 +292,7 @@ export default function Compare({ watchlist, setWatchlist, ownedCards, setOwnedC
                       onClick={() => selectCard(c.id)}
                       className="w-full text-left p-4 hover:bg-[var(--cl-panel)] rounded-xl flex items-center gap-4 transition-colors"
                     >
-                      <div className={`w-12 h-12 rounded-lg ${c.gradient} shadow-inner shrink-0`} />
+                      <div className="aspect-[1.586/1] w-16 shrink-0"><CardVisual card={c} variant="thumb" /></div>
                       <div className="min-w-0">
                         <div className="text-[var(--cl-ink)] font-medium text-lg truncate">{c.name}</div>
                         <div className="text-[var(--cl-muted)] text-sm uppercase tracking-wider">{c.issuer}</div>

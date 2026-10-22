@@ -5,6 +5,7 @@ import { normalizeFilters } from '../lib/filters';
 import { loadProfile } from '../lib/profile';
 import { cardMatchesQuery } from '../lib/cardSearch';
 import { useCards } from '../hooks/useCards';
+import CardVisual from './CardVisual';
 import type { MatchResult } from '../App';
 
 interface FindMyCardProps {
@@ -369,7 +370,7 @@ function OwnedCardsStep({ answers, set }: StepProps) {
               if (!c) return null;
               return (
                 <div key={id} className="flex items-center gap-3 bg-[var(--cl-bg)] border border-[var(--cl-hairline-strong)] rounded-2xl p-2.5 pl-3">
-                  <div className={`w-9 h-9 rounded-lg ${c.gradient} shrink-0`} />
+                  <div className="aspect-[1.586/1] w-14 shrink-0"><CardVisual card={c} variant="thumb" /></div>
                   <div className="flex-1 text-left min-w-0">
                     <div className="text-[var(--cl-ink)] font-medium text-sm truncate">{c.name}</div>
                     <div className="text-[var(--cl-muted)] text-xs uppercase tracking-wide">{c.issuer}</div>
@@ -395,7 +396,7 @@ function OwnedCardsStep({ answers, set }: StepProps) {
           <div className="mt-2 bg-[var(--cl-bg)] border border-[var(--cl-hairline-strong)] rounded-2xl overflow-hidden">
             {matches.map(c => (
               <button key={c.id} onClick={() => add(c.id)} className="w-full flex items-center gap-3 p-2.5 pl-3 hover:bg-[var(--cl-panel)] transition-colors text-left">
-                <div className={`w-8 h-8 rounded-lg ${c.gradient} shrink-0`} />
+                <div className="aspect-[1.586/1] w-12 shrink-0"><CardVisual card={c} variant="thumb" /></div>
                 <div className="flex-1 min-w-0">
                   <div className="text-[var(--cl-ink)] font-medium text-sm truncate">{c.name}</div>
                   <div className="text-[var(--cl-muted)] text-xs uppercase tracking-wide">{c.issuer}</div>
