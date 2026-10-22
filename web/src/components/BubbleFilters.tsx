@@ -44,8 +44,8 @@ export default function BubbleFilters({ activeFilters, onFiltersChange, desktopC
         aria-pressed={isActive}
         className={`${small ? 'px-3 py-1 text-xs' : 'px-3.5 py-1.5 text-sm'} ${desktopCompact ? 'md:px-2.5 md:py-0.5 md:text-[11px]' : ''} ${filter.id === 'rewards' ? 'md:min-w-[5.5rem]' : ''} font-medium rounded-full border shadow-[0_10px_24px_-22px_rgb(17_17_20_/_0.45),inset_0_1px_0_rgb(255_255_255_/_0.86)] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cl-ink)]/30 ${
           isActive
-            ? 'bg-[#111114] text-white border-[#111114]'
-            : 'bg-white text-[var(--cl-muted)] border-[var(--cl-hairline-strong)] hover:bg-[var(--cl-panel)] hover:text-[var(--cl-ink)]'
+            ? 'bg-[var(--cl-pill)] text-[var(--cl-pill-ink)] border-[var(--cl-pill)]'
+            : 'bg-[var(--cl-surface)] text-[var(--cl-muted)] border-[var(--cl-hairline-strong)] hover:bg-[var(--cl-panel)] hover:text-[var(--cl-ink)]'
         }`}
       >
         {filter.label}

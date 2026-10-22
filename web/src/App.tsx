@@ -11,6 +11,7 @@ import Compare from './components/Compare';
 import CursorGlow from './components/CursorGlow';
 import { loadProfile, saveProfile } from './lib/profile';
 import { saveRemoteProfile } from './lib/remoteProfile';
+import { SNAPSHOT_AS_OF } from './lib/snapshot';
 
 export interface MatchResult {
   filters: string[];
@@ -140,6 +141,7 @@ export default function App() {
             onBrowseAll={browseAll}
             startWithResults={!isFirstTime}
             onIntroComplete={completeCardsIntro}
+            onFindMatches={() => setFindOpen(true)}
           />
         )}
         {currentPage === 'compare' && (
@@ -152,8 +154,32 @@ export default function App() {
         )}
       </main>
 
-      <footer className="border-t border-[var(--cl-hairline)] py-12 text-center text-[var(--cl-muted)] text-sm">
-        <p>© 2026 CardFit.</p>
+      {/* Disclosure up front, not buried: who pays us (nobody), what the
+          numbers are, and how fresh the data is. Keep "not paid" true — if
+          affiliate links are ever added, this copy must change with them. */}
+      <footer className="compare-light border-t border-[var(--cl-hairline)] bg-[var(--cl-panel)] px-6 py-12 text-sm text-[var(--cl-muted)]">
+        <div className="mx-auto grid max-w-5xl gap-8 md:grid-cols-[1.2fr_1fr_1fr]">
+          <div>
+            <p className="font-editorial text-2xl text-[var(--cl-ink)]">CardFit</p>
+            <p className="mt-2 max-w-xs leading-relaxed">
+              An independent card finder. No card issuer pays for placement, and seeing your matches never runs a credit check.
+            </p>
+          </div>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wider text-[var(--cl-ink)]">About the numbers</p>
+            <p className="mt-2 leading-relaxed">
+              Values are estimates from your spending, minus the annual fee. Points and miles use conservative cash values.
+              Terms change, so always confirm on the issuer's site before applying.
+            </p>
+          </div>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wider text-[var(--cl-ink)]">Data</p>
+            <p className="mt-2 leading-relaxed">
+              Card details collected from issuer websites, last refreshed {SNAPSHOT_AS_OF}. Not financial advice.
+            </p>
+          </div>
+        </div>
+        <p className="mx-auto mt-10 max-w-5xl border-t border-[var(--cl-hairline)] pt-6 text-xs">© 2026 CardFit.</p>
       </footer>
 
       <FindMyCard open={findOpen} onClose={() => setFindOpen(false)} onComplete={handleComplete} />

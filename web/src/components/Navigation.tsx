@@ -45,28 +45,28 @@ export default function Navigation({ currentPage, setCurrentPage, findActive, on
           className="pointer-events-auto flex items-center gap-2.5 group"
           aria-label="CardFit home"
         >
-          <span className="font-display font-semibold text-[25px] tracking-normal text-black sm:text-[21px]">CardFit</span>
+          <span className="font-editorial text-[30px] leading-none text-[var(--cl-ink)] sm:text-[26px]">CardFit</span>
         </button>
         <button
           type="button"
           aria-label="Menu"
           onClick={() => setIsMenuOpen((open) => !open)}
-          className="pointer-events-auto grid h-10 w-10 place-items-center text-black sm:hidden"
+          className="pointer-events-auto grid h-10 w-10 place-items-center text-[var(--cl-ink)] sm:hidden"
         >
           <Menu className="h-8 w-8" strokeWidth={2.2} />
         </button>
       </div>
 
       {isMenuOpen && (
-        <div className="pointer-events-auto flex flex-col gap-1 rounded-[1.1rem] border border-[var(--cl-hairline-strong)] bg-white p-1.5 shadow-[0_22px_54px_-34px_rgb(0_0_0_/_0.45)] sm:hidden">
+        <div className="pointer-events-auto flex flex-col gap-1 rounded-[1.1rem] border border-[var(--cl-hairline-strong)] bg-[var(--cl-surface)] p-1.5 shadow-[0_22px_54px_-34px_rgb(0_0_0_/_0.45)] sm:hidden">
           {links.map((link) => (
             <button
               key={link.id}
               onClick={() => goToPage(link.id)}
               className={`h-10 rounded-[0.85rem] px-4 text-left text-[14px] font-medium transition-colors ${
                 currentPage === link.id
-                  ? `bg-[var(--cl-pill)] ${link.id === 'compare' ? 'text-[var(--compare-orange,#767676)]' : 'text-[var(--cl-pill-ink)]'}`
-                  : 'text-[var(--cl-ink)] hover:bg-[#F5F5F5]'
+                  ? `bg-[var(--cl-pill)] text-[var(--cl-pill-ink)]`
+                  : 'text-[var(--cl-ink)] hover:bg-[var(--cl-panel)]'
               }`}
             >
               {link.label}
@@ -75,7 +75,7 @@ export default function Navigation({ currentPage, setCurrentPage, findActive, on
           <button
             onClick={openFind}
             className={`h-10 rounded-[0.85rem] px-4 text-left text-[14px] font-medium transition-colors ${
-              findActive ? 'bg-[var(--cl-pill)] text-[var(--cl-pill-ink)]' : 'text-[var(--cl-ink)] hover:bg-[#F5F5F5]'
+              findActive ? 'bg-[var(--cl-pill)] text-[var(--cl-pill-ink)]' : 'text-[var(--cl-ink)] hover:bg-[var(--cl-panel)]'
             }`}
           >
             Find Me a Card
@@ -83,15 +83,15 @@ export default function Navigation({ currentPage, setCurrentPage, findActive, on
         </div>
       )}
 
-      <nav className="pointer-events-auto hidden h-[48px] w-auto items-center gap-1 rounded-full border border-[var(--cl-hairline-strong)] bg-white p-1 shadow-[0_10px_28px_-24px_rgb(0_0_0_/_0.55)] sm:flex">
+      <nav className="pointer-events-auto hidden h-[48px] w-auto items-center gap-1 rounded-full border border-[var(--cl-hairline-strong)] bg-[var(--cl-surface)] p-1 shadow-[0_10px_28px_-24px_rgb(0_0_0_/_0.55)] sm:flex">
         {links.map(link => (
           <button
             key={link.id}
             onClick={() => setCurrentPage(link.id)}
             className={`h-[38px] min-w-[100px] flex-none rounded-full px-4 text-[13px] font-medium transition-colors duration-200 ${
               currentPage === link.id
-                ? `bg-[var(--cl-pill)] ${link.id === 'compare' ? 'text-[var(--compare-orange,#767676)]' : 'text-[var(--cl-pill-ink)]'} shadow-[inset_0_1px_0_rgb(255_255_255_/_0.18)]`
-                : 'text-[var(--cl-ink)] hover:text-black hover:bg-[#F5F5F5]'
+                ? `bg-[var(--cl-pill)] text-[var(--cl-pill-ink)] shadow-[inset_0_1px_0_rgb(255_255_255_/_0.18)]`
+                : 'text-[var(--cl-ink)] hover:text-[var(--cl-ink)] hover:bg-[var(--cl-panel)]'
             }`}
           >
             {link.label}
@@ -100,7 +100,7 @@ export default function Navigation({ currentPage, setCurrentPage, findActive, on
         <button
           onClick={onFindClick}
           className={`h-[38px] min-w-[136px] flex-none rounded-full px-4 text-[13px] font-medium transition-colors duration-200 ${
-            findActive ? 'bg-[var(--cl-pill)] text-[var(--cl-pill-ink)]' : 'text-[var(--cl-ink)] hover:text-black hover:bg-[#F5F5F5]'
+            findActive ? 'bg-[var(--cl-pill)] text-[var(--cl-pill-ink)]' : 'text-[var(--cl-ink)] hover:text-[var(--cl-ink)] hover:bg-[var(--cl-panel)]'
           }`}
         >
           Find Me a Card

@@ -117,7 +117,8 @@ const aspireCard = cards.find((card) => /hilton honors american express aspire/i
 assert(aspireCard, 'Expected the Hilton Aspire card in the snapshot.');
 const aspire = deriveRankingCard(aspireCard);
 assert(aspire.pointValueCents < 1, `Expected Hilton points valued below 1c, got ${aspire.pointValueCents}.`);
-assert(aspire.travelRate <= 8, `Expected Aspire's 14x travel to score as ~7% value, got ${aspire.travelRate}.`);
+// 14x is Hilton-only (excluded as own-brand); 7x general travel at ~0.5c = ~3.5%.
+assert(aspire.travelRate <= 4, `Expected Aspire's general travel to score ~3.5% value, got ${aspire.travelRate}.`);
 // "175,000 ... Points after you spend $6,000": the bonus is the points, not the spend.
 assert(Math.round(aspire.welcomeBonusValue) === 875, `Expected Aspire bonus ~$875, got ${aspire.welcomeBonusValue}.`);
 console.log(`Point valuation OK: ${aspire.name} travel=${aspire.travelRate}% bonus=$${aspire.welcomeBonusValue}.`);

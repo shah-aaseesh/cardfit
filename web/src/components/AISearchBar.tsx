@@ -119,7 +119,7 @@ export default function AISearchBar({ onQueryChange, onFiltersParsed, onSubmit, 
 
   return (
     <div className={`relative w-full mx-auto ${compact ? 'max-w-[52rem] md:max-w-[46rem]' : 'max-w-[62.5rem]'}`}>
-      <div className={`flex items-center rounded-full bg-white border border-[var(--cl-hairline-strong)] shadow-[0_18px_42px_-30px_rgb(0_0_0_/_0.38)] focus-within:border-[var(--cl-ink)] transition-colors ${
+      <div className={`flex items-center rounded-full bg-[var(--cl-surface)] border border-[var(--cl-hairline-strong)] shadow-[0_18px_42px_-30px_rgb(0_0_0_/_0.38)] focus-within:border-[var(--cl-ink)] transition-colors ${
         compact ? 'gap-1 pl-3 pr-1.5 py-1.5 sm:pl-4 sm:pr-2 md:py-1' : 'gap-1.5 pl-4 pr-2 py-2 sm:pl-5 sm:pr-2.5 sm:py-2.5'
       }`}>
         {leftSlot && (

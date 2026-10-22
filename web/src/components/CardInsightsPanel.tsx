@@ -46,7 +46,7 @@ export default function CardInsightsPanel({ card, whyBullets }: { card: CreditCa
               <dt className="font-display text-[10px] font-medium uppercase tracking-[0.15em] text-[var(--cl-muted)]">
                 {d.label}{d.hint && <InfoStar text={d.hint} />}
               </dt>
-              <dd className="mt-1.5 text-[12px] text-black leading-snug [overflow-wrap:anywhere]">{d.value}</dd>
+              <dd className="mt-1.5 text-[12px] text-[var(--cl-ink)] leading-snug [overflow-wrap:anywhere]">{d.value}</dd>
             </div>
           </div>
         ))}

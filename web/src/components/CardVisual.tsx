@@ -85,18 +85,18 @@ export default function CardVisual({ card, variant = 'default' }: CardVisualProp
       />
 
       {/* Subtle radial glow */}
-      <div className="absolute -top-24 -right-24 w-48 h-48 bg-white/70 blur-3xl rounded-full" />
-      <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-neutral-300/45 blur-3xl rounded-full" />
+      <div className="absolute -top-24 -right-24 w-48 h-48 bg-white/10 blur-3xl rounded-full" />
+      <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-emerald-300/10 blur-3xl rounded-full" />
 
       {/* Top row: Issuer and Contactless icon */}
       <div className="relative flex justify-between items-start z-10">
-        <span className="font-display font-bold tracking-widest text-black/75 text-sm md:text-base uppercase">{card.issuer}</span>
-        <Wifi className="w-6 h-6 text-neutral-700/70 rotate-90" />
+        <span className="font-display font-bold tracking-widest text-white/80 text-sm md:text-base uppercase">{card.issuer}</span>
+        <Wifi className="w-6 h-6 text-white/60 rotate-90" />
       </div>
 
       {/* Middle row: Chip */}
       <div className="relative z-10">
-        <div className="w-10 h-12 md:w-12 md:h-14 bg-gradient-to-br from-white via-neutral-100 to-neutral-300 rounded-md border border-neutral-300/55 backdrop-blur-sm shadow-inner flex flex-col justify-around p-1">
+        <div className="w-10 h-12 md:w-12 md:h-14 bg-gradient-to-br from-amber-100 via-amber-200 to-amber-400 rounded-md border border-amber-200/60 backdrop-blur-sm shadow-inner flex flex-col justify-around p-1">
           <div className="w-full h-[1px] bg-neutral-500/30"></div>
           <div className="w-full h-[1px] bg-neutral-500/30"></div>
           <div className="w-full h-[1px] bg-neutral-500/30"></div>
@@ -105,10 +105,10 @@ export default function CardVisual({ card, variant = 'default' }: CardVisualProp
 
       {/* Bottom row: Name and numbers */}
       <div className="relative z-10 mt-auto">
-        <div className="text-black/45 font-mono tracking-[0.3em] mb-2 md:mb-4 text-xs md:text-sm">
+        <div className="text-white/55 font-mono tracking-[0.3em] mb-2 md:mb-4 text-xs md:text-sm">
           •••• •••• •••• {card.last4}
         </div>
-        <div className="text-black font-display font-semibold text-xl md:text-2xl leading-none">
+        <div className="text-white font-display font-semibold text-xl md:text-2xl leading-none">
           {card.name}
         </div>
       </div>

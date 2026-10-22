@@ -1,14 +1,17 @@
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap');
 @import "tailwindcss";
 
 /*
-  Geist Sans carries the entire product UI: headings, labels, cards, buttons,
-  card-number moments, and dense comparison data.
+  Geist Sans carries the product UI: labels, cards, buttons and dense
+  comparison data (with tabular figures for every number). Instrument Serif
+  is reserved for editorial headlines (.font-editorial) — a calm, considered
+  voice instead of a sales pitch.
 */
 @theme {
   --font-sans: "Geist", "Geist Sans", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Geist", "Geist Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist", "Geist Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-editorial: "Instrument Serif", ui-serif, Georgia, serif;
 
   --color-bg: oklch(0.09 0 0);
   --color-surface: oklch(0.155 0.003 70);
@@ -29,7 +32,18 @@
    (what shows through header/footer gaps and macOS overscroll/rubber-band)
    is the same near-white as .compare-light's --cl-bg, not the dark shell. */
 html, body {
-  background: oklch(0.99 0 0);
+  background: oklch(0.985 0.004 95);
+}
+
+/* Money is read in columns: keep every figure the same width. */
+body {
+  font-variant-numeric: tabular-nums;
+}
+
+.font-editorial {
+  font-family: var(--font-editorial);
+  font-weight: 400;
+  letter-spacing: -0.01em;
 }
 
 html {
@@ -79,38 +93,48 @@ body {
 }
 
 /*
-  One monochrome editorial theme: true grayscale (chroma 0) from a near-white
-  body through near-black ink and pill, with no hue anywhere. Hierarchy comes
-  from lightness, weight, and scale, not color. Contrast verified: ink 0.23
-  and muted 0.46 both clear AA (≥4.5:1) on the 0.965 panel and the 0.99 body.
+  "Clear Ledger" theme. Research on how people pick financial products says
+  they choose on the deal, abandon on surprise costs, and trust what looks
+  calm and consistent. So: warm paper and deep navy ink for a steady,
+  bank-statement calm; color is *meaning*, never decoration —
+    value  (green) = money in your pocket, a good fit
+    caution (amber) = fees, interest, harder approval
+  Contrast: ink and muted clear AA (≥4.5:1) on both paper and panel; value
+  and caution text tokens clear AA on their soft backgrounds.
 */
 .compare-light {
-  --cl-bg: oklch(0.99 0 0);
-  --cl-panel: oklch(0.965 0 0);
-  --cl-ink: oklch(0.23 0 0);
-  --cl-muted: oklch(0.46 0 0);
-  --cl-hairline: oklch(0.90 0 0);
-  --cl-hairline-strong: oklch(0.82 0 0);
-  --cl-gold: oklch(0.50 0 0);
-  --cl-pill: oklch(0.17 0 0);
-  --cl-pill-ink: oklch(0.97 0 0);
+  --cl-bg: oklch(0.985 0.004 95);
+  --cl-panel: oklch(0.962 0.006 95);
+  --cl-surface: oklch(0.995 0.002 95);
+  --cl-ink: oklch(0.25 0.045 262);
+  --cl-muted: oklch(0.47 0.025 262);
+  --cl-hairline: oklch(0.905 0.008 262);
+  --cl-hairline-strong: oklch(0.83 0.012 262);
+  --cl-pill: oklch(0.27 0.06 262);
+  --cl-pill-ink: oklch(0.985 0.004 95);
+  --cl-value: oklch(0.47 0.11 158);
+  --cl-value-soft: oklch(0.955 0.035 158);
+  --cl-caution: oklch(0.52 0.12 60);
+  --cl-caution-soft: oklch(0.96 0.04 80);
+  /* Legacy accent name, now the value green. */
+  --cl-gold: var(--cl-value);
 }
 
 .cards-page {
   background:
-    radial-gradient(ellipse at 50% 42%, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.74) 30%, rgba(255,255,255,0) 60%),
-    radial-gradient(ellipse at 17% 64%, rgba(233, 233, 233, 0.26) 0%, rgba(233, 233, 233, 0.10) 34%, rgba(255,255,255,0) 66%),
-    radial-gradient(ellipse at 84% 68%, rgba(244, 244, 244, 0.62) 0%, rgba(244, 244, 244, 0.18) 35%, rgba(255,255,255,0) 68%),
-    linear-gradient(to bottom, #FBFBFB 0%, #FBFBFB 52%, #F8F8F8 80%, #F1F1F1 100%),
-    var(--cl-bg);
+    radial-gradient(ellipse at 28% 34%, oklch(0.97 0.02 158 / 0.55) 0%, transparent 55%),
+    linear-gradient(to bottom, var(--cl-bg) 0%, var(--cl-bg) 60%, var(--cl-panel) 100%);
 }
 
+/* Placeholder face for cards without art: a deep navy card, so it reads as
+   a real, premium object rather than a washed-out blank. */
 .warm-card-face {
+  color: oklch(0.97 0.005 95);
   background:
-    radial-gradient(ellipse at 18% 88%, rgba(120, 120, 120, 0.16) 0%, rgba(233, 233, 233, 0.28) 34%, rgba(255,255,255,0) 66%),
-    radial-gradient(ellipse at 92% 8%, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.36) 38%, rgba(255,255,255,0) 72%),
-    linear-gradient(135deg, #FFFFFF 0%, #FAFAFA 48%, #EAEAEA 84%, #BDBDBD 138%);
-  border: 1px solid rgba(120, 120, 120, 0.14);
+    radial-gradient(ellipse at 88% 6%, oklch(0.55 0.06 262 / 0.55) 0%, transparent 55%),
+    radial-gradient(ellipse at 10% 100%, oklch(0.40 0.07 200 / 0.45) 0%, transparent 60%),
+    linear-gradient(135deg, oklch(0.33 0.06 262) 0%, oklch(0.24 0.05 262) 60%, oklch(0.19 0.04 262) 100%);
+  border: 1px solid oklch(0.40 0.05 262 / 0.6);
   box-shadow:
     0 34px 76px -44px rgba(120, 120, 120, 0.24),
     0 18px 42px -34px rgba(17,17,20,0.22),
@@ -119,40 +143,39 @@ body {
 }
 
 .compare-page {
-  --background: #FBFBFB;
-  --surface: #FFFFFF;
-  --text-primary: #111114;
-  --text-secondary: #6C6C6C;
-  --border: #E9E9E9;
-  --orange: #767676;
-  --peach: #F3F3F3;
-  --violet: #9D9D9D;
-  --lavender: #F1F1F1;
-  --coral-bridge: #BABABA;
-  --compare-bg: #F5F5F5;
-  --compare-text: #111114;
-  --compare-muted: #6C6C6C;
-  --compare-border: #E9E9E9;
-  --compare-orange: #767676;
-  --compare-peach: #F3F3F3;
-  --compare-violet: #9D9D9D;
-  --compare-lavender: #F1F1F1;
-  --compare-bridge: #BABABA;
+  /* Clear Ledger values. Card A = navy, card B = teal: two calm, distinct
+     hues for "which side is which"; green stays reserved for value. */
+  --background: oklch(0.985 0.004 95);
+  --surface: oklch(0.995 0.002 95);
+  --text-primary: oklch(0.25 0.045 262);
+  --text-secondary: oklch(0.47 0.025 262);
+  --border: oklch(0.905 0.008 262);
+  --orange: oklch(0.40 0.08 262);
+  --peach: oklch(0.955 0.02 262);
+  --violet: oklch(0.50 0.08 200);
+  --lavender: oklch(0.955 0.025 200);
+  --coral-bridge: oklch(0.80 0.03 230);
+  --compare-bg: oklch(0.975 0.005 95);
+  --compare-text: oklch(0.25 0.045 262);
+  --compare-muted: oklch(0.47 0.025 262);
+  --compare-border: oklch(0.905 0.008 262);
+  --compare-orange: oklch(0.40 0.08 262);
+  --compare-peach: oklch(0.955 0.02 262);
+  --compare-violet: oklch(0.50 0.08 200);
+  --compare-lavender: oklch(0.955 0.025 200);
+  --compare-bridge: oklch(0.80 0.03 230);
   --compare-sidebar-width: 276px;
   --compare-content-width: calc(100vw - var(--compare-sidebar-width));
   --compare-stage-width: 1040px;
   --compare-panel-width: 430px;
   --compare-panel-height: 271px;
   --compare-panel-radius: 22px;
-  --compare-orange-glow: rgba(120, 120, 120, 0.24);
-  --compare-violet-glow: rgba(155, 155, 155, 0.24);
+  --compare-orange-glow: oklch(0.40 0.08 262 / 0.18);
+  --compare-violet-glow: oklch(0.50 0.08 200 / 0.18);
   background:
-    radial-gradient(ellipse 620px 480px at 18% 82%, rgba(226, 226, 226, 0.72) 0%, rgba(226, 226, 226, 0.34) 40%, rgba(255,255,255,0) 74%),
-    radial-gradient(ellipse 720px 520px at 88% 80%, rgba(226, 226, 226, 0.78) 0%, rgba(226, 226, 226, 0.36) 42%, rgba(255,255,255,0) 76%),
-    radial-gradient(ellipse 680px 430px at 56% 26%, rgba(255,255,255,0.94) 0%, rgba(244, 244, 244,0.68) 48%, rgba(255,255,255,0) 82%),
-    radial-gradient(ellipse 900px 520px at 55% 68%, rgba(237, 237, 237, 0.56) 0%, rgba(237, 237, 237, 0.22) 46%, rgba(255,255,255,0) 82%),
-    linear-gradient(to bottom, #FAFAFA 0%, #F5F5F5 58%, #EDEDED 100%),
-    #F5F5F5;
+    radial-gradient(ellipse 720px 520px at 20% 80%, oklch(0.95 0.02 262 / 0.6) 0%, transparent 72%),
+    radial-gradient(ellipse 720px 520px at 85% 80%, oklch(0.95 0.025 200 / 0.6) 0%, transparent 72%),
+    linear-gradient(to bottom, oklch(0.985 0.004 95) 0%, oklch(0.965 0.006 95) 100%);
   color: var(--compare-text);
 }
 
@@ -217,9 +240,9 @@ body {
 
 .compare-hero h1 {
   margin-top: 26px;
-  font-family: var(--font-display);
-  font-size: clamp(2.65rem, 3.45vw, 3.72rem);
-  font-weight: 500;
+  font-family: var(--font-editorial);
+  font-size: clamp(3rem, 4vw, 4.3rem);
+  font-weight: 400;
   line-height: 0.98;
   letter-spacing: 0;
   color: var(--compare-text);
@@ -744,8 +767,12 @@ body {
   }
 }
 
+/* Sticky refine bar: sits after the results in normal flow and floats at
+   the bottom of the viewport while scrolling, on a frosted paper strip so
+   it never collides with the content above it. */
 .cards-bottom-dock {
-  top: calc(100svh - 9.65rem);
+  padding: 1rem 0 1.1rem;
+  background: linear-gradient(to top, var(--cl-bg) 62%, oklch(0.985 0.004 95 / 0));
 }
 
 .cards-dot-stage::before {

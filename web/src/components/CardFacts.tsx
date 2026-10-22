@@ -41,7 +41,7 @@ export default function CardFacts({ card }: CardFactsProps) {
               key={cell.label}
               className={`mobile-fact-card flex ${i === 1 ? 'items-start text-left' : 'items-center text-center'} gap-3 p-5 md:flex-col md:bg-transparent md:rounded-none md:shadow-none md:px-9 md:py-4 ${i < 2 ? 'md:border-b-0 md:border-r' : ''} border-[var(--cl-hairline-strong)]`}
             >
-              <span className="mobile-fact-icon hidden shrink-0 rounded-full bg-[#F5F5F7] text-black">{cell.icon}</span>
+              <span className="mobile-fact-icon hidden shrink-0 rounded-full bg-[#F5F5F7] text-[var(--cl-ink)]">{cell.icon}</span>
               <span className={`min-w-0 flex-1 ${i === 1 ? '' : 'md:flex-none'}`}>
                 <span className="font-display text-[10px] font-medium uppercase tracking-[0.15em] text-[var(--cl-muted)]">{cell.label}</span>
                 {cell.rewards && rewardsBullets.length >= 1 ? (
@@ -54,10 +54,10 @@ export default function CardFacts({ card }: CardFactsProps) {
                     ))}
                   </ul>
                 ) : (
-                  <p className="mt-2 text-[13px] text-black leading-relaxed max-w-[52ch] [overflow-wrap:anywhere]">{cell.value}</p>
+                  <p className="mt-2 text-[13px] text-[var(--cl-ink)] leading-relaxed max-w-[52ch] [overflow-wrap:anywhere]">{cell.value}</p>
                 )}
               </span>
-              <ChevronDown className="mobile-fact-chevron hidden h-5 w-5 shrink-0 text-black" strokeWidth={1.8} />
+              <ChevronDown className="mobile-fact-chevron hidden h-5 w-5 shrink-0 text-[var(--cl-ink)]" strokeWidth={1.8} />
             </div>
           ))}
         </div>

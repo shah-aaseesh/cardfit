@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
-import { ChevronLeft, ChevronRight, ChevronDown, Sparkles, Plus, X, ArrowUpRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ChevronDown, Sparkles, Plus, X, ArrowUpRight, ShieldCheck, Receipt, Scale, Coins } from 'lucide-react';
 import CardVisual from './CardVisual';
 import CardFacts from './CardFacts';
 import BubbleFilters from './BubbleFilters';
@@ -10,6 +10,8 @@ import { describeFilters } from '../lib/filters';
 import { fetchAdvisorNote, advisorEnabled } from '../lib/advisor';
 import { pushRecentlyViewed } from '../lib/recentlyViewed';
 import CardInsightsPanel from './CardInsightsPanel';
+import ValueBlock from './ValueBlock';
+import { MonthlySpend } from '../lib/insights';
 import { useCards } from '../hooks/useCards';
 import { CreditCard } from '../types';
 
@@ -23,7 +25,23 @@ const PROVIDER_LABELS: Record<string, string> = {
 const providerLabel = (p: string) =>
   PROVIDER_LABELS[p] ?? p.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 
-const FEATURED_CARD_NAME = 'Costco Anywhere Visa® Card by Citi';
+// Landing-page trust strip. Every claim must stay literally true of the
+// product: no issuer pays for placement (there are no affiliate links), and
+// no credit data is ever requested.
+const TRUST_POINTS = [
+  { icon: ShieldCheck, title: 'No credit check', body: 'Seeing your matches never touches your credit score.' },
+  { icon: Receipt, title: 'Fees counted, not hidden', body: 'Every estimate subtracts the annual fee before you see it.' },
+  { icon: Scale, title: 'Not paid to rank', body: 'No card issuer pays for placement or a better spot.' },
+  { icon: Coins, title: 'Honest point values', body: 'Points and miles are valued conservatively, not at best-case.' },
+];
+
+const RANK_STEPS = [
+  { title: 'Your spending', body: 'Groceries, dining, gas, travel and everything else, in your own monthly dollars.' },
+  { title: 'Dollars after fees', body: 'Each card’s rewards on that spending, plus any bonus, minus its annual fee.' },
+  { title: 'Fit for you', body: 'Approval odds for your credit and what your current cards already cover.' },
+];
+
+const FEATURED_CARD_NAME ='Costco Anywhere Visa® Card by Citi';
 
 interface CardCarouselProps {
   watchlist: string[];
@@ -36,12 +54,14 @@ interface CardCarouselProps {
   onBrowseAll: () => void;
   startWithResults?: boolean;
   onIntroComplete?: () => void;
+  /** Opens the Find My Card quiz (the landing page's primary action). */
+  onFindMatches?: () => void;
 }
 
 export default function CardCarousel({
   watchlist, setWatchlist,
   filters: activeFilters, setFilters: setActiveFilters,
-  ownedCards, matchMode, matchAnswers, onBrowseAll, startWithResults = false, onIntroComplete,
+  ownedCards, matchMode, matchAnswers, onBrowseAll, startWithResults = false, onIntroComplete, onFindMatches,
 }: CardCarouselProps) {
   const { cards: allCards } = useCards();
   const [cards, setCards] = useState<CreditCard[]>(allCards);
@@ -55,6 +75,13 @@ export default function CardCarousel({
   // The query submitted on the landing hero, carried into the results bar.
   const [lastQuery, setLastQuery] = useState('');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  // The quiz's monthly spend answers, when there are any, personalise the
+  // value estimate; otherwise ValueBlock uses typical spending.
+  const userSpend = useMemo(() => {
+    const raw = matchAnswers?.spend;
+    if (!raw || typeof raw !== 'object') return undefined;
+    return raw as MonthlySpend;
+  }, [matchAnswers]);
   // Landing state: on first load show only the centered search + filters; the
   // deck appears once the user searches or picks a filter.
   const [started, setStarted] = useState(startWithResults);
@@ -169,12 +196,32 @@ export default function CardCarousel({
   // Landing hero: nothing but the search, centered on the page.
   if (!showResults) {
     return (
-      <section className="compare-light relative w-full min-h-screen flex flex-col items-center justify-center px-6 sm:px-12 lg:px-24 bg-[var(--cl-bg)]">
-        <div className="w-full max-w-4xl flex flex-col items-center gap-7 mt-6">
+      <section className="compare-light cards-page relative w-full flex flex-col items-center px-6 pt-32 pb-20 sm:px-12 md:pt-40 lg:px-24">
+        <div className="w-full max-w-4xl flex flex-col items-center gap-8">
+          {/* The promise, in the user's terms: money back, after fees. */}
           <div className="text-center">
-            <h1 className="font-display font-semibold text-4xl md:text-5xl text-[var(--cl-ink)] text-balance">Find what fits you best</h1>
-            <p className="mt-3 text-[var(--cl-muted)]">Describe your ideal card to begin.</p>
+            <p className="inline-flex items-center gap-2 rounded-full border border-[var(--cl-hairline)] bg-[var(--cl-surface)] px-3.5 py-1.5 text-xs font-medium text-[var(--cl-muted)]">
+              <ShieldCheck className="h-3.5 w-3.5 text-[var(--cl-value)]" aria-hidden="true" />
+              Independent · No sign-up · No credit check
+            </p>
+            <h1 className="mt-6 font-editorial text-[clamp(2.6rem,6vw,4.6rem)] leading-[1.02] text-[var(--cl-ink)] text-balance">
+              Find the card that <em className="text-[var(--cl-value)]">actually</em> pays you back.
+            </h1>
+            <p className="mx-auto mt-5 max-w-xl text-base md:text-lg text-[var(--cl-muted)] text-balance">
+              Tell us how you spend. We rank {allCards.length} cards from {providers.length} major issuers by what each is worth to you in dollars a year — after fees.
+            </p>
           </div>
+
+          <div className="flex flex-col items-center gap-3 sm:flex-row">
+            <button
+              onClick={onFindMatches}
+              className="h-12 px-7 rounded-full bg-[var(--cl-pill)] text-[var(--cl-pill-ink)] font-semibold flex items-center gap-2 shadow-[0_14px_30px_-18px_oklch(0.27_0.06_262/0.8)] hover:opacity-95 transition-opacity"
+            >
+              Get my matches <span className="font-normal opacity-70">· 2 min</span> <ChevronRight className="h-4 w-4" />
+            </button>
+            <span className="text-sm text-[var(--cl-muted)]">or search below</span>
+          </div>
+
           <AISearchBar
             submitOnly
             onQueryChange={setLastQuery}
@@ -207,12 +254,40 @@ export default function CardCarousel({
             }
           />
         </div>
+
+        {/* Trust strip: the four worries people bring to card shopping, each
+            answered with something this product actually does. */}
+        <ul className="mt-16 grid w-full max-w-5xl gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {TRUST_POINTS.map(({ icon: Icon, title, body }) => (
+            <li key={title} className="rounded-2xl border border-[var(--cl-hairline)] bg-[var(--cl-surface)] p-5">
+              <Icon className="h-5 w-5 text-[var(--cl-value)]" aria-hidden="true" />
+              <p className="mt-3 font-semibold text-[var(--cl-ink)]">{title}</p>
+              <p className="mt-1 text-sm leading-relaxed text-[var(--cl-muted)]">{body}</p>
+            </li>
+          ))}
+        </ul>
+
+        {/* How we rank: the method in three plain steps. */}
+        <div className="mt-20 w-full max-w-5xl">
+          <h2 className="text-center font-editorial text-3xl md:text-4xl text-[var(--cl-ink)]">How we rank cards</h2>
+          <ol className="mt-8 grid gap-6 md:grid-cols-3">
+            {RANK_STEPS.map((step, i) => (
+              <li key={step.title} className="flex gap-4">
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[var(--cl-pill)] text-sm font-semibold text-[var(--cl-pill-ink)]">{i + 1}</span>
+                <div>
+                  <p className="font-semibold text-[var(--cl-ink)]">{step.title}</p>
+                  <p className="mt-1 text-sm leading-relaxed text-[var(--cl-muted)]">{step.body}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
       </section>
     );
   }
 
   return (
-    <section className="compare-light cards-page relative w-full min-h-screen pt-[7.6rem] pb-8 flex flex-col items-center bg-[var(--cl-bg)] md:pt-[clamp(4.25rem,7vh,6.1rem)] md:pb-[clamp(12rem,24vh,15.5rem)]">
+    <section className="compare-light cards-page relative w-full min-h-screen pt-[7.6rem] pb-8 flex flex-col items-center bg-[var(--cl-bg)] md:pt-[clamp(4.25rem,7vh,6.1rem)] md:pb-0">
       {matchMode && (
         <div className="relative z-20 w-full flex flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 text-center mb-8 md:mb-10">
           <h2 className="font-display font-semibold text-3xl md:text-4xl text-[var(--cl-ink)]">Your best matches</h2>
@@ -407,11 +482,11 @@ export default function CardCarousel({
                 carousel control row beneath the card. */}
             <div className="w-full flex justify-center px-2">
               <div className="text-center">
-                <p className="font-display text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--cl-gold)] mb-2">{activeCard.issuer}</p>
-                <h1 className="font-display font-semibold text-[clamp(1.45rem,1.78vw,1.88rem)] leading-[1.07] text-black text-balance">{activeCard.name}</h1>
+                <p className="font-display text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--cl-muted)] mb-2">{activeCard.issuer}</p>
+                <h1 className="font-editorial text-[clamp(1.9rem,2.6vw,2.6rem)] leading-[1.05] text-[var(--cl-ink)] text-balance">{activeCard.name}</h1>
                 {ranked && (
-                  <p className="mt-3 text-sm text-[var(--cl-muted)]">
-                    <span className="text-[var(--cl-gold)]">#{currentIndex + 1}</span> {rankLabel}
+                  <p className="mt-3 inline-flex items-center gap-2 rounded-full border border-[var(--cl-hairline)] bg-[var(--cl-surface)] px-3 py-1 text-xs text-[var(--cl-muted)]">
+                    <span className="font-semibold text-[var(--cl-ink)]">#{currentIndex + 1}</span> {rankLabel}
                   </p>
                 )}
               </div>
@@ -428,6 +503,9 @@ export default function CardCarousel({
             ) : null}
           </motion.div>
         </AnimatePresence>
+
+        {/* The headline number: this card's value to the user, fee included. */}
+        <ValueBlock card={activeCard} spend={userSpend} />
 
         <div className="w-full lg:hidden">
           <CardInsightsPanel card={activeCard} whyBullets={activeWhy} />
@@ -486,7 +564,7 @@ export default function CardCarousel({
           Small top gap (less padding before the search bar); the section's
           pb-8 plus the natural bottom slack open the space below it. */}
       {!matchMode && (
-        <div className="cards-bottom-dock z-40 mt-8 hidden w-full flex-col items-center gap-3 md:absolute md:left-0 md:right-0 md:mt-0 md:flex">
+        <div className="cards-bottom-dock z-40 mt-10 hidden w-full flex-col items-center gap-3 md:sticky md:bottom-0 md:flex">
           <div className="w-full px-4">
             <AISearchBar
               compact

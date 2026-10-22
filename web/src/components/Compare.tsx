@@ -187,7 +187,7 @@ export default function Compare({ watchlist, setWatchlist, ownedCards, setOwnedC
               <div className="compare-shuffle absolute z-20">
                 <button
                   onClick={shuffleCards}
-                  className="inline-flex h-[42px] items-center gap-2.5 rounded-full border border-[var(--compare-border)] bg-white px-5 text-[13px] font-semibold text-[var(--compare-text)] shadow-[0_18px_44px_-34px_rgb(17_17_20_/_0.38),inset_0_1px_0_rgb(255_255_255_/_0.92)] hover:bg-[#F5F5F5] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--compare-orange)]/22"
+                  className="inline-flex h-[42px] items-center gap-2.5 rounded-full border border-[var(--compare-border)] bg-[var(--surface)] px-5 text-[13px] font-semibold text-[var(--compare-text)] shadow-[0_18px_44px_-34px_rgb(17_17_20_/_0.38),inset_0_1px_0_rgb(255_255_255_/_0.92)] hover:bg-[var(--compare-bg)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--compare-orange)]/22"
                 >
                   <Shuffle className="w-[15px] h-[15px]" />
                   Shuffle
@@ -236,7 +236,7 @@ export default function Compare({ watchlist, setWatchlist, ownedCards, setOwnedC
               initial={reduce ? false : { opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: reduce ? 0 : 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="overflow-hidden rounded-[1.6rem] border border-[var(--cl-hairline-strong)] bg-white p-3 shadow-[0_34px_90px_-58px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.85)] md:grid md:grid-cols-2 md:gap-0 md:divide-x md:divide-[var(--cl-hairline-strong)] md:items-stretch md:[grid-template-rows:repeat(9,auto)]"
+              className="overflow-hidden rounded-[1.6rem] border border-[var(--cl-hairline-strong)] bg-[var(--surface)] p-3 shadow-[0_34px_90px_-58px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.85)] md:grid md:grid-cols-2 md:gap-0 md:divide-x md:divide-[var(--cl-hairline-strong)] md:items-stretch md:[grid-template-rows:repeat(9,auto)]"
             >
               <CompareColumn
                 card={cardAt(0)}
@@ -388,8 +388,8 @@ function TiltedSlot({ side, tilt, onClick, onDrop }: { side: 'left' | 'right'; t
       <span className="compare-3d-depth" aria-hidden="true" />
       <span className="compare-3d-face absolute inset-[1px] rounded-[calc(var(--compare-panel-radius)-1px)]" aria-hidden="true" />
       <span className="compare-3d-rim" aria-hidden="true" />
-      <span className={`compare-3d-dropzone absolute rounded-[1.55rem] border border-dashed ${left ? 'border-[#767676]/30' : 'border-[#9D9D9D]/32'}`} />
-      <span className={`compare-3d-add relative z-10 grid h-[4.1rem] w-[4.1rem] place-items-center rounded-full border ${left ? 'border-[#767676]/18 text-[#767676]' : 'border-[#9D9D9D]/20 text-[#828282]'} transition-colors`}>
+      <span className={`compare-3d-dropzone absolute rounded-[1.55rem] border border-dashed ${left ? 'border-[var(--compare-orange)]/30' : 'border-[var(--compare-violet)]/32'}`} />
+      <span className={`compare-3d-add relative z-10 grid h-[4.1rem] w-[4.1rem] place-items-center rounded-full border ${left ? 'border-[var(--compare-orange)]/18 text-[var(--compare-orange)]' : 'border-[var(--compare-violet)]/20 text-[var(--compare-violet)]'} transition-colors`}>
         <Plus className="w-7 h-7" strokeWidth={1.7} />
       </span>
       <span className="relative z-10 mt-3 font-semibold text-[var(--compare-text)] text-[20px]">Select a card</span>
@@ -419,7 +419,7 @@ function CompareColumn({
           onDragOver={(e) => e.preventDefault()}
           onDrop={onDrop}
           aria-label="Select a card to compare"
-          className="w-[320px] h-[202px] md:w-full md:h-full rounded-[0.9rem] border border-dashed border-[var(--cl-hairline-strong)] bg-white flex flex-col items-center justify-center gap-2.5 text-[var(--cl-muted)] hover:border-[var(--cl-ink)] hover:bg-[#F5F5F5] hover:text-[var(--cl-ink)] transition-colors"
+          className="w-[320px] h-[202px] md:w-full md:h-full rounded-[0.9rem] border border-dashed border-[var(--cl-hairline-strong)] bg-[var(--surface)] flex flex-col items-center justify-center gap-2.5 text-[var(--cl-muted)] hover:border-[var(--cl-ink)] hover:bg-[var(--compare-bg)] hover:text-[var(--cl-ink)] transition-colors"
         >
           <Plus className="w-7 h-7" strokeWidth={1.25} />
           <span className="font-medium text-[var(--cl-ink)]">Select a card</span>
@@ -443,7 +443,7 @@ function CompareColumn({
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
           <p className="mt-1.5 font-display text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--cl-muted)]">{card.issuer}</p>
-          <h2 className="mt-2 font-display font-semibold text-[1.25rem] md:text-[1.55rem] text-black leading-[1.1] text-balance">
+          <h2 className="mt-2 font-display font-semibold text-[1.25rem] md:text-[1.55rem] text-[var(--compare-text)] leading-[1.1] text-balance">
             {card.name}
           </h2>
           <div className="mt-3 h-[2px] w-10 rounded-full bg-[var(--cl-gold)]" />
@@ -644,13 +644,13 @@ function VerticalRail({
         onClick={() => setOpen(true)}
         aria-expanded={false}
         aria-label={`Expand ${label}`}
-        className="compare-sidebar-tile shrink-0 flex h-[58px] w-[150px] flex-row items-center justify-between gap-2 px-[10px] text-[var(--compare-muted)] hover:bg-white transition-colors"
+        className="compare-sidebar-tile shrink-0 flex h-[58px] w-[150px] flex-row items-center justify-between gap-2 px-[10px] text-[var(--compare-muted)] hover:bg-[var(--surface)] transition-colors"
       >
         <span className="text-[13px] font-medium whitespace-nowrap flex items-center gap-2.5">
           <span className="text-[var(--compare-text)]">{icon}</span>
           <span className="text-[var(--compare-text)]">{label}</span>
         </span>
-        <span className="grid h-[24px] min-w-[24px] place-items-center rounded-full bg-[#F3F3F3] px-1.5 text-[12px] font-semibold text-[var(--compare-text)] shadow-[inset_0_1px_0_rgb(255_255_255_/_0.95)]">{known.length}</span>
+        <span className="grid h-[24px] min-w-[24px] place-items-center rounded-full bg-[var(--compare-peach)] px-1.5 text-[12px] font-semibold text-[var(--compare-text)] shadow-[inset_0_1px_0_rgb(255_255_255_/_0.95)]">{known.length}</span>
       </button>
     );
   }
@@ -711,7 +711,7 @@ function Rail({
   const [open, setOpen] = useState(false);
   const known = ids.filter((id) => allCards.some((c) => c.id === id));
   return (
-    <div className="rounded-2xl border border-[var(--cl-hairline-strong)] bg-white px-4 py-3 min-w-0 shadow-[0_16px_40px_-34px_rgba(0,0,0,0.42)]">
+    <div className="rounded-2xl border border-[var(--cl-hairline-strong)] bg-[var(--surface)] px-4 py-3 min-w-0 shadow-[0_16px_40px_-34px_rgba(0,0,0,0.42)]">
       <button
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}

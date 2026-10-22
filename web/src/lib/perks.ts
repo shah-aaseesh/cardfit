@@ -79,6 +79,30 @@ function perksFromRates(card: CreditCard): CardPerks | null {
   return { currency: cashSignals >= pointSignals ? 'cashback' : 'points', rates };
 }
 
+// Co-brand partners. A tier that names the card's *own* brand ("18.5X total
+// points at hotels participating in Marriott Bonvoy", "2 miles on United
+// purchases") only earns at that brand, so it must not credit the generic
+// travel/dining category — otherwise every hotel card looked like a 14-18%
+// travel card. We don't know a user's brand loyalty, so these are left out
+// of the dollar estimate rather than guessed.
+const CO_BRANDS = /marriott|bonvoy|hilton|hyatt|\bihg\b|wyndham|choice privileges|united|delta|southwest|american airlines|aadvantage|alaska|hawaiian|jetblue|aer lingus|british airways|iberia|air france|\bklm\b|aeroplan|frontier|spirit|disney|amazon|costco|\brei\b|l\.l\.bean|cabela|bass pro|instacart|doordash|apple|target|walmart|lowe'?s|home depot|gm\b|pottery barn|williams sonoma|west elm|gap|old navy|banana republic|athleta/gi;
+
+/** The part of a tier that earns *outside* the card's own brand. Clauses
+ *  naming the brand are dropped and the rest kept, so "2X on Delta purchases
+ *  and at restaurants" still credits dining. */
+function generalScope(card: CreditCard, tier: string): string {
+  const own = new Set((card.name.match(CO_BRANDS) || []).map((b) => b.toLowerCase()));
+  if (!own.size) return tier;
+  const namesOwn = (part: string) => (part.match(CO_BRANDS) || []).some((b) => own.has(b.toLowerCase()));
+  if (!namesOwn(tier)) return tier;
+  // Split only where a new place begins ("…, and at restaurants", "plus on
+  // gas"), never inside a noun phrase like "hotels and resorts within Hilton".
+  return tier
+    .split(/,|\band (?=(?:at|on|in|for|with|most|select|participating)\b)|\bplus\b/i)
+    .filter((part) => !namesOwn(part))
+    .join(',');
+}
+
 function parsePerks(card: CreditCard): CardPerks {
   const fromRates = perksFromRates(card);
   if (fromRates) return fromRates;
@@ -111,6 +135,8 @@ function parsePerks(card: CreditCard): CardPerks {
     if (ROTATING_TIER.test(tier)) continue;
     // Portal-only (no "directly with airlines/hotels" alternative) earns nothing general.
     if (PORTAL_TIER.test(tier) && !/directly with/i.test(tier)) continue;
+    const scope = generalScope(card, tier);
+    if (!scope.trim()) continue;
 
     // A tier can span several categories ("5X points on dining, groceries,
     // and gas" credits all three). Rates on unrecognized categories
@@ -118,7 +144,7 @@ function parsePerks(card: CreditCard): CardPerks {
     // they never inflate a generic category.
     let matched = false;
     for (const cat of CATEGORIES) {
-      if (CATEGORY_WORDS[cat].test(tier)) {
+      if (CATEGORY_WORDS[cat].test(scope)) {
         rates[cat] = Math.max(rates[cat] ?? 0, value);
         matched = true;
       }
