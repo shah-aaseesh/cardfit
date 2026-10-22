@@ -3,93 +3,93 @@ import { Info } from 'lucide-react';
 import { CreditCard } from '../types';
 import { estimateValue, MonthlySpend, TYPICAL_SPEND } from '../lib/insights';
 
-// The headline of every card: what it's worth to *you* in dollars per year,
-// with the parts shown (rewards, bonus, fee). Research on how people choose
-// financial products points the same way every time — they pick on the deal,
-// they walk away from costs they didn't see coming, and they trust numbers
-// whose workings are visible. So the fee sits inside the number, not in a
-// footnote, and the estimate says what it's based on.
+// The headline of every card: what it's worth to *you* in dollars per year.
+// Styled as a solid brand "value card" — like the balance card in a banking
+// app — with the arithmetic written out as an equation underneath, so the
+// fee sits inside the number rather than in a footnote. People choose on the
+// deal, walk away from costs they didn't see coming, and trust numbers whose
+// workings are visible.
 
-const usd = (n: number) => `${n < 0 ? '−' : ''}$${Math.abs(Math.round(n)).toLocaleString()}`;
+const usd = (n: number) => `$${Math.abs(Math.round(n)).toLocaleString()}`;
 
 interface ValueBlockProps {
   card: CreditCard;
   spend?: MonthlySpend;
-  /** Always stack number over breakdown (narrow columns, e.g. beside the card). */
+  /** Narrow column (beside the card): equation wraps instead of one line. */
   stacked?: boolean;
   /** Cards the user already holds: rewards then count only what this card
    *  adds on top of them (the same basis the quiz ranks by). */
   owned?: CreditCard[];
 }
 
-export default function ValueBlock({ card, spend, stacked = false, owned = [] }: ValueBlockProps) {
-  const row = stacked ? "" : "md:flex-row md:items-center md:justify-between";
-  const left = stacked ? "text-left" : "text-center md:text-left";
-  const justify = stacked ? "justify-start" : "justify-center md:justify-start";
+export default function ValueBlock({ card, spend, owned = [] }: ValueBlockProps) {
   const v = useMemo(() => estimateValue(card, spend, owned), [card, spend, owned]);
-  // The headline is the exact number the card was ranked by.
-  const positive = v.average > 0;
   const monthlyTotal = Object.values(v.personalized ? { ...TYPICAL_SPEND, ...spend } : TYPICAL_SPEND)
     .reduce((a, b) => a + (b || 0), 0);
 
-  return (
-    <div className={`w-full ${stacked ? "" : "max-w-3xl"} rounded-3xl border border-[var(--cl-hairline)] bg-[var(--cl-surface)] px-5 py-5 md:px-8 md:py-6 shadow-[0_18px_40px_-32px_oklch(0.25_0.045_262/0.45)]`}>
-      <div className={`flex flex-col gap-5 ${row}`}>
-        <div className={left}>
-          <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[var(--cl-muted)]">
-            {v.incremental ? 'Extra value over your cards' : `Estimated value ${v.personalized ? 'for you' : 'on typical spending'}`}
-          </p>
-          <p className={`mt-1 flex items-baseline gap-1.5 ${justify}`}>
-            <span className={`font-editorial text-5xl md:text-6xl leading-none ${positive ? 'text-[var(--cl-value)]' : 'text-[var(--cl-caution)]'}`}>
-              {usd(v.average)}
-            </span>
-            <span className="text-sm text-[var(--cl-muted)]">/ year</span>
-          </p>
-          <p className="mt-1.5 text-sm text-[var(--cl-muted)]">
-            {!v.annualFeeKnown ? (
-              <span className="text-[var(--cl-caution)]">Before the annual fee — we couldn't confirm it, so check the issuer's site.</span>
-            ) : v.bonus > 0 ? (
-              <>
-                Averaged over 2 years: <span className="font-semibold text-[var(--cl-ink)]">{usd(v.firstYear)}</span> in year one,
-                then <span className="font-semibold text-[var(--cl-ink)]">{usd(v.everyYear)}</span>/yr
-              </>
-            ) : (
-              'Every year, after the annual fee'
-            )}
-          </p>
-        </div>
+  const label = v.incremental
+    ? 'Extra value over your cards'
+    : `Estimated value ${v.personalized ? 'for you' : 'on typical spending'}`;
 
-        {/* The workings: every part of the number, fee included. */}
-        <dl className={`grid grid-cols-3 gap-2 text-center ${stacked ? "" : "md:min-w-[22rem]"}`}>
-          <div className="rounded-2xl bg-[var(--cl-value-soft)] px-3 py-2.5">
-            <dt className="text-[11px] font-semibold uppercase tracking-wider text-[var(--cl-muted)]">{v.incremental ? 'Extra rewards' : 'Rewards'}</dt>
-            <dd className="mt-0.5 font-semibold text-[var(--cl-value)]">+{usd(v.rewards)}</dd>
+  return (
+    <div className="w-full">
+      {/* The value card: the number the card is ranked by, white on brand blue. */}
+      <div className="relative overflow-hidden rounded-[1.75rem] bg-[linear-gradient(135deg,oklch(0.55_0.23_262)_0%,oklch(0.46_0.24_268)_55%,oklch(0.38_0.20_275)_100%)] px-6 py-6 text-white shadow-[0_28px_50px_-28px_oklch(0.45_0.24_268/0.75)] md:px-8 md:py-7">
+        {/* Soft light + fine grid for depth, like a premium card face. */}
+        <div aria-hidden="true" className="pointer-events-none absolute -right-16 -top-24 h-64 w-64 rounded-full bg-white/15 blur-3xl" />
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.07] [background-image:linear-gradient(white_1px,transparent_1px),linear-gradient(90deg,white_1px,transparent_1px)] [background-size:28px_28px]" />
+
+        <div className="relative">
+          <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-white/75">{label}</p>
+          <p className="mt-2 flex items-baseline gap-2">
+            <span className="font-editorial text-6xl leading-none md:text-7xl">
+              {v.average < 0 ? '−' : ''}{usd(v.average)}
+            </span>
+            <span className="text-base text-white/75">/ year</span>
+          </p>
+          <p className="mt-2 text-sm text-white/80">
+            {!v.annualFeeKnown
+              ? "Before the annual fee — we couldn't confirm it, so check the issuer's site."
+              : v.bonus > 0
+                ? <>Averaged over 2 years: <b className="font-semibold text-white">{usd(v.firstYear)}</b> in year one, then <b className="font-semibold text-white">{v.everyYear < 0 ? '−' : ''}{usd(v.everyYear)}</b>/yr</>
+                : 'Every year, after the annual fee'}
+          </p>
+
+          {/* The workings, as an equation: rewards + bonus − fee. */}
+          <div className="mt-5 flex flex-wrap items-center gap-2 text-sm">
+            <Term sign="+" amount={usd(v.rewards)} label={v.incremental ? 'extra rewards' : 'rewards'} />
+            <Term sign="+" amount={usd(v.bonus / 2)} label={v.bonus > 0 ? `bonus (½ of ${usd(v.bonus)})` : 'bonus'} muted={v.bonus === 0} />
+            {v.annualFeeKnown
+              ? <Term sign="−" amount={usd(v.annualFee)} label="annual fee" cost={v.annualFee > 0} muted={v.annualFee === 0} />
+              : <Term sign="−" amount="?" label="fee not listed" cost />}
           </div>
-          <div className="rounded-2xl bg-[var(--cl-value-soft)] px-3 py-2.5">
-            <dt className="text-[11px] font-semibold uppercase tracking-wider text-[var(--cl-muted)]">Bonus</dt>
-            <dd className="mt-0.5 font-semibold text-[var(--cl-value)]">{v.bonus > 0 ? `+${usd(v.bonus)}` : '—'}</dd>
-          </div>
-          <div className={`rounded-2xl px-3 py-2.5 ${v.annualFee > 0 ? 'bg-[var(--cl-caution-soft)]' : 'bg-[var(--cl-panel)]'}`}>
-            <dt className="text-[11px] font-semibold uppercase tracking-wider text-[var(--cl-muted)]">Annual fee</dt>
-            <dd className={`mt-0.5 font-semibold ${v.annualFee > 0 ? 'text-[var(--cl-caution)]' : 'text-[var(--cl-ink)]'}`}>
-              {!v.annualFeeKnown ? 'Unknown' : v.annualFee > 0 ? `−${usd(v.annualFee)}` : '$0'}
-            </dd>
-          </div>
-        </dl>
+        </div>
       </div>
 
-      <div className={`mt-4 flex flex-col gap-1.5 border-t border-[var(--cl-hairline)] pt-3 text-xs text-[var(--cl-muted)] ${stacked ? "" : "md:flex-row md:items-start md:justify-between md:gap-6"}`}>
+      {/* Fine print sits outside the card, quiet. */}
+      <div className="mt-3 flex flex-col gap-1 px-1 text-xs leading-relaxed text-[var(--cl-muted)]">
         <p className="flex items-start gap-1.5">
-          <Info className="mt-px h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+          <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
           <span>
-            Estimate on {v.personalized ? 'your' : 'a typical'} ~${monthlyTotal.toLocaleString()}/month of spending{v.incremental ? ', counting only what beats your current cards' : ''}. Rewards rankings use this number, adjusted for approval odds.
-            Points are valued conservatively. Confirm terms with the issuer.
+            Based on {v.personalized ? 'your' : 'a typical'} ~${monthlyTotal.toLocaleString()}/month of spending
+            {v.incremental ? ', counting only what beats your current cards' : ''}. Points valued conservatively; confirm terms with the issuer.
           </span>
         </p>
-        <p className={stacked ? "" : "md:max-w-[19rem] md:text-right"}>
-          Carry a balance? Interest at 20%+ APR usually costs more than any card earns. Pay in full to keep these rewards.
-        </p>
+        <p className="pl-5">Carry a balance? At 20%+ APR, interest usually costs more than any card earns.</p>
       </div>
     </div>
+  );
+}
+
+function Term({ sign, amount, label, cost, muted }: { sign: string; amount: string; label: string; cost?: boolean; muted?: boolean }) {
+  return (
+    <span
+      className={`inline-flex items-baseline gap-1.5 rounded-full px-3 py-1.5 ring-1 ${
+        cost ? 'bg-amber-300/20 ring-amber-200/40' : 'bg-white/12 ring-white/20'
+      } ${muted ? 'opacity-60' : ''}`}
+    >
+      <span className={`font-semibold ${cost ? 'text-amber-200' : 'text-white'}`}>{sign}{amount}</span>
+      <span className="text-white/75">{label}</span>
+    </span>
   );
 }

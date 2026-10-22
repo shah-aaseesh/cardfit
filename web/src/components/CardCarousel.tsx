@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
-import { ChevronLeft, ChevronRight, ChevronDown, Sparkles, Plus, X, ArrowUpRight, ShieldCheck, Receipt, Scale, Coins } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ChevronDown, Sparkles, Plus, X, ArrowUpRight, ShieldCheck, Receipt, Scale, Coins, Trophy } from 'lucide-react';
 import CardVisual from './CardVisual';
 import CardFacts from './CardFacts';
 import BubbleFilters from './BubbleFilters';
@@ -42,7 +42,6 @@ const RANK_STEPS = [
   { title: 'Fit for you', body: 'Harder-to-get cards count for less, and only rewards your current cards don’t already earn count.' },
 ];
 
-const FEATURED_CARD_NAME ='Costco Anywhere Visa® Card by Citi';
 
 interface CardCarouselProps {
   watchlist: string[];
@@ -112,11 +111,8 @@ export default function CardCarousel({
   useEffect(() => {
     const pool = providerFilter === 'all' ? allCards : allCards.filter((c) => c.provider === providerFilter);
     const result = buildDeck(pool, activeFilters, ownedCards, matchMode, matchAnswers);
-    const featured = pool.find((card) => card.name.includes(FEATURED_CARD_NAME));
-    const deck = (!matchMode && activeFilters.length === 0 && providerFilter === 'all' && featured)
-      ? [featured, ...result.deck.filter((card) => card.id !== featured.id)]
-      : result.deck;
-    setCards(deck);
+    // No pinned "featured" card: the site promises nobody pays for placement.
+    setCards(result.deck);
     setRanked(result.ranked);
     setComplement(result.complement);
     setAboveLimit(result.aboveAnnualFeeLimit?.map((r) => r.card) || []);
@@ -224,8 +220,9 @@ export default function CardCarousel({
           <p className="font-display text-[12px] font-bold uppercase tracking-[0.14em] text-[var(--cl-muted)] mb-2">{activeCard.issuer}</p>
           <h1 className="font-editorial text-[clamp(1.9rem,2.6vw,2.75rem)] leading-[1.05] text-[var(--cl-ink)] text-balance">{activeCard.name}</h1>
           {ranked && (
-            <p className="mt-3 inline-flex items-center gap-2 rounded-full border border-[var(--cl-hairline)] bg-[var(--cl-surface)] px-3 py-1 text-xs text-[var(--cl-muted)]">
-              <span className="font-semibold text-[var(--cl-ink)]">#{currentIndex + 1}</span> {rankLabel}
+            <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-[var(--cl-brand-soft)] px-3 py-1.5 text-xs font-medium text-[var(--cl-brand)]">
+              <Trophy className="h-3.5 w-3.5" aria-hidden="true" />
+              <span className="font-bold">#{currentIndex + 1}</span> {rankLabel}
             </p>
           )}
           {advisorLoading ? (
@@ -530,12 +527,15 @@ export default function CardCarousel({
           {renderIdentity(false)}
         </div>
 
-        <div className="w-full max-w-6xl border-t border-[var(--cl-hairline)] pt-8">
+        {/* The details, gathered into one soft panel so they read as a single,
+            tidy section rather than text floating between hairlines. */}
+        <section className="w-full max-w-6xl rounded-[1.75rem] bg-[var(--cl-panel)] px-5 py-7 md:px-10 md:py-9">
+          <h2 className="mb-6 font-editorial text-2xl text-[var(--cl-ink)] md:text-3xl">The fine print</h2>
           <CardInsightsPanel card={activeCard} whyBullets={activeWhy} />
-        </div>
-
-        {/* Headline facts: Annual Fee · Rewards · Sign-up Bonus */}
-        <CardFacts card={activeCard} />
+          <div className="mt-8 border-t border-[var(--cl-hairline-strong)] pt-6 -mx-4 md:mx-0">
+            <CardFacts card={activeCard} />
+          </div>
+        </section>
       </div>
       </div>
 
