@@ -336,14 +336,11 @@ body {
 }
 
 .compare-sidebar-tile {
-  border-radius: 10px;
-  border: 1px solid rgba(203, 205, 211, 0.92);
-  background:
-    linear-gradient(180deg, rgba(255,255,255,0.90), rgba(239,240,243,0.76)),
-    rgba(245,245,247,0.72);
-  box-shadow:
-    0 22px 52px -42px rgba(17,17,20,0.44),
-    inset 0 1px 0 rgba(255,255,255,0.94);
+  /* Sticker style, matching the rest of the site. */
+  border-radius: 14px;
+  border: 2px solid #141414;
+  background: #ffffff;
+  box-shadow: 3px 3px 0 #141414;
   backdrop-filter: none;
 }
 

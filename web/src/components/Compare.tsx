@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
-import { X, Search, Shuffle, Wallet, Bookmark, Check, Minus, ArrowUpRight, Plus, ChevronDown, ChevronLeft, Columns2, Calculator, Receipt } from 'lucide-react';
+import { X, Search, Shuffle, Wallet, Bookmark, Check, Minus, ArrowUpRight, Plus, ChevronDown, ChevronLeft, Columns2, Calculator, Receipt, Trophy, ArrowLeftRight } from 'lucide-react';
 import { useCards } from '../hooks/useCards';
 import { estimateValue } from '../lib/insights';
 import CardVisual from './CardVisual';
@@ -178,7 +178,9 @@ export default function Compare({ watchlist, setWatchlist, ownedCards, setOwnedC
         />
       </aside>
 
-      <div className="compare-workspace w-full mx-auto lg:ml-[var(--compare-sidebar-width)]">
+      {/* lg:pr-10 keeps a right gutter: the workspace spans to the viewport
+          edge, which clipped the comparison's outline and sticker shadow. */}
+      <div className="compare-workspace w-full mx-auto lg:ml-[var(--compare-sidebar-width)] lg:pr-10">
         <div className="min-w-0">
           {!hasBoth ? (
             /* Hero empty state: headline + porcelain slots (a filled slot
@@ -188,7 +190,7 @@ export default function Compare({ watchlist, setWatchlist, ownedCards, setOwnedC
               <div className="compare-shuffle absolute z-20">
                 <button
                   onClick={shuffleCards}
-                  className="inline-flex h-[42px] items-center gap-2.5 rounded-full border border-[var(--compare-border)] bg-[var(--surface)] px-5 text-[14px] font-semibold text-[var(--compare-text)] shadow-[0_18px_44px_-34px_rgb(17_17_20_/_0.38),inset_0_1px_0_rgb(255_255_255_/_0.92)] hover:bg-[var(--compare-bg)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--compare-orange)]/22"
+                  className="pop-sm pop-lift inline-flex h-[42px] items-center gap-2.5 rounded-full bg-white px-5 text-[14px] font-bold text-[var(--cl-ink)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cl-brand)]/40"
                 >
                   <Shuffle className="w-[15px] h-[15px]" />
                   Shuffle
@@ -202,59 +204,48 @@ export default function Compare({ watchlist, setWatchlist, ownedCards, setOwnedC
                 <h1 className="compare-typewriter" aria-label="Find your perfect match">
                   <span aria-hidden="true">Find your perfect match</span>
                 </h1>
-                <p className="compare-subtitle">Compare rewards, fees, and benefits side-by-side<br />to make the best choice.</p>
+                <p className="compare-subtitle">Compare rewards, fees, and benefits side-by-side{' '}<br />to make the best choice.</p>
               </section>
 
               <div className="relative z-10 flex flex-col items-center">
-                <div className="compare-stage-scene relative flex w-full items-center justify-center px-5 xl:flex-row xl:[perspective:1200px]">
-                  <div className="compare-floor-plane" aria-hidden="true">
-                    <span />
-                    <span />
-                    <span />
-                  </div>
-                  <div className="compare-orbit" aria-hidden="true" />
-                  <div className="compare-dust" aria-hidden="true" />
-                  <HeroSlot
-                    card={cardAt(0)}
-                    side="left"
-                    tilt="relative z-10 xl:[transform:perspective(1100px)_rotateZ(3deg)_rotateY(-12deg)_rotateX(1.6deg)]"
-                    onClick={() => openSearch(0)}
-                    onRemove={() => removeSlot(0)}
-                    onDrop={(e) => handleDrop(e, 0)}
-                  />
-                  <HeroSlot
-                    card={cardAt(1)}
-                    side="right"
-                    tilt="relative z-10 xl:[transform:perspective(1100px)_rotateZ(-3deg)_rotateY(12deg)_rotateX(1.6deg)]"
-                    onClick={() => openSearch(1)}
-                    onRemove={() => removeSlot(1)}
-                    onDrop={(e) => handleDrop(e, 1)}
-                  />
+                {/* Two flat sticker slots with a VS badge between — symmetric. */}
+                <div className="mt-10 flex w-full flex-col items-center justify-center gap-6 px-2 md:flex-row md:gap-4">
+                  <HeroSlot card={cardAt(0)} side="left" onClick={() => openSearch(0)} onRemove={() => removeSlot(0)} onDrop={(e) => handleDrop(e, 0)} />
+                  <span className="pop z-10 grid h-16 w-16 shrink-0 -rotate-6 place-items-center rounded-full bg-[var(--cl-sun)] font-editorial text-2xl text-[var(--cl-ink)]" aria-hidden="true">VS</span>
+                  <HeroSlot card={cardAt(1)} side="right" onClick={() => openSearch(1)} onRemove={() => removeSlot(1)} onDrop={(e) => handleDrop(e, 1)} />
                 </div>
                 <CompareFeatures />
               </div>
             </div>
           ) : (
-            /* Editorial comparison: two cards side by side */
+            /* Head-to-head: the verdict first, then both cards side by side
+               with the better figure on each row marked. */
+            <>
+            <Verdict a={cardAt(0)!} b={cardAt(1)!} onSwap={() => setSlots(([x, y]) => [y, x])} onShuffle={shuffleCards} />
             <motion.div
               initial={reduce ? false : { opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: reduce ? 0 : 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="overflow-hidden rounded-[1.6rem] border border-[var(--cl-hairline-strong)] bg-[var(--surface)] p-3 shadow-[0_34px_90px_-58px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.85)] md:grid md:grid-cols-2 md:gap-0 md:divide-x md:divide-[var(--cl-hairline-strong)] md:items-stretch md:[grid-template-rows:repeat(10,auto)]"
+              className="pop overflow-hidden rounded-[1.75rem] bg-white p-3 md:grid md:grid-cols-2 md:gap-0 md:divide-x-2 md:divide-[var(--cl-ink)] md:items-stretch md:[grid-template-rows:repeat(10,auto)]"
             >
               <CompareColumn
                 card={cardAt(0)}
+                other={cardAt(1)}
+                side="A"
                 onDrop={(e) => handleDrop(e, 0)}
                 onOpenSearch={() => openSearch(0)}
                 onRemove={() => removeSlot(0)}
               />
               <CompareColumn
                 card={cardAt(1)}
+                other={cardAt(0)}
+                side="B"
                 onDrop={(e) => handleDrop(e, 1)}
                 onOpenSearch={() => openSearch(1)}
                 onRemove={() => removeSlot(1)}
               />
             </motion.div>
+            </>
           )}
         </div>
       </div>
@@ -274,7 +265,7 @@ export default function Compare({ watchlist, setWatchlist, ownedCards, setOwnedC
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.97, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-xl bg-[var(--cl-bg)] border border-[var(--cl-hairline)] rounded-2xl shadow-[0_24px_60px_-20px_rgba(0,0,0,0.35)] overflow-hidden flex flex-col max-h-[70vh]"
+              className="pop w-full max-w-xl bg-white rounded-2xl overflow-hidden flex flex-col max-h-[70vh]"
             >
               <div className="p-4 border-b border-[var(--cl-hairline)] flex items-center gap-3">
                 <Search className="w-5 h-5 text-[var(--cl-muted)]" />
@@ -328,32 +319,49 @@ export default function Compare({ watchlist, setWatchlist, ownedCards, setOwnedC
 function HeroSlot({
   card,
   side,
-  tilt,
   onClick,
   onRemove,
   onDrop,
 }: {
   card?: CreditCard;
   side: 'left' | 'right';
-  tilt: string;
   onClick: () => void;
   onRemove: () => void;
   onDrop: (e: React.DragEvent) => void;
 }) {
-  if (!card) return <TiltedSlot side={side} tilt={tilt} onClick={onClick} onDrop={onDrop} />;
+  const left = side === 'left';
+  const accent = left ? 'bg-[var(--cl-brand)] text-white' : 'bg-[var(--cl-coral)] text-[var(--cl-ink)]';
+  if (!card) {
+    return (
+      <button
+        onClick={onClick}
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={onDrop}
+        aria-label={`Select card ${left ? 'A' : 'B'} to compare`}
+        className="pop-lift group relative flex aspect-[1.586/1] w-full max-w-[21rem] flex-col items-center justify-center gap-2 rounded-[1.5rem] border-2 border-dashed border-[var(--cl-ink)] bg-white shadow-[4px_4px_0_var(--cl-ink)]"
+      >
+        <span className={`pop-sm absolute left-4 top-4 rounded-full px-2.5 py-0.5 text-xs font-bold ${accent}`}>Card {left ? 'A' : 'B'}</span>
+        <span className={`pop-sm grid h-14 w-14 place-items-center rounded-full ${accent}`}>
+          <Plus className="h-7 w-7" strokeWidth={2.4} />
+        </span>
+        <span className="mt-2 text-lg font-bold text-[var(--cl-ink)]">Pick a card</span>
+        <span className="text-sm text-[var(--cl-muted)]">or drag one from the side</span>
+      </button>
+    );
+  }
   return (
     <div
       onDragOver={(e) => e.preventDefault()}
       onDrop={onDrop}
-      className={`${tilt} compare-3d-panel compare-3d-panel-${side} relative h-[21rem] w-full max-w-[30rem] flex-1 overflow-hidden flex items-center justify-center shrink-0`}
+      className="relative aspect-[1.586/1] w-full max-w-[21rem] drop-shadow-[5px_5px_0_#141414]"
     >
       <CardVisual card={card} variant="fill" />
       <button
         onClick={onRemove}
         aria-label={`Remove ${card.name}`}
-        className="absolute top-2.5 right-2.5 z-10 grid place-items-center w-7 h-7 rounded-full bg-white/90 ring-1 ring-[var(--cl-hairline)] text-[var(--cl-muted)] hover:text-[var(--cl-ink)] transition-colors"
+        className="pop-sm absolute -right-2 -top-2 z-10 grid h-8 w-8 place-items-center rounded-full bg-white text-[var(--cl-ink)]"
       >
-        <X className="w-3.5 h-3.5" />
+        <X className="h-4 w-4" />
       </button>
     </div>
   );
@@ -381,37 +389,83 @@ function CompareFeatures() {
   );
 }
 
-function TiltedSlot({ side, tilt, onClick, onDrop }: { side: 'left' | 'right'; tilt: string; onClick: () => void; onDrop: (e: React.DragEvent) => void }) {
-  const left = side === 'left';
+// --- Verdict + winners ------------------------------------------------------
+
+const money = (n: number) => `${n < 0 ? '−' : ''}$${Math.abs(Math.round(n)).toLocaleString()}`;
+
+/** Per-row winners between two cards: higher value, lower fee, lower APR.
+ *  A row has no winner when either side is unknown or they tie. */
+function winners(card: CreditCard, other?: CreditCard) {
+  if (!other) return { value: false, fee: false, apr: false };
+  const va = estimateValue(card), vb = estimateValue(other);
+  const fa = feeParts(card.facts.annualFee).value, fb = feeParts(other.facts.annualFee).value;
+  const aa = aprParts(card.facts.apr).value, ab = aprParts(other.facts.apr).value;
+  const num = (x: string) => (/^[\d.,]+$/.test(x) ? parseFloat(x.replace(/,/g, '')) : NaN);
+  const lower = (x: number, y: number) => !Number.isNaN(x) && !Number.isNaN(y) && x < y;
+  return {
+    value: va.annualFeeKnown && vb.annualFeeKnown && va.average > vb.average,
+    fee: lower(num(fa), num(fb)),
+    apr: lower(num(aa), num(ab)),
+  };
+}
+
+function Verdict({ a, b, onSwap, onShuffle }: { a: CreditCard; b: CreditCard; onSwap: () => void; onShuffle: () => void }) {
+  const va = estimateValue(a), vb = estimateValue(b);
+  const comparable = va.annualFeeKnown && vb.annualFeeKnown;
+  const [win, lose, vw, vl] = va.average >= vb.average ? [a, b, va, vb] : [b, a, vb, va];
+  const diff = vw.average - vl.average;
   return (
-    <button
-      onClick={onClick}
-      onDragOver={(e) => e.preventDefault()}
-      onDrop={onDrop}
-      aria-label="Select a card to compare"
-      className={`${tilt} compare-3d-panel compare-3d-panel-${side} group relative flex shrink-0 flex-col items-center justify-center gap-2.5 overflow-visible text-[var(--compare-muted)] hover:text-[var(--compare-text)] transition-all duration-200 ease-out motion-reduce:transition-none`}
-    >
-      <span className="compare-3d-depth" aria-hidden="true" />
-      <span className="compare-3d-face absolute inset-[1px] rounded-[calc(var(--compare-panel-radius)-1px)]" aria-hidden="true" />
-      <span className="compare-3d-rim" aria-hidden="true" />
-      <span className={`compare-3d-dropzone absolute rounded-[1.55rem] border border-dashed ${left ? 'border-[var(--compare-orange)]/30' : 'border-[var(--compare-violet)]/32'}`} />
-      <span className={`compare-3d-add relative z-10 grid h-[4.1rem] w-[4.1rem] place-items-center rounded-full border ${left ? 'border-[var(--compare-orange)]/18 text-[var(--compare-orange)]' : 'border-[var(--compare-violet)]/20 text-[var(--compare-violet)]'} transition-colors`}>
-        <Plus className="w-7 h-7" strokeWidth={1.7} />
-      </span>
-      <span className="relative z-10 mt-3 font-semibold text-[var(--compare-text)] text-[20px]">Select a card</span>
-      <span className="relative z-10 text-[14px]">or drag one from the side</span>
-    </button>
+    <div className="pop relative mb-6 overflow-hidden rounded-[1.75rem] bg-[var(--cl-brand)] px-6 py-6 text-white md:px-8">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-20 [background-image:radial-gradient(white_1px,transparent_1.2px)] [background-size:20px_20px]" />
+      <div className="relative flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+        <div className="flex items-start gap-4">
+          <span className="pop-sm grid h-12 w-12 shrink-0 -rotate-6 place-items-center rounded-2xl bg-[var(--cl-sun)] text-[var(--cl-ink)]">
+            <Trophy className="h-6 w-6" />
+          </span>
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.14em] text-white">The verdict</p>
+            {!comparable ? (
+              <p className="mt-1 font-editorial text-2xl leading-tight md:text-3xl">Too close to call — one card's annual fee isn't listed.</p>
+            ) : Math.round(diff) === 0 ? (
+              <p className="mt-1 font-editorial text-2xl leading-tight md:text-3xl">A dead heat at about {money(vw.average)} a year each.</p>
+            ) : (
+              <p className="mt-1 font-editorial text-2xl leading-tight md:text-3xl">
+                {win.name} is worth about <span className="rounded-lg bg-[var(--cl-sun)] px-1.5 text-[var(--cl-ink)]">{money(diff)} more</span> a year.
+              </p>
+            )}
+            <p className="mt-2 text-sm text-white">
+              On typical spending, after fees, with welcome bonuses spread over two years{comparable && Math.round(diff) !== 0 ? ` (${money(vw.average)} vs ${money(vl.average)} for ${lose.name})` : ''}.
+            </p>
+          </div>
+        </div>
+        <div className="flex shrink-0 gap-2">
+          <button onClick={onSwap} className="pop-sm pop-lift inline-flex h-10 items-center gap-2 rounded-full bg-white px-4 text-sm font-bold text-[var(--cl-ink)]">
+            <ArrowLeftRight className="h-4 w-4" /> Swap
+          </button>
+          <button onClick={onShuffle} className="pop-sm pop-lift inline-flex h-10 items-center gap-2 rounded-full bg-white px-4 text-sm font-bold text-[var(--cl-ink)]">
+            <Shuffle className="h-4 w-4" /> Shuffle
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BetterTag() {
+  return (
+    <span className="pop-sm ml-2 inline-flex -rotate-3 items-center gap-1 rounded-full bg-[var(--cl-lime)] px-2 py-0.5 align-middle text-[11px] font-bold normal-case tracking-normal text-[var(--cl-ink)]">
+      <Check className="h-3 w-3" strokeWidth={3} /> Better
+    </span>
   );
 }
 
 // --- Value strip ------------------------------------------------------------
 
-function CompareValue({ card }: { card: CreditCard }) {
+function CompareValue({ card, best }: { card: CreditCard; best: boolean }) {
   const v = estimateValue(card);
-  const money = (n: number) => `${n < 0 ? '−' : ''}$${Math.abs(Math.round(n)).toLocaleString()}`;
   return (
     <div className="pop-sm mt-6 rounded-2xl bg-[var(--cl-sun)] px-5 py-4 text-[var(--cl-ink)]">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--cl-ink)]/70">Est. value on typical spending</p>
+      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--cl-ink)]/70">Est. value on typical spending{best && <BetterTag />}</p>
       <p className="mt-1 flex items-baseline gap-1.5">
         <span className="font-editorial text-4xl leading-none">{money(v.average)}</span>
         <span className="text-sm text-[var(--cl-ink)]/70">/ year</span>
@@ -427,11 +481,15 @@ function CompareValue({ card }: { card: CreditCard }) {
 
 function CompareColumn({
   card,
+  other,
+  side,
   onDrop,
   onOpenSearch,
   onRemove,
 }: {
   card?: CreditCard;
+  other?: CreditCard;
+  side: 'A' | 'B';
   onDrop: (e: React.DragEvent) => void;
   onOpenSearch: () => void;
   onRemove: () => void;
@@ -457,6 +515,7 @@ function CompareColumn({
   const fee = feeParts(card.facts.annualFee);
   const apr = aprParts(card.facts.apr);
   const rows = parity(card);
+  const best = winners(card, other);
 
   return (
     <div
@@ -467,11 +526,13 @@ function CompareColumn({
       {/* Masthead: identity + controls + product shot */}
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <p className="mt-1.5 font-display text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--cl-muted)]">{card.issuer}</p>
+          <p className="mt-1.5 flex items-center gap-2 font-display text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--cl-muted)]">
+            <span className={`pop-sm rounded-full px-2 py-0.5 text-[11px] font-bold normal-case tracking-normal ${side === 'A' ? 'bg-[var(--cl-brand)] text-white' : 'bg-[var(--cl-coral)] text-[var(--cl-ink)]'}`}>Card {side}</span>
+            {card.issuer}
+          </p>
           <h2 className="mt-2 font-display font-semibold text-[1.25rem] md:text-[1.55rem] text-[var(--compare-text)] leading-[1.1] text-balance">
             {card.name}
           </h2>
-          <div className="mt-3 h-[2px] w-10 rounded-full bg-[var(--cl-gold)]" />
         </div>
 
         <div className="flex flex-col items-end gap-3 shrink-0">
@@ -490,21 +551,19 @@ function CompareColumn({
               <X className="w-4 h-4" />
             </button>
           </div>
-          <div className="relative w-[126px] h-[80px] hidden md:block">
-            <div className="absolute top-0 left-0 origin-top-left scale-[0.3] pointer-events-none">
-              <CardVisual card={card} />
-            </div>
+          <div className="relative hidden aspect-[1.586/1] w-[150px] drop-shadow-[3px_3px_0_#141414] md:block">
+            <CardVisual card={card} variant="fill" />
           </div>
         </div>
       </div>
 
       {/* The same value number the rankings use, on the brand value card. */}
-      <CompareValue card={card} />
+      <CompareValue card={card} best={best.value} />
 
       {/* Hero stats: fee + APR share one row */}
       <div className="mt-7 grid grid-cols-2 divide-x divide-[var(--cl-hairline-strong)] border-y border-[var(--cl-hairline-strong)]">
-        <StatBig value={fee.value} unit={fee.unit} label="Annual Fee" />
-        <StatBig value={apr.value} unit={apr.unit} label="APR" />
+        <StatBig value={fee.value} unit={fee.unit} label="Annual Fee" best={best.fee} />
+        <StatBig value={apr.value} unit={apr.unit} label="APR" best={best.apr} />
       </div>
 
       {/* At-a-glance parity, two columns */}
@@ -538,7 +597,7 @@ function CompareColumn({
             href={card.applyUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-full bg-[var(--cl-pill)] text-[var(--cl-pill-ink)] px-6 py-3 text-[13px] font-semibold uppercase tracking-[0.12em] hover:opacity-90 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cl-ink)]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--cl-panel)]"
+            className="pop-sm pop-lift inline-flex items-center gap-2 rounded-full bg-[var(--cl-pill)] text-[var(--cl-pill-ink)] px-6 py-3 text-[13px] font-bold uppercase tracking-[0.12em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cl-brand)]/40"
           >
             Visit site <ArrowUpRight className="w-4 h-4" />
           </a>
@@ -550,14 +609,14 @@ function CompareColumn({
   );
 }
 
-function StatBig({ value, unit, label }: { value: string; unit: string | null; label: string }) {
+function StatBig({ value, unit, label, best }: { value: string; unit: string | null; label: string; best?: boolean }) {
   return (
     <div className="flex flex-col gap-1 py-4 px-4 first:pl-0 last:pr-0">
       <span className="font-mono text-3xl md:text-[2.15rem] leading-none tracking-tight text-[var(--cl-ink)] tabular-nums">
         {value}
         {unit && <sup className="text-[0.4em] font-medium ml-1 top-[-0.8em]">{unit}</sup>}
       </span>
-      <span className="text-[11px] uppercase tracking-wide text-[var(--cl-muted)]">{label}</span>
+      <span className="text-[11px] uppercase tracking-wide text-[var(--cl-muted)]">{label}{best && <BetterTag />}</span>
     </div>
   );
 }
