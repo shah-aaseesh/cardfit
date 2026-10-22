@@ -133,7 +133,7 @@ export default function AISearchBar({ onQueryChange, onFiltersParsed, onSubmit, 
           placeholder={value ? '' : placeholder + (reducedMotion.current ? '' : '|')}
           aria-label="Describe the card you're looking for"
           className={`flex-1 min-w-0 bg-transparent border-none outline-none text-[var(--cl-ink)] placeholder-[var(--cl-muted)] ${
-            compact ? 'text-[12px] py-1 pl-0.5 sm:text-[13px] md:text-[12px] md:py-0.5' : `text-[14px] py-1.5 sm:text-[15px] ${leftSlot ? 'pl-1' : 'pl-3'}`
+            compact ? 'text-[13px] py-1 pl-0.5 sm:text-[14px] md:text-[13px] md:py-0.5' : `text-[14px] py-1.5 sm:text-[15px] ${leftSlot ? 'pl-1' : 'pl-3'}`
           }`}
         />
         {value && (
@@ -169,7 +169,7 @@ export default function AISearchBar({ onQueryChange, onFiltersParsed, onSubmit, 
               key={example}
               type="button"
               onClick={() => setValue(example)}
-              className="text-left text-[13px] leading-snug text-[var(--cl-muted)] underline decoration-[var(--cl-hairline-strong)] underline-offset-4 transition-colors hover:text-[var(--cl-ink)]"
+              className="text-left text-[14px] leading-snug text-[var(--cl-muted)] underline decoration-[var(--cl-hairline-strong)] underline-offset-4 transition-colors hover:text-[var(--cl-ink)]"
             >
               {example}
             </button>

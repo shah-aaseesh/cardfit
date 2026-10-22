@@ -12,7 +12,7 @@
 // Every call degrades to a no-op when Supabase isn't configured, so the app
 // works identically on the committed snapshot with no backend.
 
-import { supabase } from './supabaseClient';
+import { getSupabase } from './supabaseClient';
 import { loadProfile, saveProfile, StoredProfile } from './profile';
 
 const emailKey = (email?: string) => (email || '').trim().toLowerCase();
@@ -37,7 +37,9 @@ function syncToken(create: boolean): string | undefined {
 export async function loadRemoteProfile(email: string): Promise<StoredProfile | null> {
   const key = emailKey(email);
   const token = syncToken(false);
-  if (!supabase || !key || !token) return null;
+  if (!key || !token) return null;
+  const supabase = await getSupabase();
+  if (!supabase) return null;
   try {
     const { data, error } = await supabase.rpc('get_user_profile', { p_email: key, p_token: token });
     if (error) return null;
@@ -59,7 +61,9 @@ export async function loadRemoteProfile(email: string): Promise<StoredProfile | 
  *  token. No-op without an email. */
 export async function saveRemoteProfile(p: StoredProfile): Promise<void> {
   const key = emailKey(p.email);
-  if (!supabase || !key) return;
+  if (!key) return;
+  const supabase = await getSupabase();
+  if (!supabase) return;
   try {
     await supabase.rpc('upsert_user_profile', {
       p_email: key,

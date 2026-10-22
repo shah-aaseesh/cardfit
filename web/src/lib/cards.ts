@@ -1,8 +1,9 @@
-import { supabase, isSupabaseConfigured } from './supabaseClient';
+import { getSupabase, isSupabaseConfigured } from './supabaseClient';
 import { mapRowToCard, CardRow } from './cardMapper';
 import { CreditCard } from '../types';
 
 export async function fetchCards(): Promise<CreditCard[]> {
+  const supabase = await getSupabase();
   if (!supabase) return [];
 
   const { data, error } = await supabase

@@ -193,6 +193,43 @@ export default function CardCarousel({
     }
   }, [cards, showResults]);
 
+  // Card identity + its value to the user. Desktop shows it beside the card
+  // (product-page layout: image left, name and "price" right) so the dollar
+  // figure is above the fold; phones stack it under the card.
+  const renderIdentity = (desktop: boolean) => activeCard && (
+    <div className={`w-full flex flex-col gap-5 ${desktop ? 'items-start' : 'items-center'}`}>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeCard.id}
+          initial={{ opacity: 0, y: reducedMotion ? 0 : 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, transition: { duration: 0.12 } }}
+          transition={{ duration: reducedMotion ? 0 : 0.3, ease: [0.16, 1, 0.3, 1] }}
+          className={`w-full ${desktop ? 'text-left' : 'text-center'}`}
+        >
+          <p className="font-display text-[12px] font-bold uppercase tracking-[0.14em] text-[var(--cl-muted)] mb-2">{activeCard.issuer}</p>
+          <h1 className="font-editorial text-[clamp(1.9rem,2.6vw,2.75rem)] leading-[1.05] text-[var(--cl-ink)] text-balance">{activeCard.name}</h1>
+          {ranked && (
+            <p className="mt-3 inline-flex items-center gap-2 rounded-full border border-[var(--cl-hairline)] bg-[var(--cl-surface)] px-3 py-1 text-xs text-[var(--cl-muted)]">
+              <span className="font-semibold text-[var(--cl-ink)]">#{currentIndex + 1}</span> {rankLabel}
+            </p>
+          )}
+          {advisorLoading ? (
+            <p className={`mt-3 flex items-center gap-2 text-xs text-[var(--cl-muted)] ${desktop ? '' : 'justify-center'}`}>
+              <Sparkles className="w-3.5 h-3.5 animate-pulse text-[var(--cl-gold)]" /> Analyzing your wallet…
+            </p>
+          ) : advisorNote ? (
+            <p className={`mt-3 max-w-md text-sm text-[var(--cl-ink)] leading-relaxed ${desktop ? '' : 'mx-auto'}`}>
+              <Sparkles className="inline w-3.5 h-3.5 text-[var(--cl-gold)] mr-1 align-[-0.15em]" />{advisorNote}
+            </p>
+          ) : null}
+        </motion.div>
+      </AnimatePresence>
+      {/* The headline number: this card's value to the user, fee included. */}
+      <ValueBlock card={activeCard} spend={userSpend} stacked={desktop} />
+    </div>
+  );
+
   // Landing hero: nothing but the search, centered on the page.
   if (!showResults) {
     return (
@@ -287,7 +324,7 @@ export default function CardCarousel({
   }
 
   return (
-    <section className="compare-light cards-page relative w-full min-h-screen pt-[7.6rem] pb-8 flex flex-col items-center bg-[var(--cl-bg)] md:pt-[clamp(4.25rem,7vh,6.1rem)] md:pb-0">
+    <section className="compare-light cards-page relative w-full min-h-screen pt-[7.6rem] flex flex-col items-center bg-[var(--cl-bg)] md:pt-[6.75rem] pb-16 md:pb-20">
       {matchMode && (
         <div className="relative z-20 w-full flex flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 text-center mb-8 md:mb-10">
           <h2 className="font-display font-semibold text-3xl md:text-4xl text-[var(--cl-ink)]">Your best matches</h2>
@@ -304,8 +341,11 @@ export default function CardCarousel({
           top-align + scroll (never clip) when the viewport is too short. */}
       <div className="w-full flex flex-col items-center">
       {!matchMode && (
-        <div className="relative z-40 mb-6 flex w-full flex-col items-center gap-3 md:hidden">
-          <div className="w-full px-4">
+        // Refine bar at the top on every size: it never covers results (the
+        // old bottom dock hid the value number on laptop screens), and chips
+        // stay folded behind "Refine" until wanted.
+        <div className="relative z-40 mb-6 flex w-full flex-col items-center gap-3">
+          <div className="w-full max-w-3xl px-4">
             <AISearchBar
               compact
               initialValue={lastQuery}
@@ -317,7 +357,7 @@ export default function CardCarousel({
                     value={providerFilter}
                     onChange={(e) => setProviderFilter(e.target.value)}
                     aria-label="Filter by card provider"
-                    className="appearance-none bg-transparent text-[12px] text-[var(--cl-ink)] pl-1 pr-5 py-0.5 focus:outline-none cursor-pointer max-w-[7.5rem] truncate"
+                    className="appearance-none bg-transparent text-[13px] text-[var(--cl-ink)] pl-1 pr-5 py-0.5 focus:outline-none cursor-pointer max-w-[7.5rem] truncate"
                   >
                     <option value="all">All providers</option>
                     {providers.map((p) => (
@@ -329,8 +369,8 @@ export default function CardCarousel({
               }
             />
           </div>
-          {/* On phones the chips would push the card below the fold, so they
-              live behind a toggle that shows how many are active. */}
+          {/* The chips would push the card below the fold, so they live
+              behind a toggle that shows how many are active. */}
           <button
             onClick={() => setMobileFiltersOpen((o) => !o)}
             aria-expanded={mobileFiltersOpen}
@@ -351,7 +391,7 @@ export default function CardCarousel({
       {/* Upper: carousel (left) + analysis (right). Fixed (fluid) height on
           desktop so the card sits at the same spot regardless of how tall the
           active card's analysis panel is — keeps positions stable across cards. */}
-      <div className="relative z-10 w-full px-4 grid grid-cols-1 lg:grid-cols-[1.12fr_1.08fr] gap-7 md:px-[clamp(1.25rem,3vw,3.5rem)] lg:gap-[clamp(2.75rem,4.2vw,4.75rem)] items-center lg:h-[clamp(330px,38vh,430px)]">
+      <div className="relative z-10 w-full px-4 grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] gap-7 md:px-[clamp(1.25rem,3vw,3.5rem)] lg:gap-[clamp(2rem,3.5vw,4rem)] items-center">
         {/* Left: carousel (edges fade into the page bg) with the controls
             sitting directly below the main card. */}
         <div className="flex flex-col items-center">
@@ -429,7 +469,7 @@ export default function CardCarousel({
               >
                 {watchlist.includes(activeCard.id) ? <X className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
               </button>
-              <span className="pointer-events-none absolute top-full left-1/2 -translate-x-1/2 mt-2 whitespace-nowrap text-[9px] font-semibold uppercase tracking-wider text-[var(--cl-muted)] opacity-0 group-hover:opacity-100 transition-opacity duration-150">{watchlist.includes(activeCard.id) ? 'Saved' : 'Watchlist'}</span>
+              <span className="pointer-events-none absolute top-full left-1/2 -translate-x-1/2 mt-2 whitespace-nowrap text-[11px] font-semibold uppercase tracking-wider text-[var(--cl-muted)] opacity-0 group-hover:opacity-100 transition-opacity duration-150">{watchlist.includes(activeCard.id) ? 'Saved' : 'Watchlist'}</span>
             </div>
             <div className="group relative flex items-center justify-center">
               {activeCard.applyUrl ? (
@@ -447,7 +487,7 @@ export default function CardCarousel({
                   <ArrowUpRight className="w-5 h-5" />
                 </span>
               )}
-              <span className="pointer-events-none absolute top-full left-1/2 -translate-x-1/2 mt-2 whitespace-nowrap text-[9px] font-semibold uppercase tracking-wider text-[var(--cl-gold)] opacity-0 group-hover:opacity-100 transition-opacity duration-150">Visit</span>
+              <span className="pointer-events-none absolute top-full left-1/2 -translate-x-1/2 mt-2 whitespace-nowrap text-[11px] font-semibold uppercase tracking-wider text-[var(--cl-gold)] opacity-0 group-hover:opacity-100 transition-opacity duration-150">Visit</span>
             </div>
             <button
               onClick={nextCard}
@@ -459,55 +499,19 @@ export default function CardCarousel({
           </div>
         </div>
 
-        {/* Right: compact analysis */}
-        <div className="hidden lg:block">
-          <CardInsightsPanel card={activeCard} whyBullets={activeWhy} />
+        {/* Right (desktop): name + the value number, beside the card. */}
+        <div aria-live="polite" className="hidden lg:block">
+          {renderIdentity(true)}
         </div>
       </div>
 
-      {/* Lower: card identity + headline facts. Fixed (fluid) height, content
-          top-aligned, so the title starts at a constant vertical point and the
-          search bar below always begins at the same place across cards. */}
-      <div aria-live="polite" className="relative z-20 w-full flex flex-col items-center gap-[clamp(1.5rem,3vh,2.35rem)] px-4">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeCard.id}
-            initial={{ opacity: 0, y: reducedMotion ? 0 : 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, transition: { duration: 0.12 } }}
-            transition={{ duration: reducedMotion ? 0 : 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="w-full flex flex-col items-center"
-          >
-            {/* Card name, centered. Watchlist / Visit actions live in the
-                carousel control row beneath the card. */}
-            <div className="w-full flex justify-center px-2">
-              <div className="text-center">
-                <p className="font-display text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--cl-muted)] mb-2">{activeCard.issuer}</p>
-                <h1 className="font-editorial text-[clamp(1.9rem,2.6vw,2.6rem)] leading-[1.05] text-[var(--cl-ink)] text-balance">{activeCard.name}</h1>
-                {ranked && (
-                  <p className="mt-3 inline-flex items-center gap-2 rounded-full border border-[var(--cl-hairline)] bg-[var(--cl-surface)] px-3 py-1 text-xs text-[var(--cl-muted)]">
-                    <span className="font-semibold text-[var(--cl-ink)]">#{currentIndex + 1}</span> {rankLabel}
-                  </p>
-                )}
-              </div>
-            </div>
+      {/* Lower: identity + value on phones, then the details for everyone. */}
+      <div className="relative z-20 w-full flex flex-col items-center gap-[clamp(1.5rem,3vh,2.35rem)] px-4 md:px-[clamp(1.25rem,3vw,3.5rem)]">
+        <div aria-live="polite" className="w-full max-w-3xl lg:hidden">
+          {renderIdentity(false)}
+        </div>
 
-            {advisorLoading ? (
-              <p className="mt-2 flex items-center justify-center gap-2 text-xs text-[var(--cl-muted)]">
-                <Sparkles className="w-3.5 h-3.5 animate-pulse text-[var(--cl-gold)]" /> Analyzing your wallet…
-              </p>
-            ) : advisorNote ? (
-              <p className="mt-2 max-w-md mx-auto text-sm text-[var(--cl-ink)] leading-relaxed text-center">
-                <Sparkles className="inline w-3.5 h-3.5 text-[var(--cl-gold)] mr-1 align-[-0.15em]" />{advisorNote}
-              </p>
-            ) : null}
-          </motion.div>
-        </AnimatePresence>
-
-        {/* The headline number: this card's value to the user, fee included. */}
-        <ValueBlock card={activeCard} spend={userSpend} />
-
-        <div className="w-full lg:hidden">
+        <div className="w-full max-w-6xl border-t border-[var(--cl-hairline)] pt-8">
           <CardInsightsPanel card={activeCard} whyBullets={activeWhy} />
         </div>
 
@@ -560,38 +564,6 @@ export default function CardCarousel({
         </div>
       )}
 
-      {/* Bottom refine bar: provider (inside the bar) + search + filters.
-          Small top gap (less padding before the search bar); the section's
-          pb-8 plus the natural bottom slack open the space below it. */}
-      {!matchMode && (
-        <div className="cards-bottom-dock z-40 mt-10 hidden w-full flex-col items-center gap-3 md:sticky md:bottom-0 md:flex">
-          <div className="w-full px-4">
-            <AISearchBar
-              compact
-              initialValue={lastQuery}
-              onQueryChange={(q) => { if (q.trim()) setStarted(true); }}
-              onFiltersParsed={setActiveFilters}
-              leftSlot={
-                <div className="relative flex items-center">
-                  <select
-                    value={providerFilter}
-                    onChange={(e) => setProviderFilter(e.target.value)}
-                    aria-label="Filter by card provider"
-                    className="appearance-none bg-transparent text-[11px] text-[var(--cl-ink)] pl-1 pr-4 py-0 focus:outline-none cursor-pointer max-w-[7rem] truncate"
-                  >
-                    <option value="all">All providers</option>
-                    {providers.map((p) => (
-                      <option key={p} value={p}>{providerLabel(p)}</option>
-                    ))}
-                  </select>
-                  <ChevronDown className="w-3 h-3 absolute right-0 pointer-events-none text-[var(--cl-muted)]" />
-                </div>
-              }
-            />
-          </div>
-          <BubbleFilters activeFilters={activeFilters} onFiltersChange={setActiveFilters} desktopCompact />
-        </div>
-      )}
       </div>
     </section>
   );

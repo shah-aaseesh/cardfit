@@ -10,18 +10,21 @@ resized WebP files are small, same-origin and cacheable.
 What it does, for web/src/cards.snapshot.json:
   - fetches each image_url (skipping ones already cached),
   - rejects non-card shapes (same ratio rule as CardVisual.tsx),
-  - resizes to 640px wide WebP -> web/public/card-art/<card id>.webp,
+  - resizes to 800px wide WebP -> web/public/card-art/<card id>.webp,
   - rewrites image_url to /card-art/<card id>.webp, or null when the source
     is dead/unusable (the UI then renders its gradient card face).
 The original remote URL is kept in source_image_url for re-runs.
 
 Usage (from crawler/):
-    python scripts/cache_card_art.py
+    python scripts/cache_card_art.py            # only cards not cached yet
+    python scripts/cache_card_art.py --refresh  # re-fetch everything
 """
 import io
 import json
+import re
 import sys
 import time
+from urllib.parse import urlsplit, urlunsplit
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -31,8 +34,29 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parents[2]
 SNAPSHOT = ROOT / "web" / "src" / "cards.snapshot.json"
 OUT_DIR = ROOT / "web" / "public" / "card-art"
-WIDTH = 640
+# ~2x the hero card's on-screen width (~370px), so art stays sharp on
+# high-density screens.
+WIDTH = 800
+REFRESH = "--refresh" in sys.argv  # re-download even if already cached
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; CardFitArtCache/1.0)"}
+
+
+def upgrade_url(src: str) -> str:
+    """The highest-resolution variant an issuer's image server is known to
+    serve. The scraped URL is often a thumbnail rendition (Citi's ?w=194,
+    Bank of America's -250.png), which looks soft once the hero card shows
+    it at ~370px on a 2x screen. Verified by hand per CDN; falls back to the
+    original URL when the upgrade 404s."""
+    parts = urlsplit(src)
+    host = parts.netloc
+    if host == "aemapi.citi.com":
+        # Without w/h params Citi serves the 760px master.
+        return urlunsplit((parts.scheme, host, parts.path, "", ""))
+    if host == "www.bankofamerica.com":
+        return re.sub(r"-250\.png$", "-500.png", src)
+    if host == "creditcards.chase.com" and "/bcs/image" in parts.path:
+        return re.sub(r"([?&])w=\d+", r"\g<1>w=1200", src)
+    return src
 
 
 def process(row: dict) -> tuple[str, str | None, str]:
@@ -40,25 +64,29 @@ def process(row: dict) -> tuple[str, str | None, str]:
     card_id = row["id"]
     src = (row.get("source_image_url") or row.get("image_url") or "").strip()
     out = OUT_DIR / f"{card_id}.webp"
-    if out.exists():
+    if out.exists() and not REFRESH:
         return card_id, f"/card-art/{out.name}", "cached"
     if not src.startswith("http"):
         return card_id, None, "no source"
-    img = None
-    for attempt in range(3):
-        try:
-            resp = requests.get(src, headers=HEADERS, timeout=20)
-            if resp.status_code == 404:
-                return card_id, None, "404 (issuer removed the asset)"
-            resp.raise_for_status()
-            img = Image.open(io.BytesIO(resp.content))
-            img.load()
+    img, error = None, None
+    for url in dict.fromkeys([upgrade_url(src), src]):  # best variant first
+        for attempt in range(3):
+            try:
+                resp = requests.get(url, headers=HEADERS, timeout=20)
+                if resp.status_code in (403, 404):
+                    error = f"{resp.status_code} (issuer removed or blocks the asset)"
+                    break
+                resp.raise_for_status()
+                img = Image.open(io.BytesIO(resp.content))
+                img.load()
+                break
+            except Exception as e:  # throttled/reset connection, not an image, decode error
+                error = e.__class__.__name__
+                time.sleep(2 * (attempt + 1))  # issuers (Chase) reset bursts of requests
+        if img is not None:
             break
-        except Exception as e:  # throttled/reset connection, not an image, decode error
-            error = e
-            time.sleep(2 * (attempt + 1))  # issuers (Chase) reset bursts of requests
     if img is None:
-        return card_id, None, f"fetch/decode failed: {error.__class__.__name__}"
+        return card_id, None, f"fetch/decode failed: {error}"
 
     w, h = img.size
     if w <= h or not (1.3 <= w / h <= 1.8) or w < 200:

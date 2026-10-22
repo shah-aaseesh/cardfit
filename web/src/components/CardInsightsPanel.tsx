@@ -43,24 +43,24 @@ export default function CardInsightsPanel({ card, whyBullets }: { card: CreditCa
           >
             <span className="mobile-insight-icon hidden shrink-0 text-[var(--cl-muted)]">{iconFor(d.label)}</span>
             <div className="min-w-0">
-              <dt className="font-display text-[10px] font-medium uppercase tracking-[0.15em] text-[var(--cl-muted)]">
+              <dt className="font-display text-[11px] font-medium uppercase tracking-[0.15em] text-[var(--cl-muted)]">
                 {d.label}{d.hint && <InfoStar text={d.hint} />}
               </dt>
-              <dd className="mt-1.5 text-[12px] text-[var(--cl-ink)] leading-snug [overflow-wrap:anywhere]">{d.value}</dd>
+              <dd className="mt-1.5 text-[13px] text-[var(--cl-ink)] leading-snug [overflow-wrap:anywhere]">{d.value}</dd>
             </div>
           </div>
         ))}
       </dl>
 
       <div className="mt-3.5 grid grid-cols-1 sm:grid-cols-2 border-t border-[var(--cl-hairline-strong)] pt-4">
-        <Section title="Approval difficulty" className="sm:pr-8" icon={<BarChart3 className="h-5 w-5" strokeWidth={1.7} />}><p className="text-[12px] text-[var(--cl-ink)] leading-relaxed">{ins.approval.label}</p></Section>
-        <Section title="Redemption options" className="sm:pl-8 sm:border-l border-[var(--cl-hairline-strong)]" icon={<Gift className="h-5 w-5" strokeWidth={1.7} />}><p className="text-[12px] text-[var(--cl-ink)] leading-relaxed">{ins.redemption.join('  ·  ')}</p></Section>
+        <Section title="Approval difficulty" className="sm:pr-8" icon={<BarChart3 className="h-5 w-5" strokeWidth={1.7} />}><p className="text-[13px] text-[var(--cl-ink)] leading-relaxed">{ins.approval.label}</p></Section>
+        <Section title="Redemption options" className="sm:pl-8 sm:border-l border-[var(--cl-hairline-strong)]" icon={<Gift className="h-5 w-5" strokeWidth={1.7} />}><p className="text-[13px] text-[var(--cl-ink)] leading-relaxed">{ins.redemption.join('  ·  ')}</p></Section>
       </div>
 
       <Section title={personalized ? 'Fits you because' : 'Best for'} divided>
         <ul className={personalized ? 'flex flex-col gap-2' : 'grid grid-cols-1 sm:grid-cols-3 gap-x-8 gap-y-2.5'}>
           {(personalized ? whyBullets! : ins.bestFor.slice(0, 3)).map((it, i) => (
-            <li key={i} className="flex items-start gap-2 min-w-0 text-[12px] text-[var(--cl-ink)] leading-snug">
+            <li key={i} className="flex items-start gap-2 min-w-0 text-[13px] text-[var(--cl-ink)] leading-snug">
               <Check className="w-4 h-4 mt-[0.15em] shrink-0 text-[var(--cl-gold)]" strokeWidth={2.5} />
               <span>{it}</span>
             </li>
@@ -84,7 +84,7 @@ function InfoStar({ text }: { text: string }) {
       </button>
       <span
         role="tooltip"
-        className="pointer-events-none absolute bottom-full left-1/2 z-30 mb-1.5 w-max max-w-[14rem] -translate-x-1/2 rounded-lg bg-[var(--cl-ink)] px-2.5 py-1.5 text-[11px] normal-case leading-snug tracking-normal text-[var(--cl-bg)] opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100"
+        className="pointer-events-none absolute bottom-full left-1/2 z-30 mb-1.5 w-max max-w-[14rem] -translate-x-1/2 rounded-lg bg-[var(--cl-ink)] px-2.5 py-1.5 text-[12px] normal-case leading-snug tracking-normal text-[var(--cl-bg)] opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100"
       >
         {text}
       </span>
@@ -97,7 +97,7 @@ function Section({ title, children, divided, className = '', icon }: { title: st
     <div className={`mobile-section ${divided ? 'mt-3.5 border-t border-[var(--cl-hairline-strong)] pt-4' : ''} ${className}`}>
       <span className="mobile-insight-icon hidden shrink-0 text-[var(--cl-muted)]">{icon}</span>
       <div className="min-w-0">
-        <p className="font-display text-[10px] font-medium uppercase tracking-[0.15em] text-[var(--cl-muted)] mb-2">{title}</p>
+        <p className="font-display text-[11px] font-medium uppercase tracking-[0.15em] text-[var(--cl-muted)] mb-2">{title}</p>
         {children}
       </div>
     </div>

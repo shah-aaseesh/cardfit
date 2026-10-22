@@ -14,7 +14,8 @@ interface CardVisualProps {
 // whole composition scales with viewport height; width follows the aspect.
 const SIZE = {
   default: 'w-[360px] h-[228px] md:w-[420px] md:h-[266px]',
-  fluid: 'h-[clamp(180px,23vh,300px)] aspect-[420/266]',
+  // min() with 46vw keeps the whole card inside the stage on phones.
+  fluid: 'h-[min(clamp(180px,23vh,300px),46vw)] aspect-[420/266]',
   fill: 'w-full h-full',
 } as const;
 

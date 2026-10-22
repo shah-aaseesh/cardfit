@@ -498,7 +498,7 @@ function FeeStep({ answers, set }: StepProps) {
         />
         <div className="flex justify-between mt-3 px-0.5">
           {FEE_STOPS.map((f, i) => (
-            <span key={f} className={`text-[10px] tabular-nums ${i === idx ? 'text-[var(--cl-ink)] font-semibold' : 'text-[var(--cl-muted)]'}`}>
+            <span key={f} className={`text-[11px] tabular-nums ${i === idx ? 'text-[var(--cl-ink)] font-semibold' : 'text-[var(--cl-muted)]'}`}>
               {f === FEE_STOPS[FEE_STOPS.length - 1] ? `${f}+` : f}
             </span>
           ))}

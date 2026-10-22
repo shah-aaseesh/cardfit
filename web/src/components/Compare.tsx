@@ -122,7 +122,7 @@ export default function Compare({ watchlist, setWatchlist, ownedCards, setOwnedC
       className="shrink-0 w-[115px] h-[73px] md:w-[134px] md:h-[85px] rounded-[0.6rem] border-2 border-dashed border-[var(--cl-hairline-strong)] text-[var(--cl-muted)] hover:text-[var(--cl-ink)] hover:border-[var(--cl-ink)] transition-colors flex flex-col items-center justify-center"
     >
       <Plus className="w-5 h-5" strokeWidth={1.5} />
-      <span className="text-[11px] mt-0.5">Add</span>
+      <span className="text-[12px] mt-0.5">Add</span>
     </button>
   );
 
@@ -187,7 +187,7 @@ export default function Compare({ watchlist, setWatchlist, ownedCards, setOwnedC
               <div className="compare-shuffle absolute z-20">
                 <button
                   onClick={shuffleCards}
-                  className="inline-flex h-[42px] items-center gap-2.5 rounded-full border border-[var(--compare-border)] bg-[var(--surface)] px-5 text-[13px] font-semibold text-[var(--compare-text)] shadow-[0_18px_44px_-34px_rgb(17_17_20_/_0.38),inset_0_1px_0_rgb(255_255_255_/_0.92)] hover:bg-[var(--compare-bg)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--compare-orange)]/22"
+                  className="inline-flex h-[42px] items-center gap-2.5 rounded-full border border-[var(--compare-border)] bg-[var(--surface)] px-5 text-[14px] font-semibold text-[var(--compare-text)] shadow-[0_18px_44px_-34px_rgb(17_17_20_/_0.38),inset_0_1px_0_rgb(255_255_255_/_0.92)] hover:bg-[var(--compare-bg)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--compare-orange)]/22"
                 >
                   <Shuffle className="w-[15px] h-[15px]" />
                   Shuffle
@@ -367,7 +367,7 @@ function CompareFeatures() {
         <div key={title} className={`${index > 0 ? 'border-t border-[var(--compare-border)] pt-4 sm:border-l sm:border-t-0 sm:pl-7 sm:pt-0' : ''} ${index < 2 ? 'sm:pr-7' : ''}`}>
           <div className="min-w-0">
             <p className="text-[16px] font-semibold text-[var(--compare-text)]">{title}</p>
-            <p className="mt-2 text-[13px] text-[var(--compare-muted)]">{sub}</p>
+            <p className="mt-2 text-[14px] text-[var(--compare-muted)]">{sub}</p>
           </div>
         </div>
       ))}
@@ -442,7 +442,7 @@ function CompareColumn({
       {/* Masthead: identity + controls + product shot */}
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <p className="mt-1.5 font-display text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--cl-muted)]">{card.issuer}</p>
+          <p className="mt-1.5 font-display text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--cl-muted)]">{card.issuer}</p>
           <h2 className="mt-2 font-display font-semibold text-[1.25rem] md:text-[1.55rem] text-[var(--compare-text)] leading-[1.1] text-balance">
             {card.name}
           </h2>
@@ -453,7 +453,7 @@ function CompareColumn({
           <div className="flex items-center">
             <button
               onClick={onOpenSearch}
-              className="text-[11px] font-semibold uppercase tracking-wider text-[var(--cl-muted)] hover:text-[var(--cl-ink)] px-2 py-1 transition-colors"
+              className="text-[12px] font-semibold uppercase tracking-wider text-[var(--cl-muted)] hover:text-[var(--cl-ink)] px-2 py-1 transition-colors"
             >
               Change
             </button>
@@ -484,7 +484,7 @@ function CompareColumn({
         {rows.map((r) => (
           <li key={r.label} className="flex items-center gap-2.5">
             <ParityIcon state={r.state} />
-            <span className={`text-[12px] ${r.state === false ? 'text-[var(--cl-muted)]' : 'text-[var(--cl-ink)]'}`}>
+            <span className={`text-[13px] ${r.state === false ? 'text-[var(--cl-muted)]' : 'text-[var(--cl-ink)]'}`}>
               {r.label}
             </span>
           </li>
@@ -510,12 +510,12 @@ function CompareColumn({
             href={card.applyUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-full bg-[var(--cl-pill)] text-[var(--cl-pill-ink)] px-6 py-3 text-[12px] font-semibold uppercase tracking-[0.12em] hover:opacity-90 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cl-ink)]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--cl-panel)]"
+            className="inline-flex items-center gap-2 rounded-full bg-[var(--cl-pill)] text-[var(--cl-pill-ink)] px-6 py-3 text-[13px] font-semibold uppercase tracking-[0.12em] hover:opacity-90 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cl-ink)]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--cl-panel)]"
           >
             Visit site <ArrowUpRight className="w-4 h-4" />
           </a>
         ) : (
-          <span className="text-[11px] uppercase tracking-wider text-[var(--cl-muted)]">Link unavailable</span>
+          <span className="text-[12px] uppercase tracking-wider text-[var(--cl-muted)]">Link unavailable</span>
         )}
       </div>
     </div>
@@ -529,7 +529,7 @@ function StatBig({ value, unit, label }: { value: string; unit: string | null; l
         {value}
         {unit && <sup className="text-[0.4em] font-medium ml-1 top-[-0.8em]">{unit}</sup>}
       </span>
-      <span className="text-[10px] uppercase tracking-wide text-[var(--cl-muted)]">{label}</span>
+      <span className="text-[11px] uppercase tracking-wide text-[var(--cl-muted)]">{label}</span>
     </div>
   );
 }
@@ -552,8 +552,8 @@ function SpecRow({
   const showBullets = bullets && bullets.length >= 1;
   return (
     <div className="flex justify-between gap-6 py-3 border-[var(--cl-hairline-strong)] border-b last:border-b-0 first:mt-7 first:border-t">
-      <dt className="shrink-0 pt-0.5 text-[11px] text-[var(--cl-muted)]">{label}</dt>
-      <dd className="max-w-[66%] text-right text-[12px] leading-relaxed text-[var(--cl-ink)] [overflow-wrap:anywhere]">
+      <dt className="shrink-0 pt-0.5 text-[12px] text-[var(--cl-muted)]">{label}</dt>
+      <dd className="max-w-[66%] text-right text-[13px] leading-relaxed text-[var(--cl-ink)] [overflow-wrap:anywhere]">
         {showBullets ? (
           <ul className="flex flex-col gap-1.5 text-left">
             {bullets!.map((b, i) => (
@@ -646,11 +646,11 @@ function VerticalRail({
         aria-label={`Expand ${label}`}
         className="compare-sidebar-tile shrink-0 flex h-[58px] w-[150px] flex-row items-center justify-between gap-2 px-[10px] text-[var(--compare-muted)] hover:bg-[var(--surface)] transition-colors"
       >
-        <span className="text-[13px] font-medium whitespace-nowrap flex items-center gap-2.5">
+        <span className="text-[14px] font-medium whitespace-nowrap flex items-center gap-2.5">
           <span className="text-[var(--compare-text)]">{icon}</span>
           <span className="text-[var(--compare-text)]">{label}</span>
         </span>
-        <span className="grid h-[24px] min-w-[24px] place-items-center rounded-full bg-[var(--compare-peach)] px-1.5 text-[12px] font-semibold text-[var(--compare-text)] shadow-[inset_0_1px_0_rgb(255_255_255_/_0.95)]">{known.length}</span>
+        <span className="grid h-[24px] min-w-[24px] place-items-center rounded-full bg-[var(--compare-peach)] px-1.5 text-[13px] font-semibold text-[var(--compare-text)] shadow-[inset_0_1px_0_rgb(255_255_255_/_0.95)]">{known.length}</span>
       </button>
     );
   }
@@ -658,11 +658,11 @@ function VerticalRail({
   return (
     <div className="compare-sidebar-tile w-[150px] flex-1 min-h-0 flex flex-col px-2.5 py-4">
       <div className="flex items-center justify-between gap-2 shrink-0">
-        <span className="text-[13px] font-medium text-[var(--compare-text)] flex items-center gap-2.5 min-w-0">
+        <span className="text-[14px] font-medium text-[var(--compare-text)] flex items-center gap-2.5 min-w-0">
           <span className="text-[var(--compare-text)] shrink-0">{icon}</span>
           <span className="truncate">{label}</span>
         </span>
-        <span className="text-[12px] font-medium text-[var(--compare-muted)]">{known.length}</span>
+        <span className="text-[13px] font-medium text-[var(--compare-muted)]">{known.length}</span>
         <button
           onClick={() => setOpen(false)}
           aria-expanded
@@ -717,7 +717,7 @@ function Rail({
         aria-expanded={open}
         className="w-full flex items-center justify-between gap-2"
       >
-        <span className="text-[11px] font-semibold uppercase tracking-wider text-[var(--cl-muted)] flex items-center gap-1.5">
+        <span className="text-[12px] font-semibold uppercase tracking-wider text-[var(--cl-muted)] flex items-center gap-1.5">
           <span className="text-[var(--cl-gold)]">{icon}</span> {label}
           <span className="text-[var(--cl-muted)]/70 normal-case tracking-normal">({known.length})</span>
         </span>

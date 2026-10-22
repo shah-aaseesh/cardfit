@@ -88,7 +88,7 @@ export default function Navigation({ currentPage, setCurrentPage, findActive, on
           <button
             key={link.id}
             onClick={() => setCurrentPage(link.id)}
-            className={`h-[38px] min-w-[100px] flex-none rounded-full px-4 text-[13px] font-medium transition-colors duration-200 ${
+            className={`h-[38px] min-w-[100px] flex-none rounded-full px-4 text-[14px] font-medium transition-colors duration-200 ${
               currentPage === link.id
                 ? `bg-[var(--cl-pill)] text-[var(--cl-pill-ink)] shadow-[inset_0_1px_0_rgb(255_255_255_/_0.18)]`
                 : 'text-[var(--cl-ink)] hover:text-[var(--cl-ink)] hover:bg-[var(--cl-panel)]'
@@ -99,7 +99,7 @@ export default function Navigation({ currentPage, setCurrentPage, findActive, on
         ))}
         <button
           onClick={onFindClick}
-          className={`h-[38px] min-w-[136px] flex-none rounded-full px-4 text-[13px] font-medium transition-colors duration-200 ${
+          className={`h-[38px] min-w-[136px] flex-none rounded-full px-4 text-[14px] font-medium transition-colors duration-200 ${
             findActive ? 'bg-[var(--cl-pill)] text-[var(--cl-pill-ink)]' : 'text-[var(--cl-ink)] hover:text-[var(--cl-ink)] hover:bg-[var(--cl-panel)]'
           }`}
         >

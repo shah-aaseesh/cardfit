@@ -42,7 +42,7 @@ export default function BubbleFilters({ activeFilters, onFiltersChange, desktopC
         transition={{ duration: 0.25, delay: i * 0.015, ease: [0.16, 1, 0.3, 1] }}
         onClick={() => handleToggle(filter.id)}
         aria-pressed={isActive}
-        className={`${small ? 'px-3 py-1 text-xs' : 'px-3.5 py-1.5 text-sm'} ${desktopCompact ? 'md:px-2.5 md:py-0.5 md:text-[11px]' : ''} ${filter.id === 'rewards' ? 'md:min-w-[5.5rem]' : ''} font-medium rounded-full border shadow-[0_10px_24px_-22px_rgb(17_17_20_/_0.45),inset_0_1px_0_rgb(255_255_255_/_0.86)] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cl-ink)]/30 ${
+        className={`${small ? 'px-3 py-1 text-xs' : 'px-3.5 py-1.5 text-sm'} ${desktopCompact ? 'md:px-2.5 md:py-0.5 md:text-[12px]' : ''} ${filter.id === 'rewards' ? 'md:min-w-[5.5rem]' : ''} font-medium rounded-full border shadow-[0_10px_24px_-22px_rgb(17_17_20_/_0.45),inset_0_1px_0_rgb(255_255_255_/_0.86)] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cl-ink)]/30 ${
           isActive
             ? 'bg-[var(--cl-pill)] text-[var(--cl-pill-ink)] border-[var(--cl-pill)]'
             : 'bg-[var(--cl-surface)] text-[var(--cl-muted)] border-[var(--cl-hairline-strong)] hover:bg-[var(--cl-panel)] hover:text-[var(--cl-ink)]'
@@ -58,7 +58,7 @@ export default function BubbleFilters({ activeFilters, onFiltersChange, desktopC
   return (
     <div className={`w-full flex flex-col items-center z-40 relative ${desktopCompact ? 'gap-2 md:gap-1.5' : 'gap-2.5'}`}>
       {missingPrompts.length > 0 && (
-        <p className="px-4 text-center text-[12px] font-medium text-[var(--cl-muted)]">
+        <p className="px-4 text-center text-[13px] font-medium text-[var(--cl-muted)]">
           {missingPrompts.map((prompt) => prompt.text).join(' | ')}
         </p>
       )}

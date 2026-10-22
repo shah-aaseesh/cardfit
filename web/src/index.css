@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap');
+/* Fonts load from index.html (preconnect + <link>) — a CSS @import here
+   blocked rendering until the font stylesheet arrived (up to ~1.4s). */
 @import "tailwindcss";
 
 /*
@@ -46,8 +47,11 @@ body {
   letter-spacing: -0.01em;
 }
 
+/* Browser-default 16px root. It was 14px (13.5px on phones), which put body
+   copy at ~12px and labels at 10px — too small for a product people use to
+   read fees and rates, often on a phone. */
 html {
-  font-size: 14px;
+  font-size: 16px;
 }
 
 /* Polished white porcelain finish for the empty compare slots: a soft cool
@@ -767,14 +771,6 @@ body {
   }
 }
 
-/* Sticky refine bar: sits after the results in normal flow and floats at
-   the bottom of the viewport while scrolling, on a frosted paper strip so
-   it never collides with the content above it. */
-.cards-bottom-dock {
-  padding: 1rem 0 1.1rem;
-  background: linear-gradient(to top, var(--cl-bg) 62%, oklch(0.985 0.004 95 / 0));
-}
-
 .cards-dot-stage::before {
   content: "";
   position: absolute;
@@ -799,7 +795,7 @@ body {
 
 @media (max-width: 767px) {
   html {
-    font-size: 13.5px;
+    font-size: 16px;
   }
 
   .cards-page {
@@ -808,11 +804,6 @@ body {
       radial-gradient(ellipse at 50% 82%, rgba(233, 233, 233,0.36) 0%, rgba(233, 233, 233,0.12) 42%, rgba(255,255,255,0) 72%),
       linear-gradient(to bottom, #FBFBFB 0%, #F7F7F7 100%),
       var(--cl-bg);
-  }
-
-  .cards-bottom-dock {
-    top: auto;
-    padding: 0 0.25rem 1rem;
   }
 
   .cards-dot-stage::before {
