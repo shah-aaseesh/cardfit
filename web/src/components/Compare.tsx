@@ -196,7 +196,7 @@ export default function Compare({ watchlist, setWatchlist, ownedCards, setOwnedC
               </div>
 
               <section className="compare-hero relative z-10 text-center">
-                <p className="inline-flex items-center gap-2 rounded-full bg-[var(--cl-brand-soft)] px-3.5 py-1.5 text-xs font-semibold text-[var(--cl-brand)]">
+                <p className="pop-sm inline-flex -rotate-2 items-center gap-2 rounded-full bg-[var(--cl-lime)] px-3.5 py-1.5 text-xs font-bold text-[var(--cl-ink)]">
                   <Columns2 className="h-3.5 w-3.5" aria-hidden="true" /> Side by side · fees counted
                 </p>
                 <h1 className="compare-typewriter" aria-label="Find your perfect match">
@@ -368,13 +368,13 @@ function CompareFeatures() {
   ];
   return (
     <div className="compare-feature-bar relative z-20 mx-auto grid w-full grid-cols-1 gap-3 sm:grid-cols-3">
-      {items.map(({ icon: Icon, title, sub }) => (
-        <div key={title} className="rounded-[1.25rem] border border-[var(--compare-border)] bg-white p-5">
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-[var(--cl-brand-soft)] text-[var(--cl-brand)]">
+      {items.map(({ icon: Icon, title, sub }, i) => (
+        <div key={title} className={`pop pop-lift rounded-[1.25rem] p-5 ${['bg-[var(--cl-sky)]', 'bg-[var(--cl-pink)]', 'bg-[var(--cl-lime)]'][i]}`}>
+          <span className="pop-sm grid h-9 w-9 place-items-center rounded-xl bg-white text-[var(--cl-ink)]">
             <Icon className="h-[18px] w-[18px]" aria-hidden="true" />
           </span>
           <p className="mt-3 text-[15px] font-semibold text-[var(--compare-text)]">{title}</p>
-          <p className="mt-1 text-[13px] leading-relaxed text-[var(--compare-muted)]">{sub}</p>
+          <p className="mt-1 text-[13px] leading-relaxed text-[var(--cl-ink)]/75">{sub}</p>
         </div>
       ))}
     </div>
@@ -410,13 +410,13 @@ function CompareValue({ card }: { card: CreditCard }) {
   const v = estimateValue(card);
   const money = (n: number) => `${n < 0 ? '−' : ''}$${Math.abs(Math.round(n)).toLocaleString()}`;
   return (
-    <div className="mt-6 rounded-2xl bg-[linear-gradient(135deg,oklch(0.55_0.23_262)_0%,oklch(0.42_0.22_270)_100%)] px-5 py-4 text-white">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-white/75">Est. value on typical spending</p>
+    <div className="pop-sm mt-6 rounded-2xl bg-[var(--cl-sun)] px-5 py-4 text-[var(--cl-ink)]">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--cl-ink)]/70">Est. value on typical spending</p>
       <p className="mt-1 flex items-baseline gap-1.5">
         <span className="font-editorial text-4xl leading-none">{money(v.average)}</span>
-        <span className="text-sm text-white/75">/ year</span>
+        <span className="text-sm text-[var(--cl-ink)]/70">/ year</span>
       </p>
-      <p className="mt-1.5 text-xs text-white/75">
+      <p className="mt-1.5 text-xs text-[var(--cl-ink)]/70">
         {v.annualFeeKnown ? `${money(v.rewards)} rewards · ${v.bonus ? `${money(v.bonus / 2)} bonus (½) · ` : ''}${v.annualFee ? `−${money(v.annualFee)} fee` : 'no annual fee'}` : 'Annual fee not listed — check the issuer'}
       </p>
     </div>

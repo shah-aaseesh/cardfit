@@ -11,7 +11,7 @@
   --font-sans: "Geist", "Geist Sans", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Geist", "Geist Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist", "Geist Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-editorial: "Geist", "Geist Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-editorial: "Bricolage Grotesque", "Geist", ui-sans-serif, system-ui, sans-serif;
 
   --color-bg: oklch(0.09 0 0);
   --color-surface: oklch(0.155 0.003 70);
@@ -32,7 +32,7 @@
    (what shows through header/footer gaps and macOS overscroll/rubber-band)
    is the same near-white as .compare-light's --cl-bg, not the dark shell. */
 html, body {
-  background: #ffffff;
+  background: #fffaf0;
 }
 
 /* Money is read in columns: keep every figure the same width. */
@@ -42,8 +42,33 @@ body {
 
 .font-editorial {
   font-family: var(--font-editorial);
-  font-weight: 650;
-  letter-spacing: -0.035em;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+/* ---- Pop kit: the playful building blocks used across the site ----
+   Ink outline + hard offset shadow ("sticker") and a hover that lifts it. */
+.pop {
+  border: 2px solid var(--cl-ink);
+  box-shadow: 4px 4px 0 var(--cl-ink);
+}
+.pop-sm {
+  border: 2px solid var(--cl-ink);
+  box-shadow: 2px 2px 0 var(--cl-ink);
+}
+.pop-lift {
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+.pop-lift:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--cl-ink);
+}
+.pop-lift:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0 0 0 var(--cl-ink);
+}
+@media (prefers-reduced-motion: reduce) {
+  .pop-lift, .pop-lift:hover, .pop-lift:active { transform: none; transition: none; }
 }
 
 /* Browser-default 16px root. It was 14px (13.5px on phones), which put body
@@ -96,47 +121,54 @@ body {
 }
 
 /*
-  Clean & minimal light. Pure white, near-black ink, and ONE brand color —
-  electric blue — for actions and the value number. Amber is kept only for
-  costs (fees), so a charge is never mistaken for a gain. Contrast: ink and
-  muted clear AA on white and panel; blue clears AA for text on white.
+  Pop: warm cream, ink outlines, and bright colors that each MEAN something —
+    violet  = the brand / actions
+    sun     = your value (the money)
+    lime    = good fits, positives
+    coral   = costs (fees, interest)
+  Ink on every fill clears AA; white text only on violet and ink.
 */
 .compare-light {
-  --cl-bg: #ffffff;
-  --cl-panel: oklch(0.975 0.004 265);
+  --cl-bg: #fffaf0;
+  --cl-panel: #fff1d6;
   --cl-surface: #ffffff;
-  --cl-ink: oklch(0.17 0.02 265);
-  --cl-muted: oklch(0.49 0.02 265);
-  --cl-hairline: oklch(0.925 0.006 265);
-  --cl-hairline-strong: oklch(0.86 0.01 265);
-  --cl-brand: oklch(0.52 0.23 265);
-  --cl-brand-soft: oklch(0.965 0.025 265);
+  --cl-ink: #141414;
+  --cl-muted: #55524c;
+  --cl-hairline: #ece3d0;
+  --cl-hairline-strong: #141414;
+  --cl-brand: #6c47ff;
+  --cl-brand-soft: #e9e2ff;
+  --cl-sun: #ffd23f;
+  --cl-lime: #c6f432;
+  --cl-coral: #ff6b4a;
+  --cl-sky: #7cd3ff;
+  --cl-pink: #ff9bd2;
   --cl-pill: var(--cl-brand);
   --cl-pill-ink: #ffffff;
-  --cl-value: var(--cl-brand);
-  --cl-value-soft: var(--cl-brand-soft);
-  --cl-caution: oklch(0.53 0.13 55);
-  --cl-caution-soft: oklch(0.965 0.035 75);
+  --cl-value: #141414;
+  --cl-value-soft: var(--cl-lime);
+  --cl-caution: #c2410c;
+  --cl-caution-soft: #ffd9cf;
   /* Legacy accent name. */
   --cl-gold: var(--cl-brand);
 }
 
-/* One soft brand-blue glow behind the hero; otherwise pure white. */
+/* Cream page with a faint dot grid — like graph paper for your money. */
 .cards-page {
-  background:
-    radial-gradient(60rem 28rem at 70% -6rem, oklch(0.93 0.06 265 / 0.55) 0%, transparent 70%),
-    #ffffff;
+  background-color: #fffaf0;
+  background-image: radial-gradient(rgba(20, 20, 20, 0.09) 1px, transparent 1.2px);
+  background-size: 22px 22px;
 }
 
-/* Placeholder face for cards without art: a brand-blue card, so it reads
-   as a real, premium object rather than a washed-out blank. */
+/* Placeholder face for cards without art: a bold violet card with a pink
+   glow — a fun object, never a washed-out blank. */
 .warm-card-face {
   color: #ffffff;
   background:
-    radial-gradient(ellipse at 90% 0%, oklch(0.75 0.14 255 / 0.55) 0%, transparent 55%),
-    radial-gradient(ellipse at 0% 100%, oklch(0.40 0.20 280 / 0.6) 0%, transparent 60%),
-    linear-gradient(135deg, oklch(0.55 0.22 262) 0%, oklch(0.42 0.22 268) 60%, oklch(0.33 0.18 272) 100%);
-  border: 1px solid oklch(0.60 0.18 262 / 0.6);
+    radial-gradient(ellipse at 95% 0%, #ff9bd2 0%, transparent 50%),
+    radial-gradient(ellipse at 0% 100%, #7cd3ff 0%, transparent 55%),
+    linear-gradient(135deg, #7c5cff 0%, #6c47ff 50%, #4b2ed6 100%);
+  border: 2px solid #141414;
   box-shadow:
     0 34px 76px -44px rgba(120, 120, 120, 0.24),
     0 18px 42px -34px rgba(17,17,20,0.22),
@@ -145,37 +177,37 @@ body {
 }
 
 .compare-page {
-  /* Card A = brand blue, card B = slate: two distinct, calm sides. */
-  --background: #ffffff;
+  /* Card A = violet, card B = coral. */
+  --background: #fffaf0;
   --surface: #ffffff;
-  --text-primary: oklch(0.17 0.02 265);
-  --text-secondary: oklch(0.49 0.02 265);
-  --border: oklch(0.925 0.006 265);
-  --orange: oklch(0.52 0.23 265);
-  --peach: oklch(0.965 0.025 265);
-  --violet: oklch(0.45 0.03 265);
-  --lavender: oklch(0.965 0.006 265);
-  --coral-bridge: oklch(0.82 0.04 265);
-  --compare-bg: oklch(0.975 0.004 265);
-  --compare-text: oklch(0.17 0.02 265);
-  --compare-muted: oklch(0.49 0.02 265);
-  --compare-border: oklch(0.925 0.006 265);
-  --compare-orange: oklch(0.52 0.23 265);
-  --compare-peach: oklch(0.965 0.025 265);
-  --compare-violet: oklch(0.45 0.03 265);
-  --compare-lavender: oklch(0.965 0.006 265);
-  --compare-bridge: oklch(0.82 0.04 265);
+  --text-primary: #141414;
+  --text-secondary: #55524c;
+  --border: #141414;
+  --orange: #6c47ff;
+  --peach: #e9e2ff;
+  --violet: #ff6b4a;
+  --lavender: #ffe3db;
+  --coral-bridge: #ffd23f;
+  --compare-bg: #fff1d6;
+  --compare-text: #141414;
+  --compare-muted: #55524c;
+  --compare-border: #ece3d0;
+  --compare-orange: #6c47ff;
+  --compare-peach: #e9e2ff;
+  --compare-violet: #ff6b4a;
+  --compare-lavender: #ffe3db;
+  --compare-bridge: #ffd23f;
   --compare-sidebar-width: 276px;
   --compare-content-width: calc(100vw - var(--compare-sidebar-width));
   --compare-stage-width: 1040px;
   --compare-panel-width: 430px;
   --compare-panel-height: 271px;
   --compare-panel-radius: 22px;
-  --compare-orange-glow: oklch(0.52 0.23 265 / 0.16);
-  --compare-violet-glow: oklch(0.45 0.03 265 / 0.14);
+  --compare-orange-glow: #6c47ff26;
+  --compare-violet-glow: #ff6b4a26;
   background:
-    radial-gradient(60rem 28rem at 60% -6rem, oklch(0.93 0.06 265 / 0.5) 0%, transparent 70%),
-    #ffffff;
+    radial-gradient(rgba(20, 20, 20, 0.09) 1px, transparent 1.2px) 0 0 / 22px 22px,
+    #fffaf0;
   color: var(--compare-text);
 }
 
@@ -241,9 +273,9 @@ body {
 .compare-hero h1 {
   margin-top: 26px;
   font-family: var(--font-editorial);
-  font-size: clamp(2.6rem, 3.6vw, 3.8rem);
-  font-weight: 650;
-  letter-spacing: -0.035em;
+  font-size: clamp(2.8rem, 4vw, 4.2rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
   line-height: 0.98;
   letter-spacing: 0;
   color: var(--compare-text);
@@ -764,16 +796,13 @@ body {
   }
 }
 
-/* Card stage: a soft brand-blue panel with the value card's fine grid. The
-   hero card sits fully inside it; neighbours peek in from the edges. (It
-   used to be a dot field with a white fade overlay drawn on top of the card,
-   which made the card look cut off.) */
+/* Card stage: a lilac "sticker" panel the hero card sits on; neighbours
+   peek in from the edges. */
 .cards-dot-stage {
   border-radius: 1.75rem;
-  background:
-    radial-gradient(70% 80% at 50% 45%, oklch(0.99 0.01 265) 0%, transparent 70%),
-    linear-gradient(160deg, oklch(0.95 0.04 262) 0%, oklch(0.93 0.05 268) 100%);
-  box-shadow: inset 0 0 0 1px oklch(0.88 0.04 265);
+  background: #e9e2ff;
+  border: 2px solid #141414;
+  box-shadow: 4px 4px 0 #141414;
 }
 
 .cards-dot-stage::before {
@@ -781,10 +810,9 @@ body {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background-image:
-    linear-gradient(oklch(0.52 0.23 265 / 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, oklch(0.52 0.23 265 / 0.07) 1px, transparent 1px);
-  background-size: 28px 28px;
+  background-image: radial-gradient(#6c47ff 1px, transparent 1.2px);
+  background-size: 18px 18px;
+  opacity: 0.35;
   pointer-events: none;
 }
 

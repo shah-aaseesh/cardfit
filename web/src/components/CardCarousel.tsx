@@ -12,6 +12,7 @@ import { pushRecentlyViewed } from '../lib/recentlyViewed';
 import CardInsightsPanel from './CardInsightsPanel';
 import ValueBlock from './ValueBlock';
 import HeroPreview from './HeroPreview';
+import Sparkle from './Sparkle';
 import { MonthlySpend } from '../lib/insights';
 import { useCards } from '../hooks/useCards';
 import { CreditCard } from '../types';
@@ -35,6 +36,8 @@ const TRUST_POINTS = [
   { icon: Scale, title: 'Not paid to rank', body: 'No card issuer pays for placement or a better spot.' },
   { icon: Coins, title: 'Honest point values', body: 'Points and miles are valued conservatively, not at best-case.' },
 ];
+
+const TRUST_COLORS = ['bg-[var(--cl-lime)]', 'bg-[var(--cl-sky)]', 'bg-[var(--cl-pink)]', 'bg-[var(--cl-sun)]'];
 
 const RANK_STEPS = [
   { title: 'Your spending', body: 'Groceries, dining, gas, travel and everything else, in your own monthly dollars.' },
@@ -220,7 +223,7 @@ export default function CardCarousel({
           <p className="font-display text-[12px] font-bold uppercase tracking-[0.14em] text-[var(--cl-muted)] mb-2">{activeCard.issuer}</p>
           <h1 className="font-editorial text-[clamp(1.9rem,2.6vw,2.75rem)] leading-[1.05] text-[var(--cl-ink)] text-balance">{activeCard.name}</h1>
           {ranked && (
-            <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-[var(--cl-brand-soft)] px-3 py-1.5 text-xs font-medium text-[var(--cl-brand)]">
+            <p className="mt-3 pop-sm inline-flex -rotate-1 items-center gap-1.5 rounded-full bg-[var(--cl-lime)] px-3 py-1.5 text-xs font-bold text-[var(--cl-ink)]">
               <Trophy className="h-3.5 w-3.5" aria-hidden="true" />
               <span className="font-bold">#{currentIndex + 1}</span> {rankLabel}
             </p>
@@ -249,14 +252,18 @@ export default function CardCarousel({
         <div className="min-w-0 flex flex-col items-center gap-7 text-center lg:items-start lg:text-left">
           {/* The promise, in the user's terms: money back, after fees. */}
           <div>
-            <p className="inline-flex items-center gap-2 rounded-full bg-[var(--cl-brand-soft)] px-3.5 py-1.5 text-xs font-semibold text-[var(--cl-brand)]">
+            <p className="pop-sm inline-flex -rotate-2 items-center gap-2 rounded-full bg-[var(--cl-lime)] px-3.5 py-1.5 text-xs font-bold text-[var(--cl-ink)]">
               <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
               Independent · No sign-up · No credit check
             </p>
             <h1 className="mt-6 font-editorial text-[clamp(2.7rem,5.4vw,4.6rem)] leading-[0.98] text-[var(--cl-ink)] text-balance">
-              Find the card that <span className="text-[var(--cl-brand)]">pays you back.</span>
+              Find the card that{' '}
+              <span className="pop relative mt-2 inline-block -rotate-1 rounded-2xl bg-[var(--cl-sun)] px-3 pb-1">
+                pays you back.
+                <Sparkle className="absolute -right-5 -top-5 h-9 w-9 text-[var(--cl-brand)]" />
+              </span>
             </h1>
-            <p className="mt-5 max-w-xl text-base md:text-lg text-[var(--cl-muted)] text-balance">
+            <p className="mt-7 max-w-xl text-base md:text-lg text-[var(--cl-muted)] text-balance">
               Tell us how you spend. We rank {allCards.length} cards from {providers.length} major issuers by what each is worth to you in dollars a year — after fees.
             </p>
           </div>
@@ -264,7 +271,7 @@ export default function CardCarousel({
           <div className="flex flex-col items-center gap-3 sm:flex-row">
             <button
               onClick={onFindMatches}
-              className="h-12 px-7 rounded-full bg-[var(--cl-pill)] text-[var(--cl-pill-ink)] font-semibold flex items-center gap-2 shadow-[0_14px_30px_-14px_oklch(0.52_0.23_265/0.7)] hover:brightness-110 transition"
+              className="pop pop-lift h-13 px-7 py-3 rounded-full bg-[var(--cl-pill)] text-[var(--cl-pill-ink)] font-bold flex items-center gap-2"
             >
               Get my matches <span className="font-normal opacity-75">· 2 min</span> <ChevronRight className="h-4 w-4" />
             </button>
@@ -311,45 +318,53 @@ export default function CardCarousel({
         {/* Who we cover — plain wordmarks, a quick credibility cue. */}
         <div className="mt-16 w-full max-w-6xl text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--cl-muted)]">Cards from {providers.length} major issuers</p>
-          <p className="mt-4 flex flex-wrap items-center justify-center gap-x-7 gap-y-3 text-[15px] font-semibold tracking-tight text-[var(--cl-ink)]/45">
-            {providers.map((p) => <span key={p}>{providerLabel(p)}</span>)}
+          <p className="mt-4 flex flex-wrap items-center justify-center gap-2.5">
+            {providers.map((p, i) => (
+              <span
+                key={p}
+                className={`pop-sm rounded-full bg-white px-3.5 py-1.5 text-sm font-semibold text-[var(--cl-ink)] ${i % 3 === 0 ? '-rotate-1' : i % 3 === 1 ? 'rotate-1' : ''}`}
+              >
+                {providerLabel(p)}
+              </span>
+            ))}
           </p>
         </div>
 
         {/* Trust strip: the four worries people bring to card shopping, each
             answered with something this product actually does. */}
         <ul className="mt-14 grid w-full max-w-6xl gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {TRUST_POINTS.map(({ icon: Icon, title, body }) => (
-            <li key={title} className="rounded-[1.5rem] border border-[var(--cl-hairline)] bg-[var(--cl-surface)] p-6 transition-shadow hover:shadow-[0_18px_40px_-28px_oklch(0.45_0.2_265/0.5)]">
-              <span className="grid h-10 w-10 place-items-center rounded-xl bg-[var(--cl-brand-soft)] text-[var(--cl-brand)]">
+          {TRUST_POINTS.map(({ icon: Icon, title, body }, i) => (
+            <li key={title} className={`pop pop-lift rounded-[1.5rem] p-6 ${TRUST_COLORS[i % TRUST_COLORS.length]}`}>
+              <span className="pop-sm grid h-10 w-10 place-items-center rounded-xl bg-white text-[var(--cl-ink)]">
                 <Icon className="h-5 w-5" aria-hidden="true" />
               </span>
               <p className="mt-4 font-semibold text-[var(--cl-ink)]">{title}</p>
-              <p className="mt-1 text-sm leading-relaxed text-[var(--cl-muted)]">{body}</p>
+              <p className="mt-1 text-sm leading-relaxed text-[var(--cl-ink)]/75">{body}</p>
             </li>
           ))}
         </ul>
 
         {/* How we rank: the method, on the same blue "card" as the value
             figure on results — one motif across the site. */}
-        <div className="relative mt-16 w-full max-w-6xl overflow-hidden rounded-[2rem] bg-[linear-gradient(135deg,oklch(0.55_0.23_262)_0%,oklch(0.46_0.24_268)_55%,oklch(0.38_0.20_275)_100%)] px-6 py-12 text-white md:px-14 md:py-16">
-          <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.08] [background-image:linear-gradient(white_1px,transparent_1px),linear-gradient(90deg,white_1px,transparent_1px)] [background-size:32px_32px]" />
-          <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-32 h-80 w-80 rounded-full bg-white/15 blur-3xl" />
+        <div className="pop relative mt-16 w-full max-w-6xl overflow-hidden rounded-[2rem] bg-[var(--cl-brand)] px-6 py-12 text-white md:px-14 md:py-16">
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-20 [background-image:radial-gradient(white_1px,transparent_1.2px)] [background-size:20px_20px]" />
+          <Sparkle className="absolute right-10 top-10 hidden h-14 w-14 text-[var(--cl-sun)] md:block" />
+          <Sparkle className="absolute right-28 top-28 hidden h-6 w-6 text-[var(--cl-pink)] md:block" />
           <div className="relative">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/70">The method</p>
+            <p className="text-xs font-bold uppercase tracking-[0.16em] text-white">The method</p>
             <h2 className="mt-3 max-w-xl font-editorial text-3xl md:text-5xl leading-[1.02]">How we rank cards</h2>
             <ol className="mt-10 grid gap-8 md:grid-cols-3">
               {RANK_STEPS.map((step, i) => (
-                <li key={step.title} className="border-t border-white/25 pt-5">
-                  <span className="font-editorial text-5xl leading-none text-white/35">0{i + 1}</span>
+                <li key={step.title}>
+                  <span className="pop-sm grid h-14 w-14 place-items-center rounded-2xl bg-[var(--cl-sun)] font-editorial text-2xl text-[var(--cl-ink)]">{i + 1}</span>
                   <p className="mt-4 text-lg font-semibold">{step.title}</p>
-                  <p className="mt-1.5 text-sm leading-relaxed text-white/80">{step.body}</p>
+                  <p className="mt-1.5 text-sm leading-relaxed text-white">{step.body}</p>
                 </li>
               ))}
             </ol>
             <button
               onClick={onFindMatches}
-              className="mt-10 h-12 px-7 rounded-full bg-white text-[var(--cl-brand)] font-semibold inline-flex items-center gap-2 hover:bg-white/90 transition-colors"
+              className="pop pop-lift mt-10 h-12 px-6 rounded-full bg-white text-[var(--cl-ink)] text-sm font-bold whitespace-nowrap inline-flex items-center gap-2 md:px-7 md:text-base"
             >
               Rank cards for my spending <ChevronRight className="h-4 w-4" />
             </button>
@@ -410,7 +425,7 @@ export default function CardCarousel({
           <button
             onClick={() => setMobileFiltersOpen((o) => !o)}
             aria-expanded={mobileFiltersOpen}
-            className="h-8 px-4 rounded-full border border-[var(--cl-hairline-strong)] text-xs font-medium text-[var(--cl-ink)] flex items-center gap-1.5"
+            className="pop-sm h-8 px-4 rounded-full bg-white text-xs font-semibold text-[var(--cl-ink)] flex items-center gap-1.5"
           >
             Refine{activeFilters.length ? ` · ${activeFilters.length} active` : ''}
             <ChevronDown className={`w-3.5 h-3.5 transition-transform ${mobileFiltersOpen ? 'rotate-180' : ''}`} />
@@ -493,7 +508,7 @@ export default function CardCarousel({
             <button
               onClick={prevCard}
               aria-label="Previous card"
-              className="h-10 w-10 rounded-full bg-[var(--cl-bg)] border border-[var(--cl-hairline-strong)] shadow-sm hover:bg-[var(--cl-panel)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cl-ink)]/30 transition-colors text-[var(--cl-muted)] hover:text-[var(--cl-ink)] flex items-center justify-center"
+              className="pop-sm pop-lift h-10 w-10 rounded-full bg-white hover:bg-[var(--cl-panel)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cl-ink)]/30 transition-colors text-[var(--cl-muted)] hover:text-[var(--cl-ink)] flex items-center justify-center"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
@@ -501,7 +516,7 @@ export default function CardCarousel({
               <button
                 onClick={() => setWatchlist((prev) => (prev.includes(activeCard.id) ? prev.filter((id) => id !== activeCard.id) : [...prev, activeCard.id]))}
                 aria-label={watchlist.includes(activeCard.id) ? `Remove ${activeCard.name} from watchlist` : `Add ${activeCard.name} to watchlist`}
-                className="h-10 w-10 rounded-full bg-[var(--cl-bg)] border border-[var(--cl-hairline-strong)] shadow-sm text-[var(--cl-muted)] hover:text-[var(--cl-ink)] hover:border-[var(--cl-ink)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cl-ink)]/30 transition-colors flex items-center justify-center"
+                className="pop-sm pop-lift h-10 w-10 rounded-full bg-white text-[var(--cl-muted)] hover:text-[var(--cl-ink)] hover:border-[var(--cl-ink)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cl-ink)]/30 transition-colors flex items-center justify-center"
               >
                 {watchlist.includes(activeCard.id) ? <X className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
               </button>
@@ -514,7 +529,7 @@ export default function CardCarousel({
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`Visit ${activeCard.name} on the issuer's site`}
-                  className="h-10 w-10 rounded-full bg-[var(--cl-pill)] text-[var(--cl-pill-ink)] shadow-sm hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cl-ink)]/40 transition-opacity flex items-center justify-center"
+                  className="pop-sm pop-lift h-10 w-10 rounded-full bg-[var(--cl-pill)] text-[var(--cl-pill-ink)] hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cl-ink)]/40 transition-opacity flex items-center justify-center"
                 >
                   <ArrowUpRight className="w-5 h-5" />
                 </a>
@@ -528,7 +543,7 @@ export default function CardCarousel({
             <button
               onClick={nextCard}
               aria-label="Next card"
-              className="h-10 w-10 rounded-full bg-[var(--cl-bg)] border border-[var(--cl-hairline-strong)] shadow-sm hover:bg-[var(--cl-panel)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cl-ink)]/30 transition-colors text-[var(--cl-muted)] hover:text-[var(--cl-ink)] flex items-center justify-center"
+              className="pop-sm pop-lift h-10 w-10 rounded-full bg-white hover:bg-[var(--cl-panel)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cl-ink)]/30 transition-colors text-[var(--cl-muted)] hover:text-[var(--cl-ink)] flex items-center justify-center"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
@@ -549,7 +564,7 @@ export default function CardCarousel({
 
         {/* The details, gathered into one soft panel so they read as a single,
             tidy section rather than text floating between hairlines. */}
-        <section className="w-full max-w-6xl rounded-[1.75rem] bg-[var(--cl-panel)] px-5 py-7 md:px-10 md:py-9">
+        <section className="pop w-full max-w-6xl rounded-[1.75rem] bg-white px-5 py-7 md:px-10 md:py-9">
           <h2 className="mb-6 font-editorial text-2xl text-[var(--cl-ink)] md:text-3xl">The fine print</h2>
           <CardInsightsPanel card={activeCard} whyBullets={activeWhy} />
           <div className="mt-8 border-t border-[var(--cl-hairline-strong)] pt-6 -mx-4 md:mx-0">

@@ -180,7 +180,7 @@ export default function App() {
             </p>
           </div>
         </div>
-        <p className="mx-auto mt-10 max-w-5xl border-t border-white/10 pt-6 text-xs text-white/40">© 2026 CardFit.</p>
+        <p className="mx-auto mt-10 max-w-5xl border-t border-white/10 pt-6 text-xs text-white/65">© 2026 CardFit.</p>
       </footer>
 
       <FindMyCard open={findOpen} onClose={() => setFindOpen(false)} onComplete={handleComplete} />

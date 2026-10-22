@@ -59,7 +59,7 @@ export default function Navigation({ currentPage, setCurrentPage, findActive, on
       </div>
 
       {isMenuOpen && (
-        <div className="pointer-events-auto flex flex-col gap-1 rounded-[1.1rem] border border-[var(--cl-hairline-strong)] bg-[var(--cl-surface)] p-1.5 shadow-[0_22px_54px_-34px_rgb(0_0_0_/_0.45)] sm:hidden">
+        <div className="pointer-events-auto flex flex-col gap-1 pop rounded-[1.1rem] bg-white p-1.5 sm:hidden">
           {links.map((link) => (
             <button
               key={link.id}
@@ -84,7 +84,7 @@ export default function Navigation({ currentPage, setCurrentPage, findActive, on
         </div>
       )}
 
-      <nav className="pointer-events-auto hidden h-[48px] w-auto items-center gap-1 rounded-full border border-[var(--cl-hairline-strong)] bg-[var(--cl-surface)] p-1 shadow-[0_10px_28px_-24px_rgb(0_0_0_/_0.55)] sm:flex">
+      <nav className="pointer-events-auto hidden h-[48px] w-auto items-center gap-1 pop rounded-full bg-white p-1 sm:flex">
         {links.map(link => (
           <button
             key={link.id}
