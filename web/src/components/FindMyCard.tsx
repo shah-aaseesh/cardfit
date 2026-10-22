@@ -307,7 +307,7 @@ function EmailStep({ answers, set, onEmailBlur, welcomeBack }: StepProps & { onE
   const inputClass = 'flex-1 min-w-0 h-12 px-4 rounded-2xl bg-[var(--cl-bg)] border border-[var(--cl-hairline-strong)] text-[var(--cl-ink)] placeholder-[var(--cl-muted)] text-[15px] focus:outline-none focus:border-[var(--cl-gold)] transition-colors';
   return (
     <div className="w-full flex flex-col items-center">
-      <Heading title="Save your progress" hint="Drop your name and email so we remember your cards and matches next time. Enter an email you've used before and we'll bring your setup back." />
+      <Heading title="Save your progress" hint="Drop your name and email so we remember your cards and matches next time you visit on this device." />
       <div className="w-full max-w-md flex flex-col gap-3">
         <div className="flex gap-3">
           <input

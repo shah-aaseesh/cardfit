@@ -682,7 +682,10 @@ function sameFamilyWeaker(candidate: RankingCard, owned: RankingCard): boolean {
 
 function strictlyWorseVersion(candidate: RankingCard, owned: RankingCard): boolean {
   const ownedLooksFlat = owned.baseRate >= 2 && Math.max(owned.gasRate, owned.diningRate, owned.groceryRate, owned.travelRate) <= owned.baseRate + 0.25;
-  if (ownedLooksFlat && candidate.baseRate <= 1.5 && candidate.rewardSystem === 'cash_back') return true;
+  // Weaker than a flat-rate card only if no category beats the flat rate too —
+  // 6% groceries still adds value next to a 2% everything card.
+  const candidateBestCategory = Math.max(candidate.gasRate, candidate.diningRate, candidate.groceryRate, candidate.travelRate);
+  if (ownedLooksFlat && candidate.baseRate <= 1.5 && candidate.rewardSystem === 'cash_back' && candidateBestCategory <= owned.baseRate) return true;
   if (owned.groceryRate >= 4 && candidate.groceryRate > 0 && candidate.groceryRate <= owned.groceryRate) return true;
   return false;
 }

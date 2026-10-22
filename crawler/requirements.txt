@@ -17,3 +17,4 @@ supabase>=2.9.0
 # (JS-injected card art / product links, e.g. Discover). After installing,
 # run: playwright install chromium
 playwright>=1.40.0
+pillow>=10.0.0  # scripts/cache_card_art.py only

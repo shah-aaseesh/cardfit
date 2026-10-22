@@ -52,6 +52,8 @@ export default function CardCarousel({
   const [explanations, setExplanations] = useState<Record<string, string[]>>({});
   const [currentIndex, setCurrentIndex] = useState(0);
   const [providerFilter, setProviderFilter] = useState('all');
+  // The query submitted on the landing hero, carried into the results bar.
+  const [lastQuery, setLastQuery] = useState('');
   // Landing state: on first load show only the centered search + filters; the
   // deck appears once the user searches or picks a filter.
   const [started, setStarted] = useState(startWithResults);
@@ -153,6 +155,16 @@ export default function CardCarousel({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeCard?.id, showResults]);
 
+  // The carousel only mounts the cards next to the current one, so warm the
+  // browser cache with the whole deck's art (~12KB each, self-hosted) and
+  // swiping never waits on a download.
+  useEffect(() => {
+    if (!showResults) return;
+    for (const card of cards) {
+      if (card.imageUrl) new Image().src = card.imageUrl;
+    }
+  }, [cards, showResults]);
+
   // Landing hero: nothing but the search, centered on the page.
   if (!showResults) {
     return (
@@ -164,7 +176,7 @@ export default function CardCarousel({
           </div>
           <AISearchBar
             submitOnly
-            onQueryChange={() => {}}
+            onQueryChange={setLastQuery}
             onFiltersParsed={setActiveFilters}
             examples={[
               'cashback cards with no annual fee for students',
@@ -220,6 +232,7 @@ export default function CardCarousel({
           <div className="w-full px-4">
             <AISearchBar
               compact
+              initialValue={lastQuery}
               onQueryChange={(q) => { if (q.trim()) setStarted(true); }}
               onFiltersParsed={setActiveFilters}
               leftSlot={
@@ -464,6 +477,7 @@ export default function CardCarousel({
           <div className="w-full px-4">
             <AISearchBar
               compact
+              initialValue={lastQuery}
               onQueryChange={(q) => { if (q.trim()) setStarted(true); }}
               onFiltersParsed={setActiveFilters}
               leftSlot={

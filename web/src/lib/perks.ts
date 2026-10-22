@@ -39,6 +39,11 @@ const BONUS_TIER = /after (?:you )?spen|bonus (?:points|miles|offer)|welcome off
 // compete. Its "all other purchases" base still parses from its own tier.
 const ROTATING_TIER = /each quarter|rotat|different places|categor(?:y|ies) (?:of your choice|you choose)|choice categor/i;
 
+// Booking-portal rates ("5% on travel purchased through Chase Travel") only
+// apply when booking via the issuer's own site, so they don't credit the
+// general travel category — otherwise every portal card read as a travel card.
+const PORTAL_TIER = /(?:through|via|booked (?:on|with|through))\s+(?:the\s+)?(?:chase travel|amex travel|american express travel|capital one travel|citi travel|[a-z]+ travel portal|travel center|rewards center)/i;
+
 // Earn rates live in single digits (14x hotel co-brands are the ceiling);
 // anything larger leaked in from a bonus amount or a spend cap.
 const MAX_PLAUSIBLE_RATE = 20;
@@ -46,7 +51,7 @@ const MAX_PLAUSIBLE_RATE = 20;
 // "all purchases *through Chase Travel*" is a portal rate, not an
 // everything-rate — the lookahead keeps qualified phrasings out of `other`.
 const CATEGORY_WORDS: Record<PerkCategory, RegExp> = {
-  other: /all other|other (?:eligible )?purchases|every (?:eligible )?purchase\b(?!s? (?:through|booked|made|at|with))|all (?:eligible |qualifying )?purchases(?! (?:through|booked|made|at|with))|everything\b(?! (?:through|booked))/i,
+  other: /all other|other (?:eligible )?purchases|every (?:eligible )?purchase\b(?!s? (?:through|booked|made|at|with))|all (?:eligible |qualifying )?purchases(?! (?:through|booked|made|at|with))|everything\b(?! (?:through|booked))|everywhere else\b/i,
   dining: /dining|restaurant|takeout|take-out|food delivery/i,
   groceries: /grocer|supermarket|wholesale club/i,
   gas: /\bgas\b|fuel|ev charging/i,
@@ -104,15 +109,25 @@ function parsePerks(card: CreditCard): CardPerks {
     if (!value || value > MAX_PLAUSIBLE_RATE) continue;
 
     if (ROTATING_TIER.test(tier)) continue;
+    // Portal-only (no "directly with airlines/hotels" alternative) earns nothing general.
+    if (PORTAL_TIER.test(tier) && !/directly with/i.test(tier)) continue;
 
     // A tier can span several categories ("5X points on dining, groceries,
     // and gas" credits all three). Rates on unrecognized categories
     // (co-brand specifics like "Alaska Airlines purchases") are skipped so
     // they never inflate a generic category.
+    let matched = false;
     for (const cat of CATEGORIES) {
       if (CATEGORY_WORDS[cat].test(tier)) {
         rates[cat] = Math.max(rates[cat] ?? 0, value);
+        matched = true;
       }
+    }
+    // "Unlimited 1.5% cash back is just the beginning" names no category:
+    // an unqualified unlimited/flat rate is the everyday rate. Brand-specific
+    // ("at Amazon") and thresholded ("on purchases of $5,000 or more") ones aren't.
+    if (!matched && /\bunlimited\b|\bflat\b/i.test(tier) && !/\b(?:at|on|with)\s+[A-Z]/.test(tier) && !/\$[\d,]+ or more/i.test(tier)) {
+      rates.other = Math.max(rates.other ?? 0, value);
     }
   }
 

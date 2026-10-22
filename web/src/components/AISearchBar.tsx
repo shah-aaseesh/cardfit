@@ -24,10 +24,13 @@ interface AISearchBarProps {
   leftSlot?: React.ReactNode;
   compact?: boolean;
   examples?: string[];
+  /** Text to start with, e.g. the query submitted on the landing hero, so the
+   *  results-view bar shows what the user searched instead of going blank. */
+  initialValue?: string;
 }
 
-export default function AISearchBar({ onQueryChange, onFiltersParsed, onSubmit, submitOnly, leftSlot, compact, examples }: AISearchBarProps) {
-  const [value, setValue] = useState('');
+export default function AISearchBar({ onQueryChange, onFiltersParsed, onSubmit, submitOnly, leftSlot, compact, examples, initialValue = '' }: AISearchBarProps) {
+  const [value, setValue] = useState(initialValue);
   const [parsing, setParsing] = useState(false);
   const [placeholder, setPlaceholder] = useState('');
   const [phIndex, setPhIndex] = useState(0);

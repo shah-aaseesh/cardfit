@@ -31,6 +31,7 @@ function isLikelyCardArt(url?: string): boolean {
 
 export default function CardVisual({ card, variant = 'default' }: CardVisualProps) {
   const [artFailed, setArtFailed] = useState(false);
+  const [artLoaded, setArtLoaded] = useState(false);
   const showArt = isLikelyCardArt(card.imageUrl) && !artFailed;
   const size = SIZE[variant];
 
@@ -39,10 +40,20 @@ export default function CardVisual({ card, variant = 'default' }: CardVisualProp
   if (showArt) {
     return (
       <div className={`relative ${size} flex items-center justify-center`}>
+        {/* Card-shaped placeholder until the art decodes, so the slot never
+            sits empty. */}
+        {!artLoaded && (
+          <div className="absolute inset-0 rounded-[1.25rem] md:rounded-[1.5rem] bg-neutral-200/70 animate-pulse" />
+        )}
         <img
           src={card.imageUrl}
           alt={`${card.name} card art`}
-          loading="lazy"
+          // Art is self-hosted and small (~12KB WebP, see
+          // crawler/scripts/cache_card_art.py), so load eagerly: lazy loading
+          // held back cards parked off-screen in the 3D carousel until the
+          // user had already swiped to them.
+          loading="eager"
+          decoding="async"
           onError={() => setArtFailed(true)}
           onLoad={(e) => {
             // Flat card art is landscape at ~card proportions (1.586:1, so
@@ -55,8 +66,9 @@ export default function CardVisual({ card, variant = 'default' }: CardVisualProp
             // to render sharp at the ~420px slot — those fall back to the clean
             // gradient face rather than showing a blurry/undersized image.
             if (w && h && (w <= h || w / h < 1.3 || w / h > 1.8 || w < 200)) setArtFailed(true);
+            else setArtLoaded(true);
           }}
-          className={`w-full h-full ${variant === 'fill' ? 'object-cover' : 'object-contain'} [filter:saturate(1.04)_contrast(1.03)]`}
+          className={`relative w-full h-full ${variant === 'fill' ? 'object-cover' : 'object-contain'} [filter:saturate(1.04)_contrast(1.03)] transition-opacity duration-300 ${artLoaded ? 'opacity-100' : 'opacity-0'}`}
         />
       </div>
     );
