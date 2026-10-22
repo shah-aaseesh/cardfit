@@ -353,8 +353,15 @@ function bonusValue(card: CreditCard, centsPerPoint: number): number {
   // Allow the program name in between: "175,000 Hilton Honors Bonus Points".
   const points = text.match(/(\d[\d,]{2,})\s+(?:[A-Za-z®™℠-]+\s+){0,4}?(?:points|miles|avios)\b/i);
   if (points) return Math.min(parseInt(points[1].replace(/,/g, ''), 10) * centsPerPoint / 100, 1500);
-  const dollars = text.match(/\$([\d,]+)/);
-  if (dollars) return Math.min(parseInt(dollars[1].replace(/,/g, ''), 10), 1500);
+  // A dollar amount next to "spend"/"purchases" is the requirement, not the
+  // bonus ("3 Free Night Awards after spending $3,000" is not a $3,000
+  // bonus). Non-cash bonuses like free nights stay unvalued (conservative).
+  for (const m of text.matchAll(/\$([\d,]+)/g)) {
+    const before = text.slice(Math.max(0, (m.index ?? 0) - 30), m.index);
+    const after = text.slice((m.index ?? 0) + m[0].length, (m.index ?? 0) + m[0].length + 20);
+    if (/spend|spending|spent|purchases? of|make\s*$/i.test(before) || /^\s*(?:or more\s+)?(?:in|on|of)\s+(?:eligible\s+|net\s+)?purchases/i.test(after)) continue;
+    return Math.min(parseInt(m[1].replace(/,/g, ''), 10), 1500);
+  }
   return 0;
 }
 

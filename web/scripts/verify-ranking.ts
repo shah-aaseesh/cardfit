@@ -129,8 +129,12 @@ const aspire = deriveRankingCard(aspireCard);
 assert(aspire.pointValueCents < 1, `Expected Hilton points valued below 1c, got ${aspire.pointValueCents}.`);
 // 14x is Hilton-only (excluded as own-brand); 7x general travel at ~0.5c = ~3.5%.
 assert(aspire.travelRate <= 4, `Expected Aspire's general travel to score ~3.5% value, got ${aspire.travelRate}.`);
-// "175,000 ... Points after you spend $6,000": the bonus is the points, not the spend.
-assert(Math.round(aspire.welcomeBonusValue) === 875, `Expected Aspire bonus ~$875, got ${aspire.welcomeBonusValue}.`);
+// "N Hilton Honors Bonus Points after you spend $6,000": the bonus is the
+// points at Hilton's ~0.5c, never the spend requirement. Derived from the
+// live offer text so a new crawl's offer doesn't break the check.
+const aspirePoints = Number((aspireCard.facts.bonus.match(/([\d,]{5,})\s+Hilton/i)?.[1] ?? '0').replace(/,/g, ''));
+assert(aspirePoints > 0, 'Expected the Aspire bonus to state a points amount.');
+assert(Math.round(aspire.welcomeBonusValue) === Math.round(aspirePoints * 0.005), `Expected Aspire bonus ~$${aspirePoints * 0.005}, got ${aspire.welcomeBonusValue}.`);
 console.log(`Point valuation OK: ${aspire.name} travel=${aspire.travelRate}% bonus=$${aspire.welcomeBonusValue}.`);
 
 const sample = nextCard.recommendations[0];

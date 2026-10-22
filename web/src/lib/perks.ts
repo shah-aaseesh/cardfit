@@ -42,7 +42,10 @@ const ROTATING_TIER = /each quarter|rotat|different places|categor(?:y|ies) (?:o
 // Booking-portal rates ("5% on travel purchased through Chase Travel") only
 // apply when booking via the issuer's own site, so they don't credit the
 // general travel category — otherwise every portal card read as a travel card.
-const PORTAL_TIER = /(?:through|via|booked (?:on|with|through))\s+(?:the\s+)?(?:chase travel|amex travel|american express travel|capital one travel|citi travel|[a-z]+ travel portal|travel center|rewards center)/i;
+// "select travel" is issuer shorthand for portal bookings (Citi Double Cash).
+const PORTAL_TIER = /(?:chase|citi|capital one|amex|american express|u\.s\. bank)\s*travel|amextravel\.com|cititravel\.com|travel portal|travel center|rewards center|\bselect travel\b/i;
+// Rates that ALSO apply when booking directly still count as general travel.
+const DIRECT_BOOKING = /directly (?:with|through)/i;
 
 // Earn rates live in single digits (14x hotel co-brands are the ceiling);
 // anything larger leaked in from a bonus amount or a spend cap.
@@ -71,12 +74,38 @@ function perksFromRates(card: CreditCard): CardPerks | null {
   for (const r of structured) {
     if (r.unit === 'percent') cashSignals++;
     else pointSignals++;
-    if ((CATEGORIES as string[]).includes(r.category)) {
+    if ((CATEGORIES as string[]).includes(r.category) && structuredRateCounts(card, r.category as PerkCategory, r.quote || '')) {
       const cat = r.category as PerkCategory;
       rates[cat] = Math.max(rates[cat] ?? 0, r.rate);
     }
   }
   return { currency: cashSignals >= pointSignals ? 'cashback' : 'points', rates };
+}
+
+const HOTEL_BRANDS = /hilton|marriott|bonvoy|hyatt|\bihg\b|wyndham|choice privileges/i;
+// "Everything" phrasing for the base rate. "on Kohl's purchases every day"
+// must NOT pass; "1.5% on all other purchases" / "2% on purchases" must.
+const EVERYDAY = /all other|other (?:eligible )?purchases|everywhere|everything|every (?:eligible )?purchase\b|unlimited|\bflat\b|(?:^|\s)(?:on|for)\s+(?:all\s+|every\s+|eligible\s+|net\s+)?purchases\b/i;
+
+/**
+ * Whether a structured (AI-extracted) rate may credit its category. The
+ * extractor files brand- and portal-only earn under generic categories
+ * ("7.5% on Kohl's purchases" -> other, "5% on travel through Chase Travel"
+ * -> travel), so its own quote is held to the same rules as parsed prose.
+ * Rates without a quote are trusted as before.
+ */
+function structuredRateCounts(card: CreditCard, cat: PerkCategory, quote: string): boolean {
+  if (!quote) return true;
+  if (PORTAL_TIER.test(quote) && !DIRECT_BOOKING.test(quote)) return false;
+  const scope = generalScope(card, quote);
+  if (!scope.trim()) return false;
+  if (cat === 'other') return EVERYDAY.test(scope);
+  // The quote must actually name the category (minus any own-brand clause):
+  // "5% at Pottery Barn, Williams Sonoma" was filed as travel.
+  if (!CATEGORY_WORDS[cat].test(scope)) return false;
+  // A hotel co-brand's "Hotels & Resorts" rate means its own hotels.
+  if (cat === 'travel' && HOTEL_BRANDS.test(card.name) && /hotel|resort/i.test(scope) && !/flight|airfare|airline|rental car|car rental|transit|\btravel\b/i.test(scope)) return false;
+  return true;
 }
 
 // Co-brand partners. A tier that names the card's *own* brand ("18.5X total
@@ -134,7 +163,7 @@ function parsePerks(card: CreditCard): CardPerks {
 
     if (ROTATING_TIER.test(tier)) continue;
     // Portal-only (no "directly with airlines/hotels" alternative) earns nothing general.
-    if (PORTAL_TIER.test(tier) && !/directly with/i.test(tier)) continue;
+    if (PORTAL_TIER.test(tier) && !DIRECT_BOOKING.test(tier)) continue;
     const scope = generalScope(card, tier);
     if (!scope.trim()) continue;
 
