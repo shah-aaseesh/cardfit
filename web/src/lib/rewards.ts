@@ -144,28 +144,20 @@ export function cardRewardBullets(facts: {
 }
 
 /**
- * The Top Perk cell: show the actual benefit in a reduced, number-first form.
- * Older crawls filled top_perk with the sign-up bonus, which already has its
- * own cell right next to it — so when the perk merely restates the bonus (or
- * is a placeholder), show the card's strongest earn rate instead.
+ * The Top Perk cell: an ongoing benefit beyond earning (lounge access, a
+ * travel credit...), in a reduced, number-first form. Older crawls filled
+ * top_perk with the sign-up bonus or an earn rate, both of which already
+ * have their own sections right below — repeating them adds nothing, so
+ * those (and placeholders) show "See issuer site" instead.
  */
-export function topPerkDisplay(facts: { topPerk: string; bonus: string; rewards: string; rewardsBullets?: string[] }): string {
+export function topPerkDisplay(facts: { topPerk: string; bonus: string; rewards: string }): string {
   const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
   const perk = norm(facts.topPerk);
   const bonus = norm(facts.bonus);
+  const rewards = norm(facts.rewards);
   const restatesBonus = perk && bonus && (perk === bonus || perk.includes(bonus) || bonus.includes(perk));
-  if (restatesBonus || !perk || /see issuer/i.test(facts.topPerk)) {
-    // Booking-portal-only rates ("through Chase Travel") rank last: they're
-    // the biggest numbers but the least representative.
-    const portal = (b: string) => /through (?:the )?[a-z ]*travel\b/i.test(b) && !/directly with/i.test(b);
-    const strongest = cardRewardBullets(facts)
-      .filter((b) => /^\$?\d/.test(b))
-      .sort((a, b) =>
-        Number(portal(a)) - Number(portal(b)) ||
-        parseFloat(b.replace(/^\$/, '')) - parseFloat(a.replace(/^\$/, '')))[0];
-    if (strongest) return concisePerk(strongest);
-    return restatesBonus ? concisePerk(facts.bonus) : 'See issuer site';
-  }
+  const restatesRewards = perk.length > 12 && rewards.includes(perk);
+  if (!perk || restatesBonus || restatesRewards || /see issuer/i.test(facts.topPerk)) return 'See issuer site';
   return concisePerk(facts.topPerk);
 }
 

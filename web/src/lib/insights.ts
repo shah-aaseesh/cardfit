@@ -6,11 +6,12 @@
 // cash-back / points math stays on one scale.
 
 import { CreditCard } from '../types';
-import { deriveRankingCard, RankingCard, parseAnnualFee } from './ranking';
+import { deriveRankingCard, RankingCard, parseAnnualFee, incrementalRewards, rankValue, TYPICAL_SPEND, MonthlySpend } from './ranking';
 
-// A representative "typical" monthly spend, used for reward examples and
-// first-year value when the user hasn't given their own numbers.
-export const TYPICAL_SPEND = { groceries: 500, dining: 400, gas: 200, travel: 300, general: 1200 };
+// The typical spend and spend type live with the ranking (one source of
+// truth for "value"); re-exported for UI callers.
+export { TYPICAL_SPEND };
+export type { MonthlySpend };
 
 type Cat = 'groceries' | 'dining' | 'gas' | 'travel' | 'general';
 const CAT_LABEL: Record<Cat, string> = {
@@ -38,42 +39,47 @@ function topCategory(rc: RankingCard): { cat: Cat; rate: number } {
   return best;
 }
 
-export type MonthlySpend = Partial<Record<Cat, number>>;
-
 /** A card's estimated value, broken down so the UI can show where every
- *  dollar comes from (people trust a number they can see the parts of). */
+ *  dollar comes from (people trust a number they can see the parts of).
+ *  Built on the ranking's own functions, so the headline equals the number
+ *  the card was ranked by. */
 export interface ValueEstimate {
-  /** Rewards earned in a year on this spend, cash-equivalent. */
+  /** Rewards earned in a year on this spend (or, with owned cards, the extra
+   *  over them), cash-equivalent. */
   rewards: number;
-  /** Welcome bonus value (first year only). */
+  /** Welcome bonus value (one-time). */
   bonus: number;
   annualFee: number;
+  /** The ranking number: rewards − fee + bonus ÷ 2 (two-year average). */
+  average: number;
   /** rewards + bonus − fee */
   firstYear: number;
   /** rewards − fee: what it's worth once the bonus is gone. */
   everyYear: number;
   /** True when computed from the user's own spending answers. */
   personalized: boolean;
+  /** True when rewards are measured on top of the user's current cards. */
+  incremental: boolean;
 }
 
-/** Estimated yearly value of a card on the user's spend (or a typical one).
+/** Estimated yearly value of a card on the user's spend (or a typical one),
+ *  optionally as the extra it adds over cards the user already holds.
  *  Points/miles use the conservative values in lib/pointValues.ts. */
-export function estimateValue(card: CreditCard, spend?: MonthlySpend): ValueEstimate {
+export function estimateValue(card: CreditCard, spend?: MonthlySpend, owned: CreditCard[] = []): ValueEstimate {
   const rc = deriveRankingCard(card);
-  const s = { ...TYPICAL_SPEND, ...(spend || {}) };
-  const rewards = Math.round(
-    (['groceries', 'dining', 'gas', 'travel', 'general'] as Cat[])
-      .reduce((sum, c) => sum + (s[c] || 0) * 12 * dollarPerRate(rateFor(rc, c) || rc.baseRate), 0),
-  );
+  const ownedRc = owned.filter((o) => o.id !== card.id).map(deriveRankingCard);
+  const rewards = Math.round(incrementalRewards(rc, ownedRc, spend));
   const bonus = Math.round(rc.welcomeBonusValue);
   const annualFee = rc.annualFee;
   return {
     rewards,
     bonus,
     annualFee,
+    average: Math.round(rankValue(rc, rewards)),
     firstYear: rewards + bonus - annualFee,
     everyYear: rewards - annualFee,
     personalized: Boolean(spend && Object.keys(spend).length),
+    incremental: ownedRc.length > 0,
   };
 }
 

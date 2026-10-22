@@ -17,14 +17,18 @@ interface ValueBlockProps {
   spend?: MonthlySpend;
   /** Always stack number over breakdown (narrow columns, e.g. beside the card). */
   stacked?: boolean;
+  /** Cards the user already holds: rewards then count only what this card
+   *  adds on top of them (the same basis the quiz ranks by). */
+  owned?: CreditCard[];
 }
 
-export default function ValueBlock({ card, spend, stacked = false }: ValueBlockProps) {
+export default function ValueBlock({ card, spend, stacked = false, owned = [] }: ValueBlockProps) {
   const row = stacked ? "" : "md:flex-row md:items-center md:justify-between";
   const left = stacked ? "text-left" : "text-center md:text-left";
   const justify = stacked ? "justify-start" : "justify-center md:justify-start";
-  const v = useMemo(() => estimateValue(card, spend), [card, spend]);
-  const positive = v.everyYear > 0;
+  const v = useMemo(() => estimateValue(card, spend, owned), [card, spend, owned]);
+  // The headline is the exact number the card was ranked by.
+  const positive = v.average > 0;
   const monthlyTotal = Object.values(v.personalized ? { ...TYPICAL_SPEND, ...spend } : TYPICAL_SPEND)
     .reduce((a, b) => a + (b || 0), 0);
 
@@ -33,26 +37,30 @@ export default function ValueBlock({ card, spend, stacked = false }: ValueBlockP
       <div className={`flex flex-col gap-5 ${row}`}>
         <div className={left}>
           <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[var(--cl-muted)]">
-            Estimated value {v.personalized ? 'for you' : 'on typical spending'}
+            {v.incremental ? 'Extra value over your cards' : `Estimated value ${v.personalized ? 'for you' : 'on typical spending'}`}
           </p>
           <p className={`mt-1 flex items-baseline gap-1.5 ${justify}`}>
             <span className={`font-editorial text-5xl md:text-6xl leading-none ${positive ? 'text-[var(--cl-value)]' : 'text-[var(--cl-caution)]'}`}>
-              {usd(v.everyYear)}
+              {usd(v.average)}
             </span>
             <span className="text-sm text-[var(--cl-muted)]">/ year</span>
           </p>
-          {v.bonus > 0 && (
-            <p className="mt-1.5 text-sm text-[var(--cl-ink)]">
-              <span className="font-semibold">{usd(v.firstYear)}</span>
-              <span className="text-[var(--cl-muted)]"> in year one, with the welcome bonus</span>
-            </p>
-          )}
+          <p className="mt-1.5 text-sm text-[var(--cl-muted)]">
+            {v.bonus > 0 ? (
+              <>
+                Averaged over 2 years: <span className="font-semibold text-[var(--cl-ink)]">{usd(v.firstYear)}</span> in year one,
+                then <span className="font-semibold text-[var(--cl-ink)]">{usd(v.everyYear)}</span>/yr
+              </>
+            ) : (
+              'Every year, after the annual fee'
+            )}
+          </p>
         </div>
 
         {/* The workings: every part of the number, fee included. */}
         <dl className={`grid grid-cols-3 gap-2 text-center ${stacked ? "" : "md:min-w-[22rem]"}`}>
           <div className="rounded-2xl bg-[var(--cl-value-soft)] px-3 py-2.5">
-            <dt className="text-[11px] font-semibold uppercase tracking-wider text-[var(--cl-muted)]">Rewards</dt>
+            <dt className="text-[11px] font-semibold uppercase tracking-wider text-[var(--cl-muted)]">{v.incremental ? 'Extra rewards' : 'Rewards'}</dt>
             <dd className="mt-0.5 font-semibold text-[var(--cl-value)]">+{usd(v.rewards)}</dd>
           </div>
           <div className="rounded-2xl bg-[var(--cl-value-soft)] px-3 py-2.5">
@@ -72,7 +80,7 @@ export default function ValueBlock({ card, spend, stacked = false }: ValueBlockP
         <p className="flex items-start gap-1.5">
           <Info className="mt-px h-3.5 w-3.5 shrink-0" aria-hidden="true" />
           <span>
-            Estimate on {v.personalized ? 'your' : 'a typical'} ~${monthlyTotal.toLocaleString()}/month of spending.
+            Estimate on {v.personalized ? 'your' : 'a typical'} ~${monthlyTotal.toLocaleString()}/month of spending{v.incremental ? ', counting only what beats your current cards' : ''}. Rewards rankings use this number, adjusted for approval odds.
             Points are valued conservatively. Confirm terms with the issuer.
           </span>
         </p>

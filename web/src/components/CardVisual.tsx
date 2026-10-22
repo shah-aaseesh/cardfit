@@ -33,6 +33,9 @@ function isLikelyCardArt(url?: string): boolean {
 export default function CardVisual({ card, variant = 'default' }: CardVisualProps) {
   const [artFailed, setArtFailed] = useState(false);
   const [artLoaded, setArtLoaded] = useState(false);
+  // Issuers publish much card art at only 250–480px. Showing it no larger
+  // than 1.25x its real width keeps it crisp instead of stretched and soft.
+  const [maxArtWidth, setMaxArtWidth] = useState<number | undefined>();
   const showArt = isLikelyCardArt(card.imageUrl) && !artFailed;
   const size = SIZE[variant];
 
@@ -67,8 +70,9 @@ export default function CardVisual({ card, variant = 'default' }: CardVisualProp
             // to render sharp at the ~420px slot — those fall back to the clean
             // gradient face rather than showing a blurry/undersized image.
             if (w && h && (w <= h || w / h < 1.3 || w / h > 1.8 || w < 200)) setArtFailed(true);
-            else setArtLoaded(true);
+            else { setMaxArtWidth(Math.round(w * 1.25)); setArtLoaded(true); }
           }}
+          style={variant === 'fluid' && maxArtWidth ? { maxWidth: maxArtWidth } : undefined}
           className={`relative w-full h-full ${variant === 'fill' ? 'object-cover' : 'object-contain'} [filter:saturate(1.04)_contrast(1.03)] transition-opacity duration-300 ${artLoaded ? 'opacity-100' : 'opacity-0'}`}
         />
       </div>

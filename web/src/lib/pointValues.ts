@@ -34,9 +34,14 @@ const PROGRAMS: Program[] = [
   },
   // Bank programs: value at the cash / statement-credit floor.
   { name: 'Chase Ultimate Rewards', match: /ultimate rewards|sapphire|freedom|\bink\b/i, cents: 1.0 },
-  { name: 'Amex Membership Rewards', match: /membership rewards/i, cents: 0.8 },
+  { name: 'Amex Membership Rewards', match: /membership rewards|american express|\bamex\b/i, cents: 0.8 },
   { name: 'Citi ThankYou', match: /thankyou|strata|citi rewards/i, cents: 1.0 },
-  { name: 'Capital One miles', match: /venture|capital one miles/i, cents: 1.0 },
+  { name: 'Capital One miles', match: /venture|capital one/i, cents: 1.0 },
+  // Bank points that redeem for cash at a fixed 1¢.
+  { name: 'Bank of America points', match: /bank of america/i, cents: 1.0 },
+  { name: 'Wells Fargo Rewards', match: /wells fargo/i, cents: 1.0 },
+  { name: 'U.S. Bank points', match: /u\.s\. bank|altitude/i, cents: 1.0 },
+  { name: 'Discover Miles', match: /discover/i, cents: 1.0 },
 ];
 
 /** Points of unknown program: below the bank-program floor, since we can't
@@ -48,8 +53,9 @@ export interface PointValue {
   program: string;
 }
 
-/** Cents per point/mile for a points card. Matches on the card name first
- *  (most specific), then the rewards text. */
+/** Cents per point/mile for a points card. Matches on the card name (plus
+ *  issuer, e.g. "Platinum Card® AMERICAN EXPRESS") first
+ *  — most specific — then the rewards text. */
 export function pointValue(name: string, rewardsText = ''): PointValue {
   for (const hay of [name, rewardsText]) {
     const program = PROGRAMS.find((p) => p.match.test(hay));

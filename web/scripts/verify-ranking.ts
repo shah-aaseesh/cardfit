@@ -1,13 +1,17 @@
 import rawRows from '../src/cards.snapshot.json';
 import { mapRowToCard, CardRow } from '../src/lib/cardMapper';
 import {
+  annualRewards,
   computeApprovalLikelihood,
   deriveRankingCard,
   getTop15Cards,
   recommendCards,
   RankingDebugOutput,
+  rankValue,
+  TYPICAL_SPEND,
   UserProfile,
 } from '../src/lib/ranking';
+import { estimateValue } from '../src/lib/insights';
 
 const cards = (rawRows as CardRow[]).map(mapRowToCard);
 
@@ -39,23 +43,28 @@ for (const result of groceryCash) {
   assert(rankingCard.audience === 'personal', `${result.card.name} violates personal hard pool.`);
   assert(rankingCard.rewardSystem === 'cash_back', `${result.card.name} violates cash-back hard pool.`);
   assert(rankingCard.annualFee === 0, `${result.card.name} violates no-fee hard pool.`);
-  assert((result.softScore ?? 0) >= 0, `${result.card.name} missing soft score.`);
   assert(result.explanation.length > 0, `${result.card.name} missing public explanation.`);
   assert(hasDebugShape(result.debug), `${result.card.name} missing RankingDebugOutput shape.`);
 }
-// Soft categories are a within-hard-tier tiebreaker (PRD §10.2 sorts by
-// hardTier first), so the #1 card isn't guaranteed to carry gas rewards —
-// assert instead that the gas soft score is populated and orders the pool.
-assert(groceryCash.some((r) => (r.softScore ?? 0) > 0), 'Expected gas soft category to affect ordering.');
+// Rewards searches rank by dollars: the list is sorted by value, and each
+// score equals the value formula on chip-weighted spend (gas doubled here).
 for (let i = 1; i < groceryCash.length; i++) {
-  const prev = groceryCash[i - 1], cur = groceryCash[i];
-  const prevTier = Math.floor((prev.debug.hardScore ?? 0) / 5);
-  const curTier = Math.floor((cur.debug.hardScore ?? 0) / 5);
-  if (prevTier === curTier) {
-    assert((prev.softScore ?? 0) >= (cur.softScore ?? 0), 'Within a hard tier, cards must be ordered by soft score.');
-  }
+  assert(groceryCash[i - 1].finalScore >= groceryCash[i].finalScore, 'Public ranking must be sorted by dollar value.');
 }
-console.log(`Public hard/soft ranking OK: ${groceryCash.length} no-fee personal cash-back cards; top=${groceryCash[0].card.name}; soft=${groceryCash[0].softScore?.toFixed(1)}.`);
+const gasSpend = { ...TYPICAL_SPEND, gas: TYPICAL_SPEND.gas * 2 };
+for (const r of groceryCash) {
+  const rc = deriveRankingCard(r.card);
+  const expected = rankValue(rc, annualRewards(rc, gasSpend));
+  assert(Math.abs(r.finalScore - expected) < 0.01, `${r.card.name}: score ${r.finalScore} != value ${expected}.`);
+}
+// With no chips, the #1 card's score is exactly the headline value shown on it.
+const plain = getTop15Cards(cards, { filters: ['rewards'] });
+const shown = estimateValue(plain[0].card);
+assert(Math.round(plain[0].finalScore) === shown.average, `Rank value ${plain[0].finalScore} != shown ${shown.average}.`);
+for (let i = 1; i < plain.length; i++) {
+  assert(estimateValue(plain[i - 1].card).average >= estimateValue(plain[i].card).average, 'Shown values must not increase down the list.');
+}
+console.log(`Public value ranking OK: ${groceryCash.length} no-fee cash-back cards, top=${groceryCash[0].card.name} ($${Math.round(groceryCash[0].finalScore)}/yr); rewards #1=${plain[0].card.name} ($${shown.average}/yr shown).`);
 
 const firstCardUser: UserProfile = {
   hasCreditCards: false,

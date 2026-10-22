@@ -189,6 +189,55 @@ const DEFAULT_MONTHLY_SPEND = {
   streaming: 75,
   drugstores: 75,
 };
+/** Typical monthly spend (~$2,600) used when the user hasn't given theirs.
+ *  The value shown on each card (ValueBlock) uses the same numbers, so the
+ *  ranking and the figure on screen always agree. */
+export const TYPICAL_SPEND = { groceries: 500, dining: 400, gas: 200, travel: 300, general: 1200 };
+export type SpendCategory = keyof typeof TYPICAL_SPEND;
+export type MonthlySpend = Partial<Record<SpendCategory, number>>;
+const SPEND_CATEGORIES = Object.keys(TYPICAL_SPEND) as SpendCategory[];
+
+/** Cash-equivalent earn rate (%) for a spend category, falling back to the
+ *  card's everyday rate when it has no bonus there. */
+export function categoryRate(card: RankingCard, cat: SpendCategory): number {
+  const r = cat === 'groceries' ? card.groceryRate
+    : cat === 'dining' ? card.diningRate
+    : cat === 'gas' ? card.gasRate
+    : cat === 'travel' ? card.travelRate
+    : 0;
+  return r || card.baseRate;
+}
+
+/** Dollars of rewards a year on the given monthly spend. */
+export function annualRewards(card: RankingCard, spend: MonthlySpend = {}): number {
+  const s = { ...TYPICAL_SPEND, ...spend };
+  return SPEND_CATEGORIES.reduce((sum, c) => sum + (s[c] || 0) * 12 * categoryRate(card, c) / 100, 0);
+}
+
+/** Extra rewards a year over the best card the user already holds in each
+ *  category — what adding this card actually changes. */
+export function incrementalRewards(card: RankingCard, owned: RankingCard[], spend: MonthlySpend = {}): number {
+  if (!owned.length) return annualRewards(card, spend);
+  const s = { ...TYPICAL_SPEND, ...spend };
+  return SPEND_CATEGORIES.reduce((sum, c) => {
+    const best = Math.max(0, ...owned.map((o) => categoryRate(o, c)));
+    return sum + Math.max(0, categoryRate(card, c) - best) * (s[c] || 0) * 12 / 100;
+  }, 0);
+}
+
+/**
+ * The single number cards are ranked by and the headline shown for them:
+ * average value per year over the first two years —
+ *   rewards − annual fee + welcome bonus ÷ 2.
+ * Spreading the one-time bonus over two years keeps a big bonus from
+ * outranking a card that pays more every year after.
+ */
+export function rankValue(card: RankingCard, rewards: number): number {
+  return rewards - card.annualFee + card.welcomeBonusValue / 2;
+}
+
+const usd = (n: number) => `${n < 0 ? '−' : ''}$${Math.abs(Math.round(n)).toLocaleString()}`;
+
 const SPEND_FILTERS: Record<string, SoftCategory> = {
   dining: 'dining',
   groceries: 'groceries',
@@ -321,7 +370,7 @@ function rate(perks: ReturnType<typeof getPerks>, cat: PerkCategory): number {
 export function deriveRankingCard(card: CreditCard): RankingCard {
   const fee = parseAnnualFee(card);
   const perks = getPerks(card);
-  const cpp = perks.currency === 'points' ? pointValue(card.name, card.facts.rewards).cents : 1;
+  const cpp = perks.currency === 'points' ? pointValue(`${card.name} ${card.issuer}`, card.facts.rewards).cents : 1;
   const valued = (n: number) => n * cpp;
   const aprText = `${card.facts.aprIntro || ''} ${card.facts.aprRegular || card.facts.apr || ''}`;
   const aprs = parseAprNumbers(aprText);
@@ -519,10 +568,60 @@ function publicExplanation(card: RankingCard, segment: PublicSegment, softCatego
   return lines;
 }
 
+/** A spending-category chip (Dining, Groceries, Gas) doubles that category
+ *  in the estimate, so "I spend a lot on dining" moves cards in dollars. */
+function spendForChips(softCategories: SoftCategory[], business: boolean): MonthlySpend {
+  const spend: MonthlySpend = business ? { ...TYPICAL_SPEND, dining: 500, travel: 500, general: 1800 } : { ...TYPICAL_SPEND };
+  for (const c of softCategories) {
+    if (c === 'dining' || c === 'groceries' || c === 'gas' || c === 'travel') spend[c] = (spend[c] || 0) * 2;
+  }
+  return spend;
+}
+
+function rankByValue(cards: CreditCard[], context: PublicRankingContext, softCategories: SoftCategory[]): RankedCardResult[] {
+  const spend = spendForChips(softCategories, context.segment === 'business');
+  return cards
+    .map(deriveRankingCard)
+    .filter((card) => publicEligible(card, context).ok)
+    .map((card) => {
+      const rewards = annualRewards(card, spend);
+      const value = rankValue(card, rewards);
+      const explanation = [
+        `Worth about ${usd(value)} a year on ${softCategories.length ? 'spending weighted to your picks' : 'typical spending'} — rewards minus the ${card.annualFee ? usd(card.annualFee) : '$0'} fee, with the welcome bonus spread over two years.`,
+        `Requires ${card.creditBand.replace('_', ' ')} credit profile or better.`,
+      ];
+      return {
+        card: card.source,
+        finalScore: value,
+        hardScore: value,
+        softScore: 0,
+        explanation,
+        debug: {
+          cardId: card.id,
+          finalScore: value,
+          hardScore: value,
+          annualFeeEligible: context.annualFeeRule === 'no_annual_fee' ? card.annualFee === 0 : true,
+          annualFee: card.annualFee,
+          exclusionReasons: [],
+        },
+      } satisfies RankedCardResult;
+    })
+    .sort((a, b) => b.finalScore - a.finalScore || a.card.name.localeCompare(b.card.name))
+    .slice(0, DECK_MAX);
+}
+
 export function getTop15Cards(cards: CreditCard[], context: PublicRankingContext): RankedCardResult[] {
   const resolved = { ...filtersToContext(context.filters || []), ...context };
   const explicitSegment = resolved.segment;
   const softCategories = resolved.softCategories || [];
+
+  // Balance-transfer and student searches are about paying down debt or
+  // building credit, not rewards — they keep their purpose-built scores.
+  // Every other search ranks by dollars, the same figure shown on the card.
+  if (explicitSegment !== 'balance_transfer' && explicitSegment !== 'student') {
+    return rankByValue(cards, resolved, softCategories);
+  }
+
   const ranked = cards
     .map(deriveRankingCard)
     .map((card) => {
@@ -716,12 +815,14 @@ function personalizedEligible(card: RankingCard, user: UserProfile, ownedCards: 
   return { ok: reasons.length === 0, reasons, approval };
 }
 
-function personalizedExplanation(card: RankingCard, user: UserProfile, approval: number, complementarity: number, incremental: number): string[] {
+function personalizedExplanation(card: RankingCard, user: UserProfile, approval: number, value: number, rewards: number): string[] {
   const lines = [`Fits your $${user.maxAnnualFee} annual fee limit.`];
   if (user.hasCreditCards) {
-    if (incremental > 50) lines.push('Adds meaningful rewards value beyond your current cards.');
-    if (complementarity > 50) lines.push('Complements your existing wallet by improving uncovered spend categories.');
+    lines.push(rewards >= 1
+      ? `Adds about ${usd(rewards)} a year in rewards on top of your current cards.`
+      : 'Earns little beyond what your current cards already cover.');
   } else {
+    lines.push(`Worth about ${usd(value)} a year on your spending, after the fee.`);
     if (card.annualFee === 0) lines.push('Keeps costs low for a first card.');
     if (card.availableToNoCredit || card.availableToStudents || card.secured) lines.push('Supports credit-building or beginner eligibility.');
   }
@@ -734,15 +835,24 @@ function personalizedExplanation(card: RankingCard, user: UserProfile, approval:
   ].sort((a, b) => Number(b[1]) - Number(a[1]))[0];
   // Rates are cash-equivalent; show the issuer's own number ("14x") and,
   // for points, the estimated value it works out to.
-  const value = Number(bestCategory[1]);
-  const issuerRate = Math.round((value / card.pointValueCents) * 10) / 10;
-  if (value > 1) {
+  const bestRate = Number(bestCategory[1]);
+  const issuerRate = Math.round((bestRate / card.pointValueCents) * 10) / 10;
+  if (bestRate > 1) {
     lines.push(card.pointValueCents === 1
       ? `Strong ${issuerRate}${card.rewardSystem === 'cash_back' ? '%' : 'x'} rewards on ${bestCategory[0]}.`
-      : `Strong ${issuerRate}x rewards on ${bestCategory[0]} (≈${Math.round(value * 10) / 10}% est. value).`);
+      : `Strong ${issuerRate}x rewards on ${bestCategory[0]} (≈${Math.round(bestRate * 10) / 10}% est. value).`);
   }
   lines.push(approvalLanguage(approval));
   return lines;
+}
+
+/** The user's monthly spend in the shared categories (unanswered ones fall
+ *  back to TYPICAL_SPEND inside annualRewards). */
+function userSpend(user: UserProfile): MonthlySpend {
+  const { groceries, dining, gas, travel, general } = user.monthlySpend;
+  return Object.fromEntries(
+    Object.entries({ groceries, dining, gas, travel, general }).filter(([, v]) => typeof v === 'number'),
+  ) as MonthlySpend;
 }
 
 export function recommendCards(cards: CreditCard[], user: UserProfile, limit = 5): PersonalizedRecommendationResult {
@@ -761,10 +871,17 @@ export function recommendCards(cards: CreditCard[], user: UserProfile, limit = 5
     const complementarity = computeComplementarity(card, ownedCards, user.monthlySpend);
     const incremental = computeIncrementalRewardsValue(card, ownedCards, user);
     const duplicatePenalty = user.hasCreditCards ? overlappingCardPenalty(card, ownedCards) : 0;
-    const creditBuilding = computeCreditBuildingQuality(card, user);
-    const score = user.hasCreditCards
-      ? clamp(0.25 * eligibility.approval + 0.30 * incremental + 0.20 * complementarity + 0.10 * annualFeeFit + 0.10 * softSpendFit + 0.05 * card.simplicityScore - duplicatePenalty * 0.15)
-      : clamp(0.30 * eligibility.approval + 0.25 * creditBuilding + 0.20 * annualFeeFit + 0.15 * card.simplicityScore + 0.10 * softSpendFit);
+    // Score in dollars, matching the value shown on the card: what this card
+    // adds over the user's wallet (or earns alone, for a first card) on their
+    // own spending, minus the fee, plus half the bonus. Harder approval costs
+    // $3 per point of approval likelihood below 100 (≈$165 at "may be harder",
+    // ≈$270 at "unlikely"), and a first card that builds credit gets a nudge.
+    const spend = userSpend(user);
+    const rewards = incrementalRewards(card, ownedCards, spend);
+    const value = rankValue(card, rewards);
+    const approvalPenalty = (100 - eligibility.approval) * 3;
+    const creditBuildingBonus = !user.hasCreditCards && user.goals.buildCredit && card.availableToNoCredit ? 75 : 0;
+    const score = value - approvalPenalty + creditBuildingBonus;
 
     const debug: RankingDebugOutput = {
       cardId: card.id,
@@ -781,7 +898,7 @@ export function recommendCards(cards: CreditCard[], user: UserProfile, limit = 5
     const result: RankedCardResult = {
       card: card.source,
       finalScore: score,
-      explanation: personalizedExplanation(card, user, eligibility.approval, complementarity, incremental),
+      explanation: personalizedExplanation(card, user, eligibility.approval, value, rewards),
       debug,
     };
 

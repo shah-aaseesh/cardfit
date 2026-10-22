@@ -1,8 +1,11 @@
-import { BarChart3, Check, Clock3, Gift, Globe2, Info, Percent, Star } from 'lucide-react';
+import { BarChart3, Check, Clock3, Coins, Gift, Globe2, Info, Percent, Star } from 'lucide-react';
 import { CreditCard } from '../types';
 import { cardInsights } from '../lib/insights';
 import { aprSections } from '../lib/apr';
 import { topPerkDisplay } from '../lib/rewards';
+import { deriveRankingCard } from '../lib/ranking';
+import { getPerks } from '../lib/perks';
+import { pointValue } from '../lib/pointValues';
 
 // The compact analysis shown in the upper-right of the results view: just
 // Best For (or, in match mode, the personalized "Fits you because" reasons),
@@ -20,16 +23,25 @@ export default function CardInsightsPanel({ card, whyBullets }: { card: CreditCa
     Intro: 'A reduced interest rate for a set period after you open the card.',
     Regular: "The ongoing yearly interest rate charged on any balance you don't pay in full.",
   };
+  // Top perk only when the data holds a real one (not the bonus or an earn
+  // rate restated — those have their own sections). Otherwise the slot shows
+  // what the rewards are and the value we assume for them, so the estimate's
+  // key assumption is visible.
+  const perk = topPerkDisplay(card.facts);
+  const currency = rewardCurrency(card);
   const details: { label: string; value: string; hint?: string }[] = [
     ...apr.map((s) => ({ label: `${s.label} APR`, value: s.value, hint: APR_HINTS[s.label] })),
     { label: 'Foreign fee', value: card.facts.foreignFee },
-    { label: 'Top perk', value: topPerkDisplay(card.facts) },
+    perk !== 'See issuer site'
+      ? { label: 'Top perk', value: perk }
+      : { label: 'Rewards paid as', value: currency.value, hint: currency.hint },
   ];
   const iconFor = (label: string) => {
     if (label.includes('Intro')) return <Clock3 className="h-5 w-5" strokeWidth={1.7} />;
     if (label.includes('Regular')) return <Percent className="h-5 w-5" strokeWidth={1.7} />;
     if (label.includes('Foreign')) return <Globe2 className="h-5 w-5" strokeWidth={1.7} />;
     if (label.includes('Top')) return <Star className="h-5 w-5" strokeWidth={1.7} />;
+    if (label.includes('Rewards paid')) return <Coins className="h-5 w-5" strokeWidth={1.7} />;
     return <Gift className="h-5 w-5" strokeWidth={1.7} />;
   };
 
@@ -69,6 +81,18 @@ export default function CardInsightsPanel({ card, whyBullets }: { card: CreditCa
       </Section>
     </div>
   );
+}
+
+/** "Cash back", or the points program and the cents-per-point the value
+ *  estimate assumes for it (lib/pointValues.ts). */
+function rewardCurrency(card: CreditCard): { value: string; hint?: string } {
+  const rc = deriveRankingCard(card);
+  if (rc.pointValueCents === 1 && getPerks(card).currency !== 'points') return { value: 'Cash back' };
+  const { program, cents } = pointValue(`${card.name} ${card.issuer}`, card.facts.rewards);
+  return {
+    value: `${program} · ~${cents}¢ each (est.)`,
+    hint: 'A conservative cash value we assume for each point or mile when estimating value. Best-case redemptions can be worth more.',
+  };
 }
 
 // A gold "*" that reveals a short definition on hover or keyboard focus.

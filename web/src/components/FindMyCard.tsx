@@ -206,6 +206,13 @@ export default function FindMyCard({ open, onClose, onComplete }: FindMyCardProp
               {step === 'email' ? (
                 <>
                   <button
+                    onClick={() => go(index - 1)}
+                    aria-label="Back"
+                    className="h-12 w-12 rounded-full bg-transparent border border-[var(--cl-hairline-strong)] text-[var(--cl-muted)] hover:text-[var(--cl-ink)] hover:border-[var(--cl-ink)] flex items-center justify-center transition-colors"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <button
                     onClick={() => finish(false)}
                     className="px-6 py-3 rounded-full bg-transparent border border-[var(--cl-hairline-strong)] text-[var(--cl-muted)] hover:text-[var(--cl-ink)] hover:border-[var(--cl-ink)] font-medium transition-colors"
                   >

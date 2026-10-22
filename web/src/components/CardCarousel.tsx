@@ -37,8 +37,8 @@ const TRUST_POINTS = [
 
 const RANK_STEPS = [
   { title: 'Your spending', body: 'Groceries, dining, gas, travel and everything else, in your own monthly dollars.' },
-  { title: 'Dollars after fees', body: 'Each card’s rewards on that spending, plus any bonus, minus its annual fee.' },
-  { title: 'Fit for you', body: 'Approval odds for your credit and what your current cards already cover.' },
+  { title: 'Dollars after fees', body: 'Each card’s rewards on that spending, minus its annual fee, with any welcome bonus spread over two years.' },
+  { title: 'Fit for you', body: 'Harder-to-get cards count for less, and only rewards your current cards don’t already earn count.' },
 ];
 
 const FEATURED_CARD_NAME ='Costco Anywhere Visa® Card by Citi';
@@ -82,6 +82,12 @@ export default function CardCarousel({
     if (!raw || typeof raw !== 'object') return undefined;
     return raw as MonthlySpend;
   }, [matchAnswers]);
+  // In quiz mode cards are ranked by what they add over the user's wallet,
+  // so the value block measures the same thing.
+  const ownedForValue = useMemo(
+    () => (matchMode ? allCards.filter((c) => ownedCards.includes(c.id)) : []),
+    [matchMode, allCards, ownedCards],
+  );
   // Landing state: on first load show only the centered search + filters; the
   // deck appears once the user searches or picks a filter.
   const [started, setStarted] = useState(startWithResults);
@@ -226,7 +232,7 @@ export default function CardCarousel({
         </motion.div>
       </AnimatePresence>
       {/* The headline number: this card's value to the user, fee included. */}
-      <ValueBlock card={activeCard} spend={userSpend} stacked={desktop} />
+      <ValueBlock card={activeCard} spend={userSpend} stacked={desktop} owned={ownedForValue} />
     </div>
   );
 
@@ -327,7 +333,7 @@ export default function CardCarousel({
     <section className="compare-light cards-page relative w-full min-h-screen pt-[7.6rem] flex flex-col items-center bg-[var(--cl-bg)] md:pt-[6.75rem] pb-16 md:pb-20">
       {matchMode && (
         <div className="relative z-20 w-full flex flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 text-center mb-8 md:mb-10">
-          <h2 className="font-display font-semibold text-3xl md:text-4xl text-[var(--cl-ink)]">Your best matches</h2>
+          <h2 className="font-editorial text-4xl md:text-5xl text-[var(--cl-ink)]">Your best matches</h2>
           <button
             onClick={() => { setStarted(true); onBrowseAll(); }}
             className="shrink-0 h-7 px-3 rounded-full bg-transparent border border-[var(--cl-hairline-strong)] flex items-center gap-1.5 hover:bg-[var(--cl-panel)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cl-ink)]/30 transition-colors text-[var(--cl-muted)] hover:text-[var(--cl-ink)] text-xs"
