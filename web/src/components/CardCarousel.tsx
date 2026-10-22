@@ -5,12 +5,13 @@ import CardVisual from './CardVisual';
 import CardFacts from './CardFacts';
 import BubbleFilters from './BubbleFilters';
 import AISearchBar from './AISearchBar';
-import { buildDeck } from '../lib/ranking';
+import { buildDeck, getTop15Cards } from '../lib/ranking';
 import { describeFilters } from '../lib/filters';
 import { fetchAdvisorNote, advisorEnabled } from '../lib/advisor';
 import { pushRecentlyViewed } from '../lib/recentlyViewed';
 import CardInsightsPanel from './CardInsightsPanel';
 import ValueBlock from './ValueBlock';
+import HeroPreview from './HeroPreview';
 import { MonthlySpend } from '../lib/insights';
 import { useCards } from '../hooks/useCards';
 import { CreditCard } from '../types';
@@ -75,6 +76,13 @@ export default function CardCarousel({
   // The query submitted on the landing hero, carried into the results bar.
   const [lastQuery, setLastQuery] = useState('');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  // Landing preview: the real top-3 rewards cards (with art), ranked by the
+  // same engine as the results page.
+  const preview = useMemo(() => {
+    const ranked = getTop15Cards(allCards, { filters: ['rewards'] }).map((r) => r.card);
+    const cards = ranked.filter((c) => c.imageUrl).slice(0, 3);
+    return { cards, topRank: ranked.indexOf(cards[0]) + 1 };
+  }, [allCards]);
   // The quiz's monthly spend answers, when there are any, personalise the
   // value estimate; otherwise ValueBlock uses typical spending.
   const userSpend = useMemo(() => {
@@ -239,18 +247,19 @@ export default function CardCarousel({
   // Landing hero: nothing but the search, centered on the page.
   if (!showResults) {
     return (
-      <section className="compare-light cards-page relative w-full flex flex-col items-center px-6 pt-32 pb-20 sm:px-12 md:pt-40 lg:px-24">
-        <div className="w-full max-w-4xl flex flex-col items-center gap-8">
+      <section className="compare-light cards-page relative w-full flex flex-col items-center px-6 pt-28 pb-20 sm:px-12 md:pt-36 lg:px-20">
+        <div className="w-full max-w-6xl grid grid-cols-1 items-center gap-12 lg:grid-cols-[1.08fr_1fr]">
+        <div className="min-w-0 flex flex-col items-center gap-7 text-center lg:items-start lg:text-left">
           {/* The promise, in the user's terms: money back, after fees. */}
-          <div className="text-center">
-            <p className="inline-flex items-center gap-2 rounded-full border border-[var(--cl-hairline)] bg-[var(--cl-surface)] px-3.5 py-1.5 text-xs font-medium text-[var(--cl-muted)]">
-              <ShieldCheck className="h-3.5 w-3.5 text-[var(--cl-value)]" aria-hidden="true" />
+          <div>
+            <p className="inline-flex items-center gap-2 rounded-full bg-[var(--cl-brand-soft)] px-3.5 py-1.5 text-xs font-semibold text-[var(--cl-brand)]">
+              <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
               Independent · No sign-up · No credit check
             </p>
-            <h1 className="mt-6 font-editorial text-[clamp(2.6rem,6vw,4.6rem)] leading-[1.02] text-[var(--cl-ink)] text-balance">
-              Find the card that <em className="text-[var(--cl-value)]">actually</em> pays you back.
+            <h1 className="mt-6 font-editorial text-[clamp(2.7rem,5.4vw,4.6rem)] leading-[0.98] text-[var(--cl-ink)] text-balance">
+              Find the card that <span className="text-[var(--cl-brand)]">pays you back.</span>
             </h1>
-            <p className="mx-auto mt-5 max-w-xl text-base md:text-lg text-[var(--cl-muted)] text-balance">
+            <p className="mt-5 max-w-xl text-base md:text-lg text-[var(--cl-muted)] text-balance">
               Tell us how you spend. We rank {allCards.length} cards from {providers.length} major issuers by what each is worth to you in dollars a year — after fees.
             </p>
           </div>
@@ -258,9 +267,9 @@ export default function CardCarousel({
           <div className="flex flex-col items-center gap-3 sm:flex-row">
             <button
               onClick={onFindMatches}
-              className="h-12 px-7 rounded-full bg-[var(--cl-pill)] text-[var(--cl-pill-ink)] font-semibold flex items-center gap-2 shadow-[0_14px_30px_-18px_oklch(0.27_0.06_262/0.8)] hover:opacity-95 transition-opacity"
+              className="h-12 px-7 rounded-full bg-[var(--cl-pill)] text-[var(--cl-pill-ink)] font-semibold flex items-center gap-2 shadow-[0_14px_30px_-14px_oklch(0.52_0.23_265/0.7)] hover:brightness-110 transition"
             >
-              Get my matches <span className="font-normal opacity-70">· 2 min</span> <ChevronRight className="h-4 w-4" />
+              Get my matches <span className="font-normal opacity-75">· 2 min</span> <ChevronRight className="h-4 w-4" />
             </button>
             <span className="text-sm text-[var(--cl-muted)]">or search below</span>
           </div>
@@ -296,6 +305,10 @@ export default function CardCarousel({
               </div>
             }
           />
+        </div>
+        <div className="-mt-6 -mb-10 origin-top scale-[0.82] sm:scale-100 lg:mt-0 lg:mb-0">
+          <HeroPreview cards={preview.cards} topRank={preview.topRank} />
+        </div>
         </div>
 
         {/* Trust strip: the four worries people bring to card shopping, each

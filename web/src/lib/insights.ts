@@ -50,6 +50,8 @@ export interface ValueEstimate {
   /** Welcome bonus value (one-time). */
   bonus: number;
   annualFee: number;
+  /** False when the crawler could not read the fee (counted as $0 above). */
+  annualFeeKnown: boolean;
   /** The ranking number: rewards − fee + bonus ÷ 2 (two-year average). */
   average: number;
   /** rewards + bonus − fee */
@@ -75,6 +77,7 @@ export function estimateValue(card: CreditCard, spend?: MonthlySpend, owned: Cre
     rewards,
     bonus,
     annualFee,
+    annualFeeKnown: rc.annualFeeKnown,
     average: Math.round(rankValue(rc, rewards)),
     firstYear: rewards + bonus - annualFee,
     everyYear: rewards - annualFee,

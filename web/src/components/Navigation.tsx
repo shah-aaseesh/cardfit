@@ -1,3 +1,4 @@
+import BrandMark from './BrandMark';
 import { motion } from 'motion/react';
 import { Menu } from 'lucide-react';
 import { useState } from 'react';
@@ -45,7 +46,7 @@ export default function Navigation({ currentPage, setCurrentPage, findActive, on
           className="pointer-events-auto flex items-center gap-2.5 group"
           aria-label="CardFit home"
         >
-          <span className="font-editorial text-[30px] leading-none text-[var(--cl-ink)] sm:text-[26px]">CardFit</span>
+          <BrandMark />
         </button>
         <button
           type="button"

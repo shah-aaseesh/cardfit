@@ -91,7 +91,7 @@ export default function CardVisual({ card, variant = 'default' }: CardVisualProp
 
       {/* Subtle radial glow */}
       <div className="absolute -top-24 -right-24 w-48 h-48 bg-white/10 blur-3xl rounded-full" />
-      <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-emerald-300/10 blur-3xl rounded-full" />
+      <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-sky-300/15 blur-3xl rounded-full" />
 
       {/* Top row: Issuer and Contactless icon */}
       <div className="relative flex justify-between items-start z-10">

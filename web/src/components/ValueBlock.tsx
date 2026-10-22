@@ -46,7 +46,9 @@ export default function ValueBlock({ card, spend, stacked = false, owned = [] }:
             <span className="text-sm text-[var(--cl-muted)]">/ year</span>
           </p>
           <p className="mt-1.5 text-sm text-[var(--cl-muted)]">
-            {v.bonus > 0 ? (
+            {!v.annualFeeKnown ? (
+              <span className="text-[var(--cl-caution)]">Before the annual fee — we couldn't confirm it, so check the issuer's site.</span>
+            ) : v.bonus > 0 ? (
               <>
                 Averaged over 2 years: <span className="font-semibold text-[var(--cl-ink)]">{usd(v.firstYear)}</span> in year one,
                 then <span className="font-semibold text-[var(--cl-ink)]">{usd(v.everyYear)}</span>/yr
@@ -70,7 +72,7 @@ export default function ValueBlock({ card, spend, stacked = false, owned = [] }:
           <div className={`rounded-2xl px-3 py-2.5 ${v.annualFee > 0 ? 'bg-[var(--cl-caution-soft)]' : 'bg-[var(--cl-panel)]'}`}>
             <dt className="text-[11px] font-semibold uppercase tracking-wider text-[var(--cl-muted)]">Annual fee</dt>
             <dd className={`mt-0.5 font-semibold ${v.annualFee > 0 ? 'text-[var(--cl-caution)]' : 'text-[var(--cl-ink)]'}`}>
-              {v.annualFee > 0 ? `−${usd(v.annualFee)}` : '$0'}
+              {!v.annualFeeKnown ? 'Unknown' : v.annualFee > 0 ? `−${usd(v.annualFee)}` : '$0'}
             </dd>
           </div>
         </dl>

@@ -9,6 +9,7 @@ import CardCarousel from './components/CardCarousel';
 import FindMyCard from './components/FindMyCard';
 import Compare from './components/Compare';
 import CursorGlow from './components/CursorGlow';
+import BrandMark from './components/BrandMark';
 import { loadProfile, saveProfile } from './lib/profile';
 import { saveRemoteProfile } from './lib/remoteProfile';
 import { SNAPSHOT_AS_OF } from './lib/snapshot';
@@ -160,7 +161,7 @@ export default function App() {
       <footer className="compare-light border-t border-[var(--cl-hairline)] bg-[var(--cl-panel)] px-6 py-12 text-sm text-[var(--cl-muted)]">
         <div className="mx-auto grid max-w-5xl gap-8 md:grid-cols-[1.2fr_1fr_1fr]">
           <div>
-            <p className="font-editorial text-2xl text-[var(--cl-ink)]">CardFit</p>
+            <BrandMark />
             <p className="mt-2 max-w-xs leading-relaxed">
               An independent card finder. No card issuer pays for placement, and seeing your matches never runs a credit check.
             </p>

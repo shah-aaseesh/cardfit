@@ -582,7 +582,10 @@ function rankByValue(cards: CreditCard[], context: PublicRankingContext, softCat
   const spend = spendForChips(softCategories, context.segment === 'business');
   return cards
     .map(deriveRankingCard)
-    .filter((card) => publicEligible(card, context).ok)
+    // A card whose fee the crawler couldn't read can't get an honest dollar
+    // value (a missing fee would count as $0 and inflate it), so it's left out
+    // of value rankings — same rule as the quiz (PRD §13.3).
+    .filter((card) => card.annualFeeKnown && publicEligible(card, context).ok)
     .map((card) => {
       const rewards = annualRewards(card, spend);
       const value = rankValue(card, rewards);
