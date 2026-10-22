@@ -145,11 +145,16 @@ providers:
 
   - name: wells_fargo
     display_name: Wells Fargo
-    base_url: https://www.wellsfargo.com
-    sitemap: null
-    fallback_hub: https://www.wellsfargo.com/credit-cards/
-    url_include: ["/credit-cards/"]
-    url_exclude: ["/credit-cards/$", "/compare"]
+    # 2026-10: product pages live on the creditcards. subdomain. The old
+    # www.wellsfargo.com/credit-cards/ hub only links legal /terms/ pages
+    # (APRs but no rewards copy or card art), and its /<card>/ URLs are 404.
+    base_url: https://creditcards.wellsfargo.com
+    sitemap: https://creditcards.wellsfargo.com/sitemap.xml
+    sitemap_index: false
+    # Product pages end in -credit-card/ or -mastercard/ (singular);
+    # plural -credit-cards/ are category hubs, the rest are articles.
+    url_include: ["/[a-z0-9-]+-(credit-card|mastercard)/$"]
+    url_exclude: ["/es/", "/(how|what|why|are|applying|cell-phone|benefits|adding|lesser|managing|making|redeem|maximize|hidden|get-the-most|visa-vs)[a-z0-9-]*/$"]
     enabled: true
 
   - name: us_bank

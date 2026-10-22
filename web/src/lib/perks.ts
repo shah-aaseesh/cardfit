@@ -65,21 +65,25 @@ const CATEGORIES = Object.keys(CATEGORY_WORDS) as PerkCategory[];
 
 /** Structured, page-backed rates from the crawler (reward_rates) — exact
  *  numbers, so no prose parsing is needed. */
-function perksFromRates(card: CreditCard): CardPerks | null {
+function perksFromRates(card: CreditCard): (CardPerks & { mentioned: Set<PerkCategory> }) | null {
   const structured = card.facts.rewardRates;
   if (!structured?.length) return null;
   const rates: CardPerks['rates'] = {};
+  // Every category the extractor named, kept or rejected — prose may only
+  // fill categories outside this set, never re-add a rejected rate.
+  const mentioned = new Set<PerkCategory>();
   let cashSignals = 0;
   let pointSignals = 0;
   for (const r of structured) {
     if (r.unit === 'percent') cashSignals++;
     else pointSignals++;
+    if ((CATEGORIES as string[]).includes(r.category)) mentioned.add(r.category as PerkCategory);
     if ((CATEGORIES as string[]).includes(r.category) && structuredRateCounts(card, r.category as PerkCategory, r.quote || '')) {
       const cat = r.category as PerkCategory;
       rates[cat] = Math.max(rates[cat] ?? 0, r.rate);
     }
   }
-  return { currency: cashSignals >= pointSignals ? 'cashback' : 'points', rates };
+  return { currency: cashSignals >= pointSignals ? 'cashback' : 'points', rates, mentioned };
 }
 
 const HOTEL_BRANDS = /hilton|marriott|bonvoy|hyatt|\bihg\b|wyndham|choice privileges/i;
@@ -132,10 +136,21 @@ function generalScope(card: CreditCard, tier: string): string {
     .join(',');
 }
 
+/** Structured rates win where present; the parsed rewards summary fills any
+ *  category they're missing. The extractor drops rates whose quote it can't
+ *  match on the page (styled "3X" text often fails), so e.g. Wells Fargo
+ *  Autograph kept only its 1X base while its summary lists 3X categories. */
 function parsePerks(card: CreditCard): CardPerks {
   const fromRates = perksFromRates(card);
-  if (fromRates) return fromRates;
+  const fromProse = parseProse(card);
+  if (!fromRates) return fromProse;
+  const filled = Object.fromEntries(
+    Object.entries(fromProse.rates).filter(([cat]) => !fromRates.mentioned.has(cat as PerkCategory)),
+  ) as CardPerks['rates'];
+  return { currency: fromRates.currency, rates: { ...filled, ...fromRates.rates } };
+}
 
+function parseProse(card: CreditCard): CardPerks {
   const tiers = card.facts.rewardsBullets?.length
     ? card.facts.rewardsBullets
     : rewardBullets(card.facts.rewards);

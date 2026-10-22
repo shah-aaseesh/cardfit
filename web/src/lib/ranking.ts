@@ -345,9 +345,21 @@ function parseIntroMonths(text: string | undefined): number | undefined {
   return months.length ? Math.max(...months) : undefined;
 }
 
+/** True when a bonus's spend requirement ("after you spend $50,000 ... within
+ *  the first 6 months") is out of reach on typical spending. Such a bonus is
+ *  worth $0 to most people, so it mustn't inflate the value. */
+function bonusUnreachable(text: string): boolean {
+  const spend = text.match(/spend(?:ing)?\s+\$([\d,]+)/i);
+  if (!spend) return false;
+  const months = Number(text.match(/(\d+)\s+months?/i)?.[1] ?? 3);
+  const typicalMonthly = Object.values(TYPICAL_SPEND).reduce((a, b) => a + b, 0);
+  return Number(spend[1].replace(/,/g, '')) > typicalMonthly * months;
+}
+
 function bonusValue(card: CreditCard, centsPerPoint: number): number {
   const text = card.facts.bonus || '';
   if (/^(none|no\b|n\/a|not specified)/i.test(text)) return 0;
+  if (bonusUnreachable(text)) return 0;
   // "60,000 bonus points after you spend $4,000": the points are the bonus
   // and the dollars are the spend requirement, so points take precedence.
   // Allow the program name in between: "175,000 Hilton Honors Bonus Points".

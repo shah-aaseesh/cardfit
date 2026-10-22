@@ -7020,200 +7020,343 @@
     "id": "b49aa128-2c04-4aad-8abe-fb12f57f850d"
   },
   {
-    "url": "https://www.wellsfargo.com/credit-cards/choice-select/terms/",
+    "url": "https://creditcards.wellsfargo.com/active-cash-credit-card/",
     "provider": "wells_fargo",
-    "card_name": "Choice Privileges® Select World Elite Mastercard®",
-    "issuer": "Wells Fargo",
-    "annual_fee": 95,
-    "apr_range": "19.99%, 25.74%, or 28.74%, based on your creditworthiness.",
-    "apr_intro": null,
-    "apr_regular": "19.99%, 25.74%, or 28.74%, based on your creditworthiness.",
-    "rewards_summary": "Earn points for every dollar spent on eligible purchases, with additional points for hotel stays.",
-    "signup_bonus": null,
-    "recommended_credit_score": null,
-    "foreign_transaction_fee": "None",
-    "tags": [
-      "hotels",
-      "premium",
-      "personal"
-    ],
-    "best_for": "Hotel Loyalists",
-    "top_perk": null,
-    "image_url": null,
-    "reward_rates": [],
-    "id": "11f06205-cdd9-42b1-9fa2-aecb077c3f5b"
-  },
-  {
-    "url": "https://www.wellsfargo.com/credit-cards/choice/terms/",
-    "provider": "wells_fargo",
-    "card_name": "Choice Privileges® World Elite Mastercard®",
+    "card_name": "Active Cash® Credit Card",
     "issuer": "Wells Fargo",
     "annual_fee": 0,
-    "apr_range": "19.99%, 24.74%, or 28.74%, based on your creditworthiness.",
-    "apr_intro": "None",
-    "apr_regular": "19.99%, 24.74%, or 28.74%, based on your creditworthiness.",
-    "rewards_summary": "Earn points for every dollar spent on purchases, with additional points for qualifying hotel stays.",
-    "signup_bonus": "None",
+    "apr_range": "0% intro APR for 12 months on purchases and qualifying balance transfers. After that your variable APR will be 18.74%, 24.74% or 28.74%.",
+    "apr_intro": "0% intro APR for 12 months on purchases and qualifying balance transfers.",
+    "apr_regular": "18.74%, 24.74% or 28.74%",
+    "rewards_summary": "Earn unlimited 2% cash rewards on purchases with no categories to track or quarterly activations.",
+    "signup_bonus": "Earn a $100 cash rewards bonus when you spend $500 in purchases in the first 3 months.",
     "recommended_credit_score": null,
     "foreign_transaction_fee": "None",
     "tags": [
+      "no-fee",
+      "low-apr",
+      "personal"
+    ],
+    "best_for": "Everyday Spend",
+    "top_perk": "Cellular Telephone Protection",
+    "image_url": "/card-art/8c8411d2-00c4-4b3b-9fa3-2cc911bd9578.webp",
+    "reward_rates": [
+      {
+        "category": "other",
+        "rate": 2.0,
+        "unit": "percent",
+        "cap": null,
+        "quote": "Plus, earn unlimited 2% cash rewards on purchases"
+      }
+    ],
+    "id": "8c8411d2-00c4-4b3b-9fa3-2cc911bd9578",
+    "source_image_url": "https://creditcards.wellsfargo.com/W-Card-MarketPlace/v10-21-26/images/Products/ActiveCash/WF_ActiveCash_VS_Collateral_Front_RGB.png"
+  },
+  {
+    "url": "https://creditcards.wellsfargo.com/choice-hotel-privileges-mastercard/",
+    "provider": "wells_fargo",
+    "card_name": "Choice Privileges® Mastercard®",
+    "issuer": "Wells Fargo",
+    "annual_fee": 0,
+    "apr_range": null,
+    "apr_intro": "None",
+    "apr_regular": null,
+    "rewards_summary": "Earn 5X points on stays at participating Choice Hotels and 3X points on purchases at gas stations, grocery stores, and home improvement stores.",
+    "signup_bonus": "Earn 40,000 bonus points when you spend $1,000 in purchases in the first 3 months",
+    "recommended_credit_score": null,
+    "foreign_transaction_fee": "None",
+    "tags": [
+      "gas",
+      "groceries",
       "hotels",
       "no-fee",
       "personal"
     ],
-    "best_for": "Hotel Loyalists",
-    "top_perk": null,
-    "image_url": null,
-    "reward_rates": [],
-    "id": "ce1a0184-b444-49a1-acc8-a3fad280803e"
+    "best_for": "Commuters",
+    "top_perk": "Automatic Gold Elite membership",
+    "image_url": "/card-art/ce1a0184-b444-49a1-acc8-a3fad280803e.webp",
+    "reward_rates": [
+      {
+        "category": "travel",
+        "rate": 5.0,
+        "unit": "points",
+        "cap": null,
+        "quote": "5X Points on stays at participating Choice Hotels® properties"
+      },
+      {
+        "category": "gas",
+        "rate": 3.0,
+        "unit": "points",
+        "cap": null,
+        "quote": "3X Points on purchases at gas stations, grocery stores, home improvement stores and on phone plan services"
+      },
+      {
+        "category": "groceries",
+        "rate": 3.0,
+        "unit": "points",
+        "cap": null,
+        "quote": "3X Points on purchases at gas stations, grocery stores, home improvement stores and on phone plan services"
+      },
+      {
+        "category": "other",
+        "rate": 1.0,
+        "unit": "points",
+        "cap": null,
+        "quote": "1X Points on other purchases"
+      }
+    ],
+    "id": "ce1a0184-b444-49a1-acc8-a3fad280803e",
+    "source_image_url": "https://creditcards.wellsfargo.com/W-Card-MarketPlace/v10-21-26/images/Products/ChoicePrivileges/WF_Choice_NoFee_Card.png"
   },
   {
-    "url": "https://www.wellsfargo.com/credit-cards/terms/onekey/",
+    "url": "https://creditcards.wellsfargo.com/choice-hotels-privileges-select-mastercard/",
     "provider": "wells_fargo",
-    "card_name": "One Key™ Mastercard®",
+    "card_name": "Choice Privileges® Select Mastercard®",
     "issuer": "Wells Fargo",
-    "annual_fee": null,
+    "annual_fee": 95,
     "apr_range": null,
     "apr_intro": null,
     "apr_regular": null,
-    "rewards_summary": null,
-    "signup_bonus": null,
-    "recommended_credit_score": null,
-    "foreign_transaction_fee": null,
-    "tags": [
-      "personal"
-    ],
-    "best_for": "Everyday Spend",
-    "top_perk": null,
-    "image_url": null,
-    "reward_rates": [],
-    "id": "cc6e940e-238f-46d5-8982-21f97aec5d15"
-  },
-  {
-    "url": "https://www.wellsfargo.com/credit-cards/active-cash/terms/",
-    "provider": "wells_fargo",
-    "card_name": "Wells Fargo Active Cash",
-    "issuer": "Wells Fargo",
-    "annual_fee": 0,
-    "apr_range": "0% introductory APR for 12 months from date of account opening. After that, your APR will be 18.74%, 24.74%, or 28.74%, based on your creditworthiness.",
-    "apr_intro": "0% introductory APR for 12 months from date of account opening.",
-    "apr_regular": "18.74%, 24.74%, or 28.74%",
-    "rewards_summary": "Earn unlimited 2% cash rewards on purchases.",
-    "signup_bonus": "None",
-    "recommended_credit_score": null,
-    "foreign_transaction_fee": "3%",
-    "tags": [
-      "no-fee",
-      "low-apr",
-      "personal"
-    ],
-    "best_for": "Everyday Spend",
-    "top_perk": null,
-    "image_url": null,
-    "reward_rates": [],
-    "id": "8c8411d2-00c4-4b3b-9fa3-2cc911bd9578"
-  },
-  {
-    "url": "https://www.wellsfargo.com/credit-cards/autograph-journey-visa/terms/",
-    "provider": "wells_fargo",
-    "card_name": "Wells Fargo Autograph Journey Visa",
-    "issuer": "Wells Fargo",
-    "annual_fee": 95,
-    "apr_range": "19.74%, 25.74%, or 28.74%, based on your creditworthiness.",
-    "apr_intro": "None",
-    "apr_regular": "19.74%, 25.74%, or 28.74%, based on your creditworthiness.",
-    "rewards_summary": "Earn 3 points per dollar on dining, travel, gas, and streaming purchases, and 1 point per dollar on all other purchases.",
-    "signup_bonus": "60,000 Rewards Points bonus",
+    "rewards_summary": "Earn 10X points on stays at participating Choice Hotels and 5X points on purchases at gas stations, grocery stores, and home improvement stores.",
+    "signup_bonus": "60,000 bonus points when you spend $3,000 in purchases in the first 3 months.",
     "recommended_credit_score": null,
     "foreign_transaction_fee": "None",
     "tags": [
-      "travel",
-      "dining",
       "gas",
+      "groceries",
+      "hotels",
       "premium",
       "personal"
     ],
-    "best_for": "Casual Travelers",
-    "top_perk": "$50 Annual Airline Credit",
-    "image_url": null,
-    "reward_rates": [],
-    "id": "f36e071d-02bd-4704-bbcd-88ca49091230"
+    "best_for": "Commuters",
+    "top_perk": "Automatic Platinum Elite membership",
+    "image_url": "/card-art/11f06205-cdd9-42b1-9fa2-aecb077c3f5b.webp",
+    "reward_rates": [
+      {
+        "category": "travel",
+        "rate": 10.0,
+        "unit": "points",
+        "cap": null,
+        "quote": "10X Points on stays at participating Choice Hotels® properties"
+      },
+      {
+        "category": "gas",
+        "rate": 5.0,
+        "unit": "points",
+        "cap": null,
+        "quote": "5X Points on purchases at gas stations, grocery stores, home improvement stores and on phone plan services"
+      },
+      {
+        "category": "groceries",
+        "rate": 5.0,
+        "unit": "points",
+        "cap": null,
+        "quote": "5X Points on purchases at gas stations, grocery stores, home improvement stores and on phone plan services"
+      },
+      {
+        "category": "other",
+        "rate": 1.0,
+        "unit": "points",
+        "cap": null,
+        "quote": "1X Points on other purchases"
+      }
+    ],
+    "id": "11f06205-cdd9-42b1-9fa2-aecb077c3f5b",
+    "source_image_url": "https://creditcards.wellsfargo.com/W-Card-MarketPlace/v10-21-26/images/Products/ChoicePrivilegesSelect/WF_Choice_Fee_Card.png"
   },
   {
-    "url": "https://www.wellsfargo.com/credit-cards/autograph-visa/terms/",
+    "url": "https://creditcards.wellsfargo.com/one-key-credit-card/",
     "provider": "wells_fargo",
-    "card_name": "Wells Fargo Autograph Visa",
+    "card_name": "One Key® Card",
     "issuer": "Wells Fargo",
     "annual_fee": 0,
-    "apr_range": "0% introductory APR for 12 months from date of account opening. After that, your APR will be 18.74%, 24.74%, or 28.74%, based on your creditworthiness.",
-    "apr_intro": "0% introductory APR for 12 months from date of account opening.",
-    "apr_regular": "18.74%, 24.74%, or 28.74%",
-    "rewards_summary": "Earn 3 points per dollar on dining, travel, gas, and streaming services, and 1 point per dollar on all other purchases.",
-    "signup_bonus": "20,000 Rewards Points bonus",
+    "apr_range": null,
+    "apr_intro": "None",
+    "apr_regular": null,
+    "rewards_summary": "Earn 3% in OneKeyCash on Expedia, Hotels.com, and Vrbo, 3% at gas stations, grocery stores, and dining, and 1.5% on other purchases.",
+    "signup_bonus": "$250 in OneKeyCash after you spend $2,000 on purchases in the first 3 months",
     "recommended_credit_score": null,
     "foreign_transaction_fee": "None",
     "tags": [
-      "travel",
       "dining",
       "gas",
+      "groceries",
+      "hotels",
       "no-fee",
-      "low-apr",
       "personal"
     ],
-    "best_for": "Casual Travelers",
-    "top_perk": null,
+    "best_for": "Foodies",
+    "top_perk": "Cellular Telephone Protection",
     "image_url": null,
-    "reward_rates": [],
-    "id": "5e40905d-c082-4a9d-96ea-611bd493404f"
+    "reward_rates": [
+      {
+        "category": "travel",
+        "rate": 3.0,
+        "unit": "percent",
+        "cap": null,
+        "quote": "Earn OneKeyCash 3% in OneKeyCash on Expedia, Hotels.com and Vrbo"
+      },
+      {
+        "category": "gas",
+        "rate": 3.0,
+        "unit": "percent",
+        "cap": null,
+        "quote": "3% at gas stations, grocery stores and on dining"
+      },
+      {
+        "category": "other",
+        "rate": 1.5,
+        "unit": "percent",
+        "cap": null,
+        "quote": "1.5% on other purchases"
+      }
+    ],
+    "id": "cc6e940e-238f-46d5-8982-21f97aec5d15",
+    "source_image_url": "https://creditcards.wellsfargo.com/W-Card-MarketPlace/v10-21-26/images/Products/OneKey/onekeycash_card.png"
   },
   {
-    "url": "https://www.wellsfargo.com/credit-cards/reflect-visa/terms/",
+    "url": "https://creditcards.wellsfargo.com/reflect-visa-credit-card/",
     "provider": "wells_fargo",
-    "card_name": "Wells Fargo Reflect Visa",
+    "card_name": "Reflect® Card",
     "issuer": "Wells Fargo",
     "annual_fee": 0,
-    "apr_range": "0% introductory APR for 21 months from date of account opening. After that, your APR will be 17.74%, 24.24%, or 28.49%, based on your creditworthiness.",
-    "apr_intro": "0% introductory APR for 21 months from date of account opening.",
-    "apr_regular": "17.74%, 24.24%, or 28.49%",
-    "rewards_summary": "The card does not earn rewards on balance transfers.",
+    "apr_range": "0% intro APR for 21 months from account opening on purchases and qualifying balance transfers. 17.74%, 24.24% or 28.49% variable APR thereafter.",
+    "apr_intro": "0% intro APR for 21 months from account opening on purchases and qualifying balance transfers.",
+    "apr_regular": "17.74%, 24.24% or 28.49% variable APR thereafter.",
+    "rewards_summary": "The Reflect Card offers personalized deals through My Wells Fargo Deals, allowing cardholders to earn cash back as an account credit.",
     "signup_bonus": "None",
     "recommended_credit_score": null,
     "foreign_transaction_fee": "3%",
     "tags": [
-      "balance",
+      "cashback",
       "no-fee",
       "low-apr",
       "personal"
     ],
-    "best_for": "Paying Off Debt",
-    "top_perk": null,
-    "image_url": null,
+    "best_for": "Maximizing Cash Back",
+    "top_perk": "Cellular Telephone Protection",
+    "image_url": "/card-art/cf143bfd-163f-49d9-99d8-a0e74983cc39.webp",
     "reward_rates": [],
-    "id": "cf143bfd-163f-49d9-99d8-a0e74983cc39"
+    "id": "cf143bfd-163f-49d9-99d8-a0e74983cc39",
+    "source_image_url": "https://creditcards.wellsfargo.com/W-Card-MarketPlace/v10-21-26/images/Products/Reflect/Reflect_homepage_m.png"
   },
   {
-    "url": "https://www.wellsfargo.com/biz/business-credit/credit-cards/signify-business-cash-credit-card-terms-conditions",
+    "url": "https://creditcards.wellsfargo.com/business-credit-cards/signify-business-cash-credit-card/",
     "provider": "wells_fargo",
-    "card_name": "Wells Fargo Signify Business Cash",
+    "card_name": "Signify Business Cash®",
     "issuer": "Wells Fargo",
     "annual_fee": 0,
-    "apr_range": "0% introductory APR for 12 months from date of account opening. After that, your APR will be 16.99% to 24.99%, based on your creditworthiness and that of your business.",
-    "apr_intro": "0% introductory APR for 12 months from date of account opening.",
-    "apr_regular": "16.99%-24.99%",
-    "rewards_summary": "The card offers cash back on eligible purchases, with a focus on business-related expenses.",
-    "signup_bonus": "None",
+    "apr_range": "0% introductory APR on purchases for 12 months from account opening on business purchases. After that your variable APR will be 16.99% – 24.99%",
+    "apr_intro": "0% introductory APR on purchases for 12 months from account opening on business purchases",
+    "apr_regular": "16.99% – 24.99%",
+    "rewards_summary": "Earn unlimited 2% cash rewards on purchases for your business without caps or spending categories.",
+    "signup_bonus": "EARN A $500 CASH REWARDS BONUS when you spend $5,000 in purchases for your business in the first 3 months.",
     "recommended_credit_score": null,
-    "foreign_transaction_fee": "3%",
+    "foreign_transaction_fee": null,
     "tags": [
       "business",
-      "cashback",
       "no-fee",
       "low-apr"
     ],
     "best_for": "Business Owners",
-    "top_perk": null,
-    "image_url": null,
-    "reward_rates": [],
-    "id": "03f00399-b1d4-4d76-b1ef-a85358982d15"
+    "top_perk": "Complimentary membership access to more than 1,300 participating airport lounges worldwide",
+    "image_url": "/card-art/03f00399-b1d4-4d76-b1ef-a85358982d15.webp",
+    "reward_rates": [
+      {
+        "category": "other",
+        "rate": 2.0,
+        "unit": "percent",
+        "cap": null,
+        "quote": "Earn unlimited 2% cash rewards on purchases for your business – without caps or spending categories."
+      }
+    ],
+    "id": "03f00399-b1d4-4d76-b1ef-a85358982d15",
+    "source_image_url": "https://creditcards.wellsfargo.com/W-Card-MarketPlace/v10-21-26/images/Products/SignifyBusiness/WF_SignifyCash_BeautyCard_Sticky.png"
+  },
+  {
+    "url": "https://creditcards.wellsfargo.com/autograph-journey-visa-credit-card/",
+    "provider": "wells_fargo",
+    "card_name": "Wells Fargo Autograph Journey Visa Credit Card",
+    "issuer": "Wells Fargo",
+    "annual_fee": 95,
+    "apr_range": null,
+    "apr_intro": "None",
+    "apr_regular": null,
+    "rewards_summary": "Earn unlimited points with 5X points on hotels, 4X points on airlines, 3X points on restaurants and other travel, and 1X points on other purchases.",
+    "signup_bonus": "Earn 60,000 bonus points when you spend $4,000 in purchases in the first 3 months – that’s $600 toward your next trip",
+    "recommended_credit_score": null,
+    "foreign_transaction_fee": "None",
+    "tags": [
+      "travel",
+      "dining",
+      "flights",
+      "hotels",
+      "premium",
+      "personal"
+    ],
+    "best_for": "Casual Travelers",
+    "top_perk": "$50 annual statement credit with $50 minimum airline purchase",
+    "image_url": "/card-art/f36e071d-02bd-4704-bbcd-88ca49091230.webp",
+    "reward_rates": [
+      {
+        "category": "travel",
+        "rate": 5.0,
+        "unit": "points",
+        "cap": null,
+        "quote": "5X points with hotels"
+      },
+      {
+        "category": "dining",
+        "rate": 3.0,
+        "unit": "points",
+        "cap": null,
+        "quote": "3X points on restaurants and other travel"
+      },
+      {
+        "category": "other",
+        "rate": 1.0,
+        "unit": "points",
+        "cap": null,
+        "quote": "1X points on other purchases"
+      }
+    ],
+    "id": "f36e071d-02bd-4704-bbcd-88ca49091230",
+    "source_image_url": "https://creditcards.wellsfargo.com/W-Card-MarketPlace/v10-21-26/images/Products/AutographJourney/WF_Autograph_Journey_Card_d.png"
+  },
+  {
+    "url": "https://creditcards.wellsfargo.com/autograph-visa-credit-card/",
+    "provider": "wells_fargo",
+    "card_name": "Wells Fargo Autograph® Card",
+    "issuer": "Wells Fargo",
+    "annual_fee": 0,
+    "apr_range": "0% intro APR for 12 months from account opening on purchases. 18.74%, 24.74% or 28.74% variable APR thereafter.",
+    "apr_intro": "0% intro APR for 12 months from account opening on purchases.",
+    "apr_regular": "18.74%, 24.74% or 28.74% variable APR thereafter.",
+    "rewards_summary": "Earn unlimited 3X points on dining, travel, gas, transit, popular streaming services, and phone plans, plus 1X points on other purchases.",
+    "signup_bonus": "Earn 20,000 bonus points when you spend $1,000 in purchases in the first 3 months – that’s a $200 cash redemption value.",
+    "recommended_credit_score": null,
+    "foreign_transaction_fee": "None",
+    "tags": [
+      "travel",
+      "dining",
+      "gas",
+      "no-fee",
+      "low-apr",
+      "personal"
+    ],
+    "best_for": "Casual Travelers",
+    "top_perk": "Cellular Telephone Protection",
+    "image_url": "/card-art/5e40905d-c082-4a9d-96ea-611bd493404f.webp",
+    "reward_rates": [
+      {
+        "category": "other",
+        "rate": 1.0,
+        "unit": "points",
+        "cap": null,
+        "quote": "Plus, earn 1X points on other purchases"
+      }
+    ],
+    "id": "5e40905d-c082-4a9d-96ea-611bd493404f",
+    "source_image_url": "https://creditcards.wellsfargo.com/W-Card-MarketPlace/v10-21-26/images/Products/Autograph/Autograph-No-Fee-Card-RGB_d.png"
   }
 ]

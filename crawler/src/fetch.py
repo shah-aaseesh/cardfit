@@ -137,10 +137,18 @@ def _candidate_img_urls(img) -> list[str]:
     return deduped
 
 
+def _filename_dims(src: str) -> list[tuple[str, str]]:
+    """WxH sizes from the image FILE NAME only ("..._480x304.png"). Folder
+    names can look like sizes too — Wells Fargo's /v10-21-26/ asset folder
+    read as a 10x21 thumbnail and got its real card art rejected."""
+    name = urlsplit(src.lower()).path.rsplit("/", 1)[-1]
+    return re.findall(r"(?<!\d)(\d{2,4})[x-](\d{2,4})(?!\d)", name)
+
+
 def _dimension_score(src: str) -> int:
     """Prefer normal landscape card-art dimensions and avoid tiny nav icons."""
     score = 0
-    for width, height in re.findall(r"(?<!\d)(\d{2,4})[x-](\d{2,4})(?!\d)", src.lower()):
+    for width, height in _filename_dims(src):
         w, h = int(width), int(height)
         if w < 140 or h < 80:
             score -= 3
@@ -156,7 +164,7 @@ def _dimension_score(src: str) -> int:
 def _is_card_sized(src: str) -> bool:
     """False when the URL's own dimensions mark it as a thumbnail (tiny) or a
     clearly non-card shape. URLs without dimensions pass (can't tell)."""
-    dims = re.findall(r"(?<!\d)(\d{2,4})[x-](\d{2,4})(?!\d)", src.lower())
+    dims = _filename_dims(src)
     if not dims:
         return True
     for width, height in dims:
@@ -232,6 +240,9 @@ def extract_card_image(html: str, page_url: str) -> str | None:
                 score += 2
             if "card" in src_l:
                 score += 1
+            # "..._Front_RGB.png": issuers' name for a flat card-face asset.
+            if re.search(r"[_-]front[_.-]", src_l):
+                score += 2
             score += _dimension_score(src)
             if score:
                 scored.append((score, src))

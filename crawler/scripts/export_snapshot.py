@@ -21,6 +21,7 @@ Then run scripts/cache_card_art.py to self-host any new card art.
 Usage (from crawler/):
     python scripts/export_snapshot.py            # all providers with data
     python scripts/export_snapshot.py --dry-run  # report only
+    python scripts/export_snapshot.py --provider wells_fargo  # just one issuer
 """
 import json
 import re
@@ -47,22 +48,46 @@ FIELDS = (
 )
 
 
+_LOOSE_NOISE = re.compile(
+    r"\b(wells fargo|chase|citi|capital one|american express|amex|bank of america|"
+    r"u\.?s\.? bank|discover|barclays|synchrony|visa|mastercard|signature|world elite|"
+    r"infinite|business|the)\b"
+)
+
+
+def loose_key(row: dict) -> str:
+    """card_key without issuer/network words, so a renamed product still
+    matches ("Wells Fargo Active Cash" vs "Active Cash® Credit Card")."""
+    return re.sub(r"\s+", " ", _LOOSE_NOISE.sub(" ", card_key(row))).strip()
+
+
 def build_snapshot(existing: list[dict], crawled: dict[str, list[dict]]) -> tuple[list[dict], dict]:
     """Pure merge: existing snapshot rows + {provider: accepted records}."""
     by_url = {r["url"]: r for r in existing}
     by_name = {(r["provider"], card_key(r)): r for r in existing}
+    by_loose = {}
+    for r in existing:
+        by_loose.setdefault((r["provider"], loose_key(r)), r)
     stats = {"kept": 0, "updated": 0, "added": 0, "dropped": 0}
 
     out = [r for r in existing if r["provider"] not in crawled]
     stats["kept"] = len(out)
 
+    used: set[str] = set()  # an existing card id is handed out at most once
     for provider, records in crawled.items():
         old_count = sum(1 for r in existing if r["provider"] == provider)
         for record in records:
             row = {k: record.get(k) for k in FIELDS}
             enrich(row)
             row["reward_rates"] = row.get("reward_rates") or []
-            match = by_url.get(row["url"]) or by_name.get((provider, card_key(row)))
+            candidates = [
+                by_url.get(row["url"]),
+                by_name.get((provider, card_key(row))),
+                by_loose.get((provider, loose_key(row))),
+            ]
+            match = next((c for c in candidates if c and c["id"] not in used), None)
+            if match:
+                used.add(match["id"])
             row["id"] = match["id"] if match else str(uuid.uuid4())
             # Keep self-hosted art (and its source) when the crawl found none new.
             if match and (match.get("image_url") or "").startswith("/card-art/"):
@@ -88,6 +113,9 @@ def load_crawled() -> dict[str, list[dict]]:
 
 def main() -> int:
     crawled = load_crawled()
+    if "--provider" in sys.argv:
+        only = sys.argv[sys.argv.index("--provider") + 1]
+        crawled = {k: v for k, v in crawled.items() if k == only}
     if not crawled:
         print(f"No crawl output under {DATA_DIR} — run `python -m src.pipeline` first.")
         return 1

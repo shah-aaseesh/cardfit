@@ -18,7 +18,7 @@ from src.config import settings
 from src.discovery import coarse_filter, canonical_url
 from src.validate import validate_card, _parse_apr_high
 from src.extract import CardData, _parse_dollar, _clean_reward_rates, _norm
-from src.fetch import _is_bad_asset
+from src.fetch import _is_bad_asset, _is_card_sized
 from src.storage import _slug, dedupe_records
 from src.tagging import infer_top_perk
 
@@ -130,6 +130,14 @@ def test_tracking_pixels_are_not_card_art():
         "https://creditcards.chase.com/bcs/image?url=%2Fbcs%2Fimages.ctfassets.net%2Fx%2Fworld_of_hyatt_card.png&w=640"
     )
     print("OK: tracking pixels rejected, real card art kept")
+
+
+def test_card_art_sizes_come_from_file_name_not_folders():
+    # Wells Fargo's versioned asset folder /v10-21-26/ is not a 10x21 thumbnail.
+    wf = "https://creditcards.wellsfargo.com/W-Card-MarketPlace/v10-21-26/images/Products/ActiveCash/WF_ActiveCash_VS_Collateral_Front_RGB.png"
+    assert _is_card_sized(wf)
+    assert not _is_card_sized("https://x.com/img/card_120x76.png"), "real thumbnail sizes still count"
+    print("OK: card-art size check ignores folder names")
 
 
 def test_reward_rates_require_page_quote():
