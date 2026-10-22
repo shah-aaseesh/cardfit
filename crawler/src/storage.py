@@ -119,7 +119,7 @@ def load_latest(provider_name: str) -> dict[str, dict]:
     path = provider_dir(provider_name) / "latest.json"
     if not path.exists():
         return {}
-    with open(path) as f:
+    with open(path, encoding="utf-8") as f:
         records = json.load(f)
     return {r["url"]: r for r in records}
 
@@ -199,17 +199,17 @@ def save_run(provider_name: str, accepted_records: list[dict], raw_html_by_url: 
     today = date.today().isoformat()
     accepted_records = dedupe_records(provider_name, accepted_records)
 
-    with open(pdir / "latest.json", "w") as f:
+    with open(pdir / "latest.json", "w", encoding="utf-8") as f:
         json.dump(accepted_records, f, indent=2)
 
-    with open(pdir / "history" / f"{today}.json", "w") as f:
+    with open(pdir / "history" / f"{today}.json", "w", encoding="utf-8") as f:
         json.dump(accepted_records, f, indent=2)
 
     for record in accepted_records:
         html = raw_html_by_url.get(record["url"])
         if html:
             slug = _slug(record.get("card_name") or record["url"])
-            with open(pdir / "raw" / f"{slug}.html", "w") as f:
+            with open(pdir / "raw" / f"{slug}.html", "w", encoding="utf-8") as f:
                 f.write(html)
 
     logger.info(f"[{provider_name}] published {len(accepted_records)} records for {today}")
@@ -227,7 +227,7 @@ def save_rejections(provider_name: str, rejected_records: list[dict]) -> None:
         return
     pdir = provider_dir(provider_name)
     today = date.today().isoformat()
-    with open(pdir / "history" / f"{today}_rejected.json", "w") as f:
+    with open(pdir / "history" / f"{today}_rejected.json", "w", encoding="utf-8") as f:
         json.dump(rejected_records, f, indent=2)
 
     client = _get_supabase_client()

@@ -60,7 +60,7 @@ def load_cache(provider_name: str) -> dict:
     if not path.exists():
         return empty
     try:
-        with open(path) as f:
+        with open(path, encoding="utf-8") as f:
             cache = json.load(f)
     except (json.JSONDecodeError, OSError) as e:
         logger.warning(f"[{provider_name}] unreadable crawl cache ({e}) — starting fresh")
@@ -72,7 +72,7 @@ def load_cache(provider_name: str) -> dict:
 
 
 def save_cache(provider_name: str, cache: dict) -> None:
-    with open(_cache_path(provider_name), "w") as f:
+    with open(_cache_path(provider_name), "w", encoding="utf-8") as f:
         json.dump(cache, f, indent=2)
 
 
