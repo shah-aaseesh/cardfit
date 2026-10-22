@@ -20,12 +20,12 @@ interface ValueBlockProps {
   /** Cards the user already holds: rewards then count only what this card
    *  adds on top of them (the same basis the quiz ranks by). */
   owned?: CreditCard[];
+  /** Render the fine print elsewhere (e.g. centred under a symmetric layout). */
+  hideNotes?: boolean;
 }
 
-export default function ValueBlock({ card, spend, owned = [] }: ValueBlockProps) {
+export default function ValueBlock({ card, spend, owned = [], hideNotes = false }: ValueBlockProps) {
   const v = useMemo(() => estimateValue(card, spend, owned), [card, spend, owned]);
-  const monthlyTotal = Object.values(v.personalized ? { ...TYPICAL_SPEND, ...spend } : TYPICAL_SPEND)
-    .reduce((a, b) => a + (b || 0), 0);
 
   const label = v.incremental
     ? 'Extra value over your cards'
@@ -62,17 +62,26 @@ export default function ValueBlock({ card, spend, owned = [] }: ValueBlockProps)
         </div>
       </div>
 
-      {/* Fine print sits outside the card, quiet. */}
-      <div className="mt-4 flex flex-col gap-1 px-1 text-xs leading-relaxed text-[var(--cl-muted)]">
-        <p className="flex items-start gap-1.5">
-          <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-          <span>
-            Based on {v.personalized ? 'your' : 'a typical'} ~${monthlyTotal.toLocaleString()}/month of spending
-            {v.incremental ? ', counting only what beats your current cards' : ''}. Points valued conservatively; confirm terms with the issuer.
-          </span>
-        </p>
-        <p className="pl-5">Carry a balance? At 20%+ APR, interest usually costs more than any card earns.</p>
-      </div>
+      {!hideNotes && <ValueNotes card={card} spend={spend} owned={owned} />}
+    </div>
+  );
+}
+
+/** The estimate's basis and the carry-a-balance caution — quiet fine print. */
+export function ValueNotes({ card, spend, owned = [] }: { card: CreditCard; spend?: MonthlySpend; owned?: CreditCard[] }) {
+  const v = useMemo(() => estimateValue(card, spend, owned), [card, spend, owned]);
+  const monthlyTotal = Object.values(v.personalized ? { ...TYPICAL_SPEND, ...spend } : TYPICAL_SPEND)
+    .reduce((a, b) => a + (b || 0), 0);
+  return (
+    <div className="mt-4 flex max-w-2xl flex-col items-center gap-1 px-1 text-center text-xs leading-relaxed text-[var(--cl-muted)]">
+      <p className="flex items-start gap-1.5">
+        <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+        <span>
+          Based on {v.personalized ? 'your' : 'a typical'} ~${monthlyTotal.toLocaleString()}/month of spending
+          {v.incremental ? ', counting only what beats your current cards' : ''}. Points valued conservatively; confirm terms with the issuer.
+        </span>
+      </p>
+      <p>Carry a balance? At 20%+ APR, interest usually costs more than any card earns.</p>
     </div>
   );
 }

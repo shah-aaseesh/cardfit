@@ -796,26 +796,6 @@ body {
   }
 }
 
-/* Card stage: a lilac "sticker" panel the hero card sits on; neighbours
-   peek in from the edges. */
-.cards-dot-stage {
-  border-radius: 1.75rem;
-  background: #e9e2ff;
-  border: 2px solid #141414;
-  box-shadow: 4px 4px 0 #141414;
-}
-
-.cards-dot-stage::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background-image: radial-gradient(#6c47ff 1px, transparent 1.2px);
-  background-size: 18px 18px;
-  opacity: 0.35;
-  pointer-events: none;
-}
-
 @media (max-width: 767px) {
   html {
     font-size: 16px;
@@ -827,14 +807,6 @@ body {
       radial-gradient(ellipse at 50% 82%, rgba(233, 233, 233,0.36) 0%, rgba(233, 233, 233,0.12) 42%, rgba(255,255,255,0) 72%),
       linear-gradient(to bottom, #FBFBFB 0%, #F7F7F7 100%),
       var(--cl-bg);
-  }
-
-  .cards-dot-stage::before {
-    background-size: 22px 22px;
-  }
-
-  .cards-dot-stage [style] {
-    max-width: 92vw;
   }
 
   .cards-page dl,

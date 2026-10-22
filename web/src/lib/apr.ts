@@ -5,8 +5,8 @@
 //   Regular : "19.49% to 28.49% variable"     (rate range + variable/fixed)
 //   Intro   : "0% for the first 15 billing cycles"  (rate + duration only)
 //
-// Intro also resolves to "Not applicable" (no intro offer) or "Unsure"
-// (no data yet); Regular resolves to "Unsure" when unknown.
+// Intro also resolves to "Not applicable" (no intro offer) or "Not listed"
+// (no data yet); Regular resolves to "Not listed" when unknown.
 
 import { CardFacts } from '../types';
 
@@ -46,20 +46,20 @@ function normalizeIntro(raw: string): string {
 
 function introValue(raw?: string): string {
   const t = (raw || '').trim();
-  if (!t || UNKNOWN.test(t)) return 'Unsure';
+  if (!t || UNKNOWN.test(t)) return 'Not listed';
   if (NO_INTRO.test(t)) return 'Not applicable';
   // Placeholder copy the scraper couldn't fill ("x% intro APR for x months")
   // has no real numbers — don't show it.
-  if (!/\d/.test(t)) return 'Unsure';
+  if (!/\d/.test(t)) return 'Not listed';
   return normalizeIntro(t);
 }
 
 function regularValue(facts: CardFacts): string {
   const t = (facts.aprRegular || facts.apr || '').trim();
-  if (!t || UNKNOWN.test(t)) return 'Unsure';
+  if (!t || UNKNOWN.test(t)) return 'Not listed';
   // Needs at least one real percentage rate; "% – % variable" and the like
   // are unfilled placeholders, so treat them as unknown.
-  if (!/\d+(?:\.\d+)?\s*%/.test(t)) return 'Unsure';
+  if (!/\d+(?:\.\d+)?\s*%/.test(t)) return 'Not listed';
   return normalizeRegular(t);
 }
 

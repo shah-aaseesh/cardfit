@@ -40,7 +40,7 @@ export default function Navigation({ currentPage, setCurrentPage, findActive, on
       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
       className="fixed top-4 left-4 right-4 md:top-6 md:left-7 md:right-7 z-40 flex flex-col items-stretch gap-3 pointer-events-none sm:flex-row sm:items-center sm:justify-between"
     >
-      <div className="flex items-center justify-between sm:contents">
+      <div className="pointer-events-auto -mx-2 -mt-2 flex items-center justify-between rounded-2xl bg-[#fffaf0]/95 px-2 py-1.5 backdrop-blur sm:contents">
         <button
           onClick={onLogoClick ?? (() => setCurrentPage('home'))}
           className="pointer-events-auto flex items-center gap-2.5 group"

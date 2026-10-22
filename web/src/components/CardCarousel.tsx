@@ -1,16 +1,15 @@
 import { useState, useCallback, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
-import { ChevronLeft, ChevronRight, ChevronDown, Sparkles, Plus, X, ArrowUpRight, ShieldCheck, Receipt, Scale, Coins, Trophy } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ChevronDown, Sparkles, Plus, X, Check, ArrowUpRight, ShieldCheck, Receipt, Scale, Coins, Trophy } from 'lucide-react';
 import CardVisual from './CardVisual';
-import CardFacts from './CardFacts';
+import FinePrint from './FinePrint';
 import BubbleFilters from './BubbleFilters';
 import AISearchBar from './AISearchBar';
 import { buildDeck, getTop15Cards } from '../lib/ranking';
 import { describeFilters } from '../lib/filters';
 import { fetchAdvisorNote, advisorEnabled } from '../lib/advisor';
 import { pushRecentlyViewed } from '../lib/recentlyViewed';
-import CardInsightsPanel from './CardInsightsPanel';
-import ValueBlock from './ValueBlock';
+import ValueBlock, { ValueNotes } from './ValueBlock';
 import HeroPreview from './HeroPreview';
 import Sparkle from './Sparkle';
 import { MonthlySpend } from '../lib/insights';
@@ -206,42 +205,37 @@ export default function CardCarousel({
     }
   }, [cards, showResults]);
 
-  // Card identity + its value to the user. Desktop shows it beside the card
-  // (product-page layout: image left, name and "price" right) so the dollar
-  // figure is above the fold; phones stack it under the card.
-  const renderIdentity = (desktop: boolean) => activeCard && (
-    <div className={`w-full flex flex-col gap-5 ${desktop ? 'items-start' : 'items-center'}`}>
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={activeCard.id}
-          initial={{ opacity: 0, y: reducedMotion ? 0 : 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, transition: { duration: 0.12 } }}
-          transition={{ duration: reducedMotion ? 0 : 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className={`w-full ${desktop ? 'text-left' : 'text-center'}`}
-        >
-          <p className="font-display text-[12px] font-bold uppercase tracking-[0.14em] text-[var(--cl-muted)] mb-2">{activeCard.issuer}</p>
-          <h1 className="font-editorial text-[clamp(1.9rem,2.6vw,2.75rem)] leading-[1.05] text-[var(--cl-ink)] text-balance">{activeCard.name}</h1>
-          {ranked && (
-            <p className="mt-3 pop-sm inline-flex -rotate-1 items-center gap-1.5 rounded-full bg-[var(--cl-lime)] px-3 py-1.5 text-xs font-bold text-[var(--cl-ink)]">
-              <Trophy className="h-3.5 w-3.5" aria-hidden="true" />
-              <span className="font-bold">#{currentIndex + 1}</span> {rankLabel}
-            </p>
-          )}
-          {advisorLoading ? (
-            <p className={`mt-3 flex items-center gap-2 text-xs text-[var(--cl-muted)] ${desktop ? '' : 'justify-center'}`}>
-              <Sparkles className="w-3.5 h-3.5 animate-pulse text-[var(--cl-gold)]" /> Analyzing your wallet…
-            </p>
-          ) : advisorNote ? (
-            <p className={`mt-3 max-w-md text-sm text-[var(--cl-ink)] leading-relaxed ${desktop ? '' : 'mx-auto'}`}>
-              <Sparkles className="inline w-3.5 h-3.5 text-[var(--cl-gold)] mr-1 align-[-0.15em]" />{advisorNote}
-            </p>
-          ) : null}
-        </motion.div>
-      </AnimatePresence>
-      {/* The headline number: this card's value to the user, fee included. */}
-      <ValueBlock card={activeCard} spend={userSpend} stacked={desktop} owned={ownedForValue} />
-    </div>
+  // The card's title row — issuer, name, rank — centred above the
+  // symmetric card | value pair.
+  const renderTitle = () => activeCard && (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={activeCard.id}
+        initial={{ opacity: 0, y: reducedMotion ? 0 : 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, transition: { duration: 0.12 } }}
+        transition={{ duration: reducedMotion ? 0 : 0.3, ease: [0.16, 1, 0.3, 1] }}
+        className="w-full text-center"
+      >
+        <p className="font-display text-[12px] font-bold uppercase tracking-[0.14em] text-[var(--cl-muted)] mb-2">{activeCard.issuer}</p>
+        <h1 className="font-editorial text-[clamp(1.9rem,3vw,3rem)] leading-[1.05] text-[var(--cl-ink)] text-balance">{activeCard.name}</h1>
+        {ranked && (
+          <p className="mt-3 pop-sm inline-flex -rotate-1 items-center gap-1.5 rounded-full bg-[var(--cl-lime)] px-3 py-1.5 text-xs font-bold text-[var(--cl-ink)]">
+            <Trophy className="h-3.5 w-3.5" aria-hidden="true" />
+            <span className="font-bold">#{currentIndex + 1}</span> {rankLabel}
+          </p>
+        )}
+        {advisorLoading ? (
+          <p className="mt-3 flex items-center justify-center gap-2 text-xs text-[var(--cl-muted)]">
+            <Sparkles className="w-3.5 h-3.5 animate-pulse text-[var(--cl-gold)]" /> Analyzing your wallet…
+          </p>
+        ) : advisorNote ? (
+          <p className="mx-auto mt-3 max-w-md text-sm text-[var(--cl-ink)] leading-relaxed">
+            <Sparkles className="inline w-3.5 h-3.5 text-[var(--cl-gold)] mr-1 align-[-0.15em]" />{advisorNote}
+          </p>
+        ) : null}
+      </motion.div>
+    </AnimatePresence>
   );
 
   // Landing hero: nothing but the search, centered on the page.
@@ -438,140 +432,94 @@ export default function CardCarousel({
       {/* Centered stage: caps its width on large monitors and scales fluidly so
           it fits every desktop height. The whole section is vertically centered
           and grows to scroll only on very short screens (never clips). */}
-      <div className="w-full flex flex-col gap-8 max-w-[104rem] mx-auto md:gap-[clamp(1.25rem,3.2vh,3.35rem)]">
-      {/* Upper: carousel (left) + analysis (right). Fixed (fluid) height on
-          desktop so the card sits at the same spot regardless of how tall the
-          active card's analysis panel is — keeps positions stable across cards. */}
-      <div className="relative z-10 w-full px-4 grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] gap-7 md:px-[clamp(1.25rem,3vw,3.5rem)] lg:gap-[clamp(2rem,3.5vw,4rem)] items-center">
-        {/* Left: carousel (edges fade into the page bg) with the controls
-            sitting directly below the main card. */}
-        <div className="flex flex-col items-center">
-          <div className="cards-dot-stage relative w-full h-[250px] md:h-[clamp(280px,34vh,400px)] flex items-center justify-center [perspective:1400px] overflow-hidden">
-          <div className="relative w-full h-full flex justify-center items-center [transform-style:preserve-3d]">
-          <AnimatePresence initial={false}>
-            {cards.map((card, index) => {
-              // Calculate circular offset
-              let offset = index - currentIndex;
-              const total = cards.length;
-              if (offset > Math.floor(total / 2)) offset -= total;
-              if (offset < -Math.floor(total / 2)) offset += total;
+      <div className="w-full flex flex-col items-center gap-8 px-4 md:px-[clamp(1.25rem,3vw,3.5rem)]">
+        <div aria-live="polite" className="w-full max-w-4xl">{renderTitle()}</div>
 
-              // Product-shot composition: one hero card, one softened card on
-              // either side. Extra cards stay out of view until navigated to.
-              const isVisible = Math.abs(offset) <= 1;
-              if (!isVisible) return null;
-
-              const isCenter = offset === 0;
-              const depth = Math.abs(offset);
-
-              return (
+        {/* Mirror-symmetric pair: the card (flat, a neat fan of the next two
+            cards behind it) and its value card, same width and height.
+            Controls sit centred under both (on phones: right under the card). */}
+        <div className="grid w-full max-w-5xl grid-cols-1 items-center justify-items-center gap-x-14 gap-y-8 lg:grid-cols-2">
+          <div className="order-1 w-full max-w-[26rem] px-6 py-4 sm:px-8">
+            <div className="relative aspect-[1.586/1] w-full">
+              {[2, 1].map((k) => {
+                const back = cards.length > k ? cards[(currentIndex + k) % cards.length] : undefined;
+                if (!back) return null;
+                return (
+                  <div
+                    key={`${back.id}-back`}
+                    aria-hidden="true"
+                    className={`absolute inset-0 brightness-[0.97] ${k === 1 ? 'rotate-[6deg] translate-x-[5%]' : '-rotate-[6deg] -translate-x-[5%]'}`}
+                  >
+                    <CardVisual card={back} variant="fill" />
+                  </div>
+                );
+              })}
+              <AnimatePresence mode="popLayout" initial={false}>
                 <motion.div
-                  key={card.id}
-                  initial={false}
-                  animate={{
-                    x: isCenter
-                      ? -8
-                      : `calc(${offset * 104}% + ${offset * (window.innerWidth < 768 ? 16 : 68)}px)`,
-                    y: isCenter ? -2 : 8,
-                    scale: isCenter ? 1.06 : 0.68,
-                    rotateY: reducedMotion ? 0 : isCenter ? -16 : offset * -7,
-                    rotateX: reducedMotion ? 0 : isCenter ? 2.4 : 0.8,
-                    rotateZ: reducedMotion ? 0 : isCenter ? 1.2 : offset * -2,
-                    z: isCenter ? 130 : -170,
-                    // Neighbours stay recognisable (lighter blur/fade) so it's
-                    // obvious there are more cards to swipe through.
-                    opacity: isCenter ? 1 : 0.6,
-                    filter: `blur(${isCenter ? 0 : 2}px) saturate(${isCenter ? 1 : 0.8}) brightness(${isCenter ? 1 : 1.08})`,
-                  }}
-                  transition={cardTransition}
-                  className={`absolute origin-center will-change-transform ${isCenter ? 'z-20 cursor-default' : depth === 1 ? 'z-10 cursor-pointer' : 'z-0 cursor-pointer'}`}
-                  onClick={() => {
-                    if (offset < 0) prevCard();
-                    if (offset > 0) nextCard();
-                  }}
+                  key={activeCard.id}
+                  className="absolute inset-0 z-10 drop-shadow-[5px_5px_0_#141414]"
+                  initial={{ opacity: 0, scale: reducedMotion ? 1 : 0.94, y: reducedMotion ? 0 : 10 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: reducedMotion ? 1 : 0.97 }}
+                  transition={{ duration: reducedMotion ? 0 : 0.28, ease: [0.16, 1, 0.3, 1] }}
                 >
-                  <CardVisual card={card} variant="fluid" />
+                  <CardVisual card={activeCard} variant="fill" />
                 </motion.div>
-              );
-            })}
-          </AnimatePresence>
+              </AnimatePresence>
+            </div>
           </div>
+
+          <div className="order-3 w-full max-w-[26rem] lg:order-2">
+            <ValueBlock card={activeCard} spend={userSpend} stacked owned={ownedForValue} hideNotes />
           </div>
-          {cards.length > 1 && (
-            <p className="relative z-10 mt-4 mb-3 text-xs font-medium tabular-nums text-[var(--cl-muted)]" aria-live="polite">
-              {currentIndex + 1} of {cards.length}
-            </p>
-          )}
-          {/* Carousel controls, right below the main card: prev · watchlist ·
-              visit · next. Labels reveal on hover. */}
-          <div className="shrink-0 flex items-center justify-center gap-4">
-            <button
-              onClick={prevCard}
-              aria-label="Previous card"
-              className="pop-sm pop-lift h-10 w-10 rounded-full bg-white hover:bg-[var(--cl-panel)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cl-ink)]/30 transition-colors text-[var(--cl-muted)] hover:text-[var(--cl-ink)] flex items-center justify-center"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <div className="group relative flex items-center justify-center">
+
+          {/* Controls: ‹ 1 of 15 ›  ·  Watchlist  ·  Visit — labelled, centred. */}
+          <div className="order-2 flex flex-wrap items-center justify-center gap-3 lg:order-3 lg:col-span-2">
+            <div className="pop-sm flex items-center gap-1 rounded-full bg-white p-1">
               <button
-                onClick={() => setWatchlist((prev) => (prev.includes(activeCard.id) ? prev.filter((id) => id !== activeCard.id) : [...prev, activeCard.id]))}
-                aria-label={watchlist.includes(activeCard.id) ? `Remove ${activeCard.name} from watchlist` : `Add ${activeCard.name} to watchlist`}
-                className="pop-sm pop-lift h-10 w-10 rounded-full bg-white text-[var(--cl-muted)] hover:text-[var(--cl-ink)] hover:border-[var(--cl-ink)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cl-ink)]/30 transition-colors flex items-center justify-center"
+                onClick={prevCard}
+                aria-label="Previous card"
+                className="grid h-9 w-9 place-items-center rounded-full text-[var(--cl-ink)] hover:bg-[var(--cl-panel)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cl-brand)]/40"
               >
-                {watchlist.includes(activeCard.id) ? <X className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
+                <ChevronLeft className="w-5 h-5" />
               </button>
-              <span className="pointer-events-none absolute top-full left-1/2 -translate-x-1/2 mt-2 whitespace-nowrap text-[11px] font-semibold uppercase tracking-wider text-[var(--cl-muted)] opacity-0 group-hover:opacity-100 transition-opacity duration-150">{watchlist.includes(activeCard.id) ? 'Saved' : 'Watchlist'}</span>
-            </div>
-            <div className="group relative flex items-center justify-center">
-              {activeCard.applyUrl ? (
-                <a
-                  href={activeCard.applyUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`Visit ${activeCard.name} on the issuer's site`}
-                  className="pop-sm pop-lift h-10 w-10 rounded-full bg-[var(--cl-pill)] text-[var(--cl-pill-ink)] hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cl-ink)]/40 transition-opacity flex items-center justify-center"
-                >
-                  <ArrowUpRight className="w-5 h-5" />
-                </a>
-              ) : (
-                <span aria-hidden="true" title="Application link unavailable" className="h-10 w-10 rounded-full bg-[var(--cl-pill)]/30 text-[var(--cl-pill-ink)]/50 flex items-center justify-center cursor-not-allowed">
-                  <ArrowUpRight className="w-5 h-5" />
-                </span>
-              )}
-              <span className="pointer-events-none absolute top-full left-1/2 -translate-x-1/2 mt-2 whitespace-nowrap text-[11px] font-semibold uppercase tracking-wider text-[var(--cl-gold)] opacity-0 group-hover:opacity-100 transition-opacity duration-150">Visit</span>
+              <span className="min-w-[4.5rem] text-center text-sm font-semibold tabular-nums text-[var(--cl-ink)]" aria-live="polite">
+                {currentIndex + 1} of {cards.length}
+              </span>
+              <button
+                onClick={nextCard}
+                aria-label="Next card"
+                className="grid h-9 w-9 place-items-center rounded-full text-[var(--cl-ink)] hover:bg-[var(--cl-panel)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cl-brand)]/40"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
             </div>
             <button
-              onClick={nextCard}
-              aria-label="Next card"
-              className="pop-sm pop-lift h-10 w-10 rounded-full bg-white hover:bg-[var(--cl-panel)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cl-ink)]/30 transition-colors text-[var(--cl-muted)] hover:text-[var(--cl-ink)] flex items-center justify-center"
+              onClick={() => setWatchlist((prev) => (prev.includes(activeCard.id) ? prev.filter((id) => id !== activeCard.id) : [...prev, activeCard.id]))}
+              aria-pressed={watchlist.includes(activeCard.id)}
+              className={`pop-sm pop-lift h-11 px-4 rounded-full text-sm font-semibold flex items-center gap-1.5 ${watchlist.includes(activeCard.id) ? 'bg-[var(--cl-lime)]' : 'bg-white'} text-[var(--cl-ink)]`}
             >
-              <ChevronRight className="w-5 h-5" />
+              {watchlist.includes(activeCard.id) ? <><Check className="w-4 h-4" /> Saved</> : <><Plus className="w-4 h-4" /> Watchlist</>}
             </button>
+            {activeCard.applyUrl ? (
+              <a
+                href={activeCard.applyUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="pop-sm pop-lift h-11 px-5 rounded-full bg-[var(--cl-pill)] text-[var(--cl-pill-ink)] text-sm font-bold flex items-center gap-1.5"
+              >
+                Visit issuer <ArrowUpRight className="w-4 h-4" />
+              </a>
+            ) : (
+              <span className="h-11 px-5 rounded-full bg-[var(--cl-panel)] text-[var(--cl-muted)] text-sm font-semibold flex items-center">No apply link</span>
+            )}
           </div>
         </div>
 
-        {/* Right (desktop): name + the value number, beside the card. */}
-        <div aria-live="polite" className="hidden lg:block">
-          {renderIdentity(true)}
-        </div>
-      </div>
+        <ValueNotes card={activeCard} spend={userSpend} owned={ownedForValue} />
 
-      {/* Lower: identity + value on phones, then the details for everyone. */}
-      <div className="relative z-20 w-full flex flex-col items-center gap-[clamp(1.5rem,3vh,2.35rem)] px-4 md:px-[clamp(1.25rem,3vw,3.5rem)]">
-        <div aria-live="polite" className="w-full max-w-3xl lg:hidden">
-          {renderIdentity(false)}
-        </div>
-
-        {/* The details, gathered into one soft panel so they read as a single,
-            tidy section rather than text floating between hairlines. */}
-        <section className="pop w-full max-w-6xl rounded-[1.75rem] bg-white px-5 py-7 md:px-10 md:py-9">
-          <h2 className="mb-6 font-editorial text-2xl text-[var(--cl-ink)] md:text-3xl">The fine print</h2>
-          <CardInsightsPanel card={activeCard} whyBullets={activeWhy} />
-          <div className="mt-8 border-t border-[var(--cl-hairline-strong)] pt-6 -mx-4 md:mx-0">
-            <CardFacts card={activeCard} />
-          </div>
-        </section>
-      </div>
+        {/* Everything else, sticker style. */}
+        <FinePrint card={activeCard} whyBullets={activeWhy} />
       </div>
 
       {/* PARKED FOR THE FUTURE: the "cards above your selected annual fee
