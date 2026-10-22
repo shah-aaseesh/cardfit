@@ -13,4 +13,4 @@ export const SNAPSHOT_CARDS: CreditCard[] = (rawRows as unknown as CardRow[]).ma
 
 /** When the snapshot's facts were last crawled from issuer pages (shown in
  *  the footer so users can judge freshness). Update after regenerating. */
-export const SNAPSHOT_AS_OF = 'July 2026';
+export const SNAPSHOT_AS_OF = 'October 2026';
