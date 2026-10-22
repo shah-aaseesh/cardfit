@@ -179,8 +179,15 @@ def discover_urls(provider: dict) -> list[str]:
         raw_urls = parse_sitemap(provider["sitemap"], is_index=provider.get("sitemap_index", False))
     elif provider.get("fallback_hub"):
         logger.info(f"[{name}] no sitemap — falling back to hub crawl")
-        raw_urls = crawl_hub_fallback(provider["fallback_hub"], provider)
-        return raw_urls  # already filtered inside crawl_hub_fallback
+        # fallback_hub may be one URL or a list: some issuers (Amex since
+        # 2026-10) only show a few featured cards on the all-cards page and
+        # list the rest on category pages.
+        hubs = provider["fallback_hub"]
+        hubs = [hubs] if isinstance(hubs, str) else list(hubs)
+        merged: list[str] = []
+        for hub in hubs:
+            merged.extend(crawl_hub_fallback(hub, provider))
+        return coarse_filter(merged, provider)  # dedupes + caps across hubs
     else:
         logger.error(f"[{name}] no sitemap or fallback_hub configured — skipping")
         return []

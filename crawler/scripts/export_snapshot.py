@@ -1,0 +1,111 @@
+"""
+export_snapshot.py — publish a crawl to the website without Supabase.
+
+The site reads Supabase when it's configured, otherwise the committed
+web/src/cards.snapshot.json. Until now nothing turned crawler output
+(data/{provider}/latest.json) into that snapshot, so a fresh crawl never
+reached the site. This script does, safely:
+
+  - Providers that were crawled replace their rows; providers that weren't
+    keep their existing rows (a partial or failed run never wipes data).
+  - Card ids stay stable: a crawled card reuses the existing id matched by
+    URL, then by normalized name within the provider — so users' saved
+    wallets/watchlists keep pointing at the same cards. New cards get a
+    fresh uuid.
+  - Rows are enriched (tags / best_for / top_perk) exactly like the
+    Supabase publish path, and SNAPSHOT_AS_OF in web/src/lib/snapshot.ts is
+    set to this month.
+
+Then run scripts/cache_card_art.py to self-host any new card art.
+
+Usage (from crawler/):
+    python scripts/export_snapshot.py            # all providers with data
+    python scripts/export_snapshot.py --dry-run  # report only
+"""
+import json
+import re
+import sys
+import uuid
+from datetime import date
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from src.config import DATA_DIR  # noqa: E402
+from src.storage import card_key  # noqa: E402
+from src.tagging import enrich  # noqa: E402
+
+ROOT = Path(__file__).resolve().parents[2]
+SNAPSHOT = ROOT / "web" / "src" / "cards.snapshot.json"
+SNAPSHOT_TS = ROOT / "web" / "src" / "lib" / "snapshot.ts"
+
+# Columns the frontend reads (web/src/lib/cardMapper.ts CardRow).
+FIELDS = (
+    "url", "provider", "card_name", "issuer", "annual_fee", "apr_range", "apr_intro",
+    "apr_regular", "rewards_summary", "signup_bonus", "recommended_credit_score",
+    "foreign_transaction_fee", "tags", "best_for", "top_perk", "image_url", "reward_rates",
+)
+
+
+def build_snapshot(existing: list[dict], crawled: dict[str, list[dict]]) -> tuple[list[dict], dict]:
+    """Pure merge: existing snapshot rows + {provider: accepted records}."""
+    by_url = {r["url"]: r for r in existing}
+    by_name = {(r["provider"], card_key(r)): r for r in existing}
+    stats = {"kept": 0, "updated": 0, "added": 0, "dropped": 0}
+
+    out = [r for r in existing if r["provider"] not in crawled]
+    stats["kept"] = len(out)
+
+    for provider, records in crawled.items():
+        old_count = sum(1 for r in existing if r["provider"] == provider)
+        for record in records:
+            row = {k: record.get(k) for k in FIELDS}
+            enrich(row)
+            row["reward_rates"] = row.get("reward_rates") or []
+            match = by_url.get(row["url"]) or by_name.get((provider, card_key(row)))
+            row["id"] = match["id"] if match else str(uuid.uuid4())
+            # Keep self-hosted art (and its source) when the crawl found none new.
+            if match and (match.get("image_url") or "").startswith("/card-art/"):
+                if not row.get("image_url") or row["image_url"] == match.get("source_image_url"):
+                    row["image_url"] = match["image_url"]
+                    row["source_image_url"] = match.get("source_image_url")
+            stats["updated" if match else "added"] += 1
+            out.append(row)
+        stats["dropped"] += max(0, old_count - len(records))
+
+    out.sort(key=lambda r: (r["provider"], (r.get("card_name") or "").lower()))
+    return out, stats
+
+
+def load_crawled() -> dict[str, list[dict]]:
+    crawled = {}
+    for latest in sorted(DATA_DIR.glob("*/latest.json")):
+        records = json.loads(latest.read_text(encoding="utf-8"))
+        if records:  # an empty run is treated as "not crawled", never as "no cards"
+            crawled[latest.parent.name] = records
+    return crawled
+
+
+def main() -> int:
+    crawled = load_crawled()
+    if not crawled:
+        print(f"No crawl output under {DATA_DIR} — run `python -m src.pipeline` first.")
+        return 1
+    existing = json.loads(SNAPSHOT.read_text(encoding="utf-8"))
+    rows, stats = build_snapshot(existing, crawled)
+    print(f"providers crawled: {', '.join(crawled)}")
+    print(f"{len(existing)} -> {len(rows)} cards  {stats}")
+    if "--dry-run" in sys.argv:
+        return 0
+
+    SNAPSHOT.write_text(json.dumps(rows, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    month = date.today().strftime("%B %Y")
+    ts = SNAPSHOT_TS.read_text(encoding="utf-8")
+    SNAPSHOT_TS.write_text(re.sub(r"SNAPSHOT_AS_OF = '[^']*'", f"SNAPSHOT_AS_OF = '{month}'", ts), encoding="utf-8")
+    print(f"wrote {SNAPSHOT.relative_to(ROOT)}; SNAPSHOT_AS_OF = {month}")
+    print("next: python scripts/cache_card_art.py  (self-host new card art)")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

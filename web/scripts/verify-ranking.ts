@@ -30,8 +30,9 @@ function hasDebugShape(debug: RankingDebugOutput): boolean {
 }
 
 console.log(`Loaded ${cards.length} cards from snapshot.`);
-// 162 crawled rows minus 3 same-card duplicates (scripts/clean-snapshot.ts).
-assert(cards.length === 159, `Expected 159 snapshot cards, got ${cards.length}.`);
+// A sanity floor, not an exact count: a fresh crawl (crawler/scripts/
+// export_snapshot.py) legitimately changes how many cards there are.
+assert(cards.length >= 100, `Expected at least 100 snapshot cards, got ${cards.length}.`);
 
 const groceryCash = getTop15Cards(cards, {
   filters: ['personal', 'cashback', 'no-fee', 'gas'],

@@ -34,6 +34,13 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      # Amex, Bank of America, U.S. Bank and Barclays are render_js providers:
+      # their card lists only exist after JavaScript runs. Without a browser
+      # the crawler silently falls back to static HTML and finds a fraction of
+      # their cards (Amex: 3 of 22).
+      - name: Install headless Chromium
+        run: python -m playwright install --with-deps chromium
+
       # Persist the crawl cache across runs so we only spend LLM tokens on
       # new/changed pages. Keyed per-run with a rolling restore so each run
       # loads the most recent previous cache, then saves an updated one.

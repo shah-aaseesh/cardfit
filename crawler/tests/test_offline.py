@@ -174,6 +174,32 @@ def test_dedupe_by_normalized_name_keeps_distinct_products():
     print("OK: dedupe merges marketing-mark variants but keeps One Key vs One Key+")
 
 
+def test_export_snapshot_merge_keeps_ids_and_uncrawled_providers():
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
+    from export_snapshot import build_snapshot
+    existing = [
+        {"id": "a1", "url": "https://c.com/sapphire", "provider": "chase", "card_name": "Chase Sapphire Preferred",
+         "image_url": "/card-art/a1.webp", "source_image_url": "https://c.com/art.png"},
+        {"id": "a2", "url": "https://c.com/old", "provider": "chase", "card_name": "Retired Card", "image_url": None},
+        {"id": "b1", "url": "https://x.com/card", "provider": "amex", "card_name": "Gold Card", "image_url": None},
+    ]
+    crawled = {"chase": [
+        # Same card, new URL: matched by name, so the id survives.
+        {"url": "https://c.com/sapphire/preferred", "provider": "chase", "card_name": "Chase Sapphire Preferred® Credit Card",
+         "annual_fee": 95, "rewards_summary": "Earn 3x on dining.", "image_url": "https://c.com/art.png"},
+        {"url": "https://c.com/new", "provider": "chase", "card_name": "Brand New Card", "annual_fee": 0},
+    ]}
+    rows, stats = build_snapshot(existing, crawled)
+    by_name = {r["card_name"]: r for r in rows}
+    assert by_name["Chase Sapphire Preferred® Credit Card"]["id"] == "a1", "id must survive a URL change"
+    assert by_name["Chase Sapphire Preferred® Credit Card"]["image_url"] == "/card-art/a1.webp", "self-hosted art kept"
+    assert by_name["Gold Card"]["id"] == "b1", "uncrawled provider must be kept"
+    assert "Retired Card" not in by_name, "crawled provider replaces its rows"
+    assert by_name["Brand New Card"]["id"] not in ("a1", "a2", "b1") and "tags" in by_name["Brand New Card"]
+    assert stats == {"kept": 1, "updated": 1, "added": 1, "dropped": 0}, stats
+    print("OK: snapshot export keeps ids, art and uncrawled providers")
+
+
 def run_all():
     tests = [v for k, v in globals().items() if k.startswith("test_") and callable(v)]
     failed = []

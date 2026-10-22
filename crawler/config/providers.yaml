@@ -53,9 +53,17 @@ providers:
     # sitemap. A one-hop hub crawl finds them all; the LLM sorts product
     # pages from the rest.
     sitemap: null
-    fallback_hub: https://www.americanexpress.com/us/credit-cards/all-cards/
-    url_include: ["/us/credit-cards/card/"]
-    url_exclude: ["/compare", "/all-cards", "/credit-intel"]
+    # 2026-10: the all-cards page now shows only ~3 featured cards; the full
+    # line-up (incl. business cards) is spread across category pages.
+    fallback_hub:
+      - https://www.americanexpress.com/us/credit-cards/all-cards/
+      - https://www.americanexpress.com/us/credit-cards/category/travel-rewards/
+      - https://www.americanexpress.com/us/credit-cards/category/cash-back/
+      - https://www.americanexpress.com/us/credit-cards/category/no-annual-fee/
+      - https://www.americanexpress.com/us/credit-cards/business/business-credit-cards/
+    url_include: ["/us/credit-cards/card/", "/us/credit-cards/business/business-credit-cards/[a-z0-9-]+/$"]
+    url_exclude: ["/compare", "/all-cards", "/credit-intel",
+                  "/business-credit-cards/(airlines|cash-back|hotels|travel|travel-rewards|no-annual-fee|no-foreign-transaction-fees|zero-intro-apr|rewards|rewards-points|flexible-payment)/$"]
     # Card pages are a JS shell — static HTML has 16 <h1>s (nav/SEO) and no
     # real content, so classification needs the rendered DOM (2 <h1>s + the
     # actual card details). The hub links come from static JSON (above), so
@@ -66,12 +74,15 @@ providers:
   - name: capital_one
     display_name: Capital One
     base_url: https://www.capitalone.com
-    # Root index has 28 sub-sitemaps; the dedicated card one is far faster
-    # and cleaner (~118 card URLs, flat urlset).
-    sitemap: https://www.capitalone.com/card/sitemap.xml
+    # 2026-10: card sitemap moved from /card/sitemap.xml (now 404) to
+    # /credit-cards/sitemap.xml (listed in the root index). Flat urlset.
+    sitemap: https://www.capitalone.com/credit-cards/sitemap.xml
     sitemap_index: false
     url_include: ["/credit-cards/"]
-    url_exclude: ["/compare", "/learn", "/help-center", "/credit-cards/lp/", "/credit-cards/$"]
+    # /partner/up/ is ~30 union-branded copies of one card that would eat the
+    # per-provider URL cap and crowd out real products.
+    url_exclude: ["/compare", "/learn", "/help-center", "/credit-cards/lp/", "/credit-cards/$",
+                  "/partner/up/", "/preapprove"]
     enabled: true
 
   - name: citi
