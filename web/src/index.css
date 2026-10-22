@@ -621,15 +621,11 @@ body {
   min-height: 122px;
   margin-top: 92px;
   transform: translateX(-56px);
-  border-radius: 14px;
-  border: 1px solid rgba(203, 205, 211, 0.88);
-  background:
-    linear-gradient(180deg, rgba(255,255,255,0.92), rgba(240,241,244,0.78)),
-    rgba(245,245,247,0.80);
-  box-shadow:
-    0 30px 78px -54px rgba(17,17,20,0.44),
-    inset 0 1px 0 rgba(255,255,255,0.92);
-  padding: 30px 32px;
+  /* Tiles carry their own surfaces now; the bar is just the row. */
+  border: 0;
+  background: none;
+  box-shadow: none;
+  padding: 0;
   backdrop-filter: none;
 }
 
@@ -768,26 +764,28 @@ body {
   }
 }
 
+/* Card stage: a soft brand-blue panel with the value card's fine grid. The
+   hero card sits fully inside it; neighbours peek in from the edges. (It
+   used to be a dot field with a white fade overlay drawn on top of the card,
+   which made the card look cut off.) */
+.cards-dot-stage {
+  border-radius: 1.75rem;
+  background:
+    radial-gradient(70% 80% at 50% 45%, oklch(0.99 0.01 265) 0%, transparent 70%),
+    linear-gradient(160deg, oklch(0.95 0.04 262) 0%, oklch(0.93 0.05 268) 100%);
+  box-shadow: inset 0 0 0 1px oklch(0.88 0.04 265);
+}
+
 .cards-dot-stage::before {
   content: "";
   position: absolute;
-  inset: 2% 8% 7%;
-  background-image: radial-gradient(circle, rgba(48, 49, 54, 0.28) 1px, transparent 1.25px);
-  background-size: 16px 16px;
-  opacity: 0.72;
-  mask-image: radial-gradient(ellipse at center, #000 0 54%, transparent 78%);
-  pointer-events: none;
-}
-
-.cards-dot-stage::after {
-  content: "";
-  position: absolute;
   inset: 0;
-  background:
-    linear-gradient(to right, var(--cl-bg) 0%, rgba(255,255,255,0.5) 8%, rgba(255,255,255,0) 24%, rgba(255,255,255,0) 76%, rgba(255,255,255,0.5) 92%, var(--cl-bg) 100%),
-    radial-gradient(ellipse at center, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 60%, rgba(255,255,255,0.4) 86%, var(--cl-bg) 100%);
+  border-radius: inherit;
+  background-image:
+    linear-gradient(oklch(0.52 0.23 265 / 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.52 0.23 265 / 0.07) 1px, transparent 1px);
+  background-size: 28px 28px;
   pointer-events: none;
-  z-index: 25;
 }
 
 @media (max-width: 767px) {
@@ -804,15 +802,7 @@ body {
   }
 
   .cards-dot-stage::before {
-    inset: 0 0 8%;
-    background-size: 13px 13px;
-    opacity: 0.42;
-  }
-
-  .cards-dot-stage::after {
-    background:
-      linear-gradient(to right, var(--cl-bg) 0%, rgba(255,255,255,0.4) 7%, rgba(255,255,255,0) 20%, rgba(255,255,255,0) 80%, rgba(255,255,255,0.4) 93%, var(--cl-bg) 100%),
-      radial-gradient(ellipse at center, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 58%, rgba(255,255,255,0.54) 86%, var(--cl-bg) 100%);
+    background-size: 22px 22px;
   }
 
   .cards-dot-stage [style] {

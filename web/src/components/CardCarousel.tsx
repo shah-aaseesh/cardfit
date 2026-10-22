@@ -308,32 +308,52 @@ export default function CardCarousel({
         </div>
         </div>
 
+        {/* Who we cover — plain wordmarks, a quick credibility cue. */}
+        <div className="mt-16 w-full max-w-6xl text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--cl-muted)]">Cards from {providers.length} major issuers</p>
+          <p className="mt-4 flex flex-wrap items-center justify-center gap-x-7 gap-y-3 text-[15px] font-semibold tracking-tight text-[var(--cl-ink)]/45">
+            {providers.map((p) => <span key={p}>{providerLabel(p)}</span>)}
+          </p>
+        </div>
+
         {/* Trust strip: the four worries people bring to card shopping, each
             answered with something this product actually does. */}
-        <ul className="mt-16 grid w-full max-w-5xl gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <ul className="mt-14 grid w-full max-w-6xl gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {TRUST_POINTS.map(({ icon: Icon, title, body }) => (
-            <li key={title} className="rounded-2xl border border-[var(--cl-hairline)] bg-[var(--cl-surface)] p-5">
-              <Icon className="h-5 w-5 text-[var(--cl-value)]" aria-hidden="true" />
-              <p className="mt-3 font-semibold text-[var(--cl-ink)]">{title}</p>
+            <li key={title} className="rounded-[1.5rem] border border-[var(--cl-hairline)] bg-[var(--cl-surface)] p-6 transition-shadow hover:shadow-[0_18px_40px_-28px_oklch(0.45_0.2_265/0.5)]">
+              <span className="grid h-10 w-10 place-items-center rounded-xl bg-[var(--cl-brand-soft)] text-[var(--cl-brand)]">
+                <Icon className="h-5 w-5" aria-hidden="true" />
+              </span>
+              <p className="mt-4 font-semibold text-[var(--cl-ink)]">{title}</p>
               <p className="mt-1 text-sm leading-relaxed text-[var(--cl-muted)]">{body}</p>
             </li>
           ))}
         </ul>
 
-        {/* How we rank: the method in three plain steps. */}
-        <div className="mt-20 w-full max-w-5xl">
-          <h2 className="text-center font-editorial text-3xl md:text-4xl text-[var(--cl-ink)]">How we rank cards</h2>
-          <ol className="mt-8 grid gap-6 md:grid-cols-3">
-            {RANK_STEPS.map((step, i) => (
-              <li key={step.title} className="flex gap-4">
-                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[var(--cl-pill)] text-sm font-semibold text-[var(--cl-pill-ink)]">{i + 1}</span>
-                <div>
-                  <p className="font-semibold text-[var(--cl-ink)]">{step.title}</p>
-                  <p className="mt-1 text-sm leading-relaxed text-[var(--cl-muted)]">{step.body}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
+        {/* How we rank: the method, on the same blue "card" as the value
+            figure on results — one motif across the site. */}
+        <div className="relative mt-16 w-full max-w-6xl overflow-hidden rounded-[2rem] bg-[linear-gradient(135deg,oklch(0.55_0.23_262)_0%,oklch(0.46_0.24_268)_55%,oklch(0.38_0.20_275)_100%)] px-6 py-12 text-white md:px-14 md:py-16">
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.08] [background-image:linear-gradient(white_1px,transparent_1px),linear-gradient(90deg,white_1px,transparent_1px)] [background-size:32px_32px]" />
+          <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-32 h-80 w-80 rounded-full bg-white/15 blur-3xl" />
+          <div className="relative">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/70">The method</p>
+            <h2 className="mt-3 max-w-xl font-editorial text-3xl md:text-5xl leading-[1.02]">How we rank cards</h2>
+            <ol className="mt-10 grid gap-8 md:grid-cols-3">
+              {RANK_STEPS.map((step, i) => (
+                <li key={step.title} className="border-t border-white/25 pt-5">
+                  <span className="font-editorial text-5xl leading-none text-white/35">0{i + 1}</span>
+                  <p className="mt-4 text-lg font-semibold">{step.title}</p>
+                  <p className="mt-1.5 text-sm leading-relaxed text-white/80">{step.body}</p>
+                </li>
+              ))}
+            </ol>
+            <button
+              onClick={onFindMatches}
+              className="mt-10 h-12 px-7 rounded-full bg-white text-[var(--cl-brand)] font-semibold inline-flex items-center gap-2 hover:bg-white/90 transition-colors"
+            >
+              Rank cards for my spending <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
         </div>
       </section>
     );
@@ -411,7 +431,7 @@ export default function CardCarousel({
         {/* Left: carousel (edges fade into the page bg) with the controls
             sitting directly below the main card. */}
         <div className="flex flex-col items-center">
-          <div className="cards-dot-stage relative w-full h-[250px] md:h-[clamp(280px,34vh,400px)] flex items-center justify-center [perspective:1400px] overflow-hidden [mask-image:radial-gradient(ellipse_at_center,#000_0%,#000_56%,rgba(0,0,0,0.62)_70%,transparent_90%)]">
+          <div className="cards-dot-stage relative w-full h-[250px] md:h-[clamp(280px,34vh,400px)] flex items-center justify-center [perspective:1400px] overflow-hidden">
           <div className="relative w-full h-full flex justify-center items-center [transform-style:preserve-3d]">
           <AnimatePresence initial={false}>
             {cards.map((card, index) => {
@@ -463,13 +483,13 @@ export default function CardCarousel({
           </div>
           </div>
           {cards.length > 1 && (
-            <p className="relative z-10 -mt-3 mb-5 text-xs font-medium tabular-nums text-[var(--cl-muted)]" aria-live="polite">
+            <p className="relative z-10 mt-4 mb-3 text-xs font-medium tabular-nums text-[var(--cl-muted)]" aria-live="polite">
               {currentIndex + 1} of {cards.length}
             </p>
           )}
           {/* Carousel controls, right below the main card: prev · watchlist ·
               visit · next. Labels reveal on hover. */}
-          <div className="shrink-0 -mt-4 flex items-center justify-center gap-4">
+          <div className="shrink-0 flex items-center justify-center gap-4">
             <button
               onClick={prevCard}
               aria-label="Previous card"

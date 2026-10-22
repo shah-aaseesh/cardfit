@@ -14,8 +14,8 @@ interface CardVisualProps {
 // whole composition scales with viewport height; width follows the aspect.
 const SIZE = {
   default: 'w-[360px] h-[228px] md:w-[420px] md:h-[266px]',
-  // min() with 46vw keeps the whole card inside the stage on phones.
-  fluid: 'h-[min(clamp(180px,23vh,300px),46vw)] aspect-[420/266]',
+  // min() with 40vw keeps the whole card inside the stage on phones.
+  fluid: 'h-[min(clamp(180px,23vh,300px),40vw)] aspect-[420/266]',
   fill: 'w-full h-full',
 } as const;
 
@@ -28,6 +28,11 @@ const BAD_ART = /(banner|array|logo|hero|device|sphere|apple|google-?pay|paypal|
 
 function isLikelyCardArt(url?: string): boolean {
   return Boolean(url) && !BAD_ART.test(url!);
+}
+
+/** Real cards don't print "Credit Card" or trademark marks on the face. */
+function faceName(name: string): string {
+  return name.replace(/[®™℠]/g, '').replace(/s+(credits+)?card$/i, '').trim();
 }
 
 export default function CardVisual({ card, variant = 'default' }: CardVisualProps) {
@@ -82,7 +87,9 @@ export default function CardVisual({ card, variant = 'default' }: CardVisualProp
   // Fallback: the stylized gradient face, for cards the crawler hasn't
   // found art for (and all mock data).
   return (
-    <div className={`warm-card-face relative ${size} rounded-[1.25rem] md:rounded-[1.5rem] overflow-hidden p-5 md:p-6 flex flex-col justify-between`}>
+    // Container units (cqh) scale the contents with the card itself (padding
+    // is % of width: cq units on the container itself resolve to the viewport).
+    <div className={`warm-card-face relative ${size} [container-type:size] rounded-[1.25rem] md:rounded-[1.5rem] overflow-hidden px-[6.5%] py-[5%] flex flex-col justify-between`}>
       {/* Texture / Noise overlay */}
       <div
         className="absolute inset-0 opacity-20 mix-blend-overlay"
@@ -95,13 +102,13 @@ export default function CardVisual({ card, variant = 'default' }: CardVisualProp
 
       {/* Top row: Issuer and Contactless icon */}
       <div className="relative flex justify-between items-start z-10">
-        <span className="font-display font-bold tracking-widest text-white/80 text-sm md:text-base uppercase">{card.issuer}</span>
-        <Wifi className="w-6 h-6 text-white/60 rotate-90" />
+        <span className="font-display font-bold tracking-widest text-white/80 text-[clamp(0.6rem,7.5cqh,1rem)] uppercase">{card.issuer}</span>
+        <Wifi className="h-[11cqh] w-[11cqh] text-white/60 rotate-90" />
       </div>
 
       {/* Middle row: Chip */}
       <div className="relative z-10">
-        <div className="w-10 h-12 md:w-12 md:h-14 bg-gradient-to-br from-amber-100 via-amber-200 to-amber-400 rounded-md border border-amber-200/60 backdrop-blur-sm shadow-inner flex flex-col justify-around p-1">
+        <div className="h-[19cqh] aspect-[5/6] bg-gradient-to-br from-amber-100 via-amber-200 to-amber-400 rounded-md border border-amber-200/60 backdrop-blur-sm shadow-inner flex flex-col justify-around p-1">
           <div className="w-full h-[1px] bg-neutral-500/30"></div>
           <div className="w-full h-[1px] bg-neutral-500/30"></div>
           <div className="w-full h-[1px] bg-neutral-500/30"></div>
@@ -110,11 +117,11 @@ export default function CardVisual({ card, variant = 'default' }: CardVisualProp
 
       {/* Bottom row: Name and numbers */}
       <div className="relative z-10 mt-auto">
-        <div className="text-white/55 font-mono tracking-[0.3em] mb-2 md:mb-4 text-xs md:text-sm">
+        <div className="text-white/55 font-mono tracking-[0.3em] mb-[3.5cqh] text-[clamp(0.55rem,6cqh,0.875rem)]">
           •••• •••• •••• {card.last4}
         </div>
-        <div className="text-white font-display font-semibold text-xl md:text-2xl leading-none">
-          {card.name}
+        <div className="text-white font-display font-semibold text-[clamp(0.8rem,10.5cqh,1.6rem)] leading-[1.08] line-clamp-2">
+          {faceName(card.name)}
         </div>
       </div>
     </div>
