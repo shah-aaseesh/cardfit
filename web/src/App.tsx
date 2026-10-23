@@ -22,18 +22,6 @@ export interface MatchResult {
   answers?: Record<string, unknown>;
 }
 
-function isFirstTimeProfile() {
-  const p = loadProfile();
-  return !(
-    p.hasSeenCardsIntro ||
-    p.name ||
-    p.email ||
-    p.ownedCards?.length ||
-    p.filters?.length ||
-    p.answers
-  );
-}
-
 export default function App() {
   const [currentPage, setCurrentPage] = useState(() => (window.location.pathname === '/compare' ? 'compare' : 'home'));
   const [watchlist, setWatchlist] = useState<string[]>([]);
@@ -46,10 +34,14 @@ export default function App() {
   // True right after Find Me a Card completes: the home page shows only
   // "Your best matches" (no filter bubbles) until the user browses all.
   const [matchMode, setMatchMode] = useState(false);
-  // Bumped to remount CardCarousel on a logo click, resetting its internal
-  // search text, provider, and index while opening the full cards view.
+  // Bumped to remount CardCarousel, resetting its internal search text,
+  // provider and index (logo click, or Cards from the landing page).
   const [homeResetKey, setHomeResetKey] = useState(0);
-  const [isFirstTime, setIsFirstTime] = useState(isFirstTimeProfile);
+  // The landing page (pitch, search, quiz button) is what "/" opens to, for
+  // returning visitors too: it used to be skipped forever after a first
+  // search, so they never saw the quiz button again. The logo returns here;
+  // the Cards tab goes to the card browser.
+  const [showLanding, setShowLanding] = useState(true);
 
   // Restore a returning visitor's cards + filters on load.
   useEffect(() => {
@@ -72,6 +64,15 @@ export default function App() {
     if (window.location.pathname !== path) window.history.pushState(null, '', path);
   };
 
+  // Nav tabs: "Cards" means the card browser, so leave the landing page.
+  const navigateTab = (page: string) => {
+    if (page === 'home' && showLanding) {
+      setShowLanding(false);
+      setHomeResetKey((k) => k + 1);
+    }
+    navigatePage(page);
+  };
+
   const handleComplete = (r: MatchResult) => {
     setHomeFilters(r.filters);
     setOwnedCards(r.ownedCards);
@@ -86,7 +87,7 @@ export default function App() {
       hasSeenCardsIntro: true,
     };
     saveProfile(profile);
-    setIsFirstTime(false);
+    setShowLanding(false);
     // Also persist to Supabase (email + this browser's secret token, see
     // lib/remoteProfile.ts) so the profile survives cleared site data.
     // Fire-and-forget: localStorage already has it if this fails.
@@ -102,18 +103,20 @@ export default function App() {
     setMatchAnswers(undefined);
   };
 
-  // Logo click: return to the full Cards page with card details visible.
-  // Clears match/filter state and remounts CardCarousel so its internal
-  // search/provider/index state resets too.
+  // Logo click: back to the landing page, scrolled to the top, with match
+  // and filter state cleared. No full reload: that would flash a blank page
+  // and refetch card data, and the watchlist lives in memory.
   const goHome = () => {
     navigatePage('home');
     browseAll();
+    setShowLanding(true);
     setHomeResetKey((k) => k + 1);
+    window.scrollTo({ top: 0 });
   };
 
   const completeCardsIntro = () => {
     saveProfile({ hasSeenCardsIntro: true });
-    setIsFirstTime(false);
+    setShowLanding(false);
   };
 
   return (
@@ -122,7 +125,7 @@ export default function App() {
       <div className="compare-light min-h-screen bg-[var(--cl-bg)] text-[var(--cl-ink)] font-sans selection:bg-primary/30">
       <Navigation
         currentPage={currentPage}
-        setCurrentPage={navigatePage}
+        setCurrentPage={navigateTab}
         findActive={findOpen}
         onFindClick={() => setFindOpen(true)}
         onLogoClick={goHome}
@@ -140,7 +143,7 @@ export default function App() {
             matchMode={matchMode}
             matchAnswers={matchAnswers}
             onBrowseAll={browseAll}
-            startWithResults={!isFirstTime}
+            startWithResults={!showLanding}
             onIntroComplete={completeCardsIntro}
             onFindMatches={() => setFindOpen(true)}
           />
