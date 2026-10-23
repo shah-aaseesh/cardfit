@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
-import { ChevronLeft, ChevronRight, ChevronDown, Sparkles, Plus, X, Check, ArrowUpRight, ShieldCheck, Receipt, Scale, Coins, Trophy, LayoutGrid } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ChevronDown, Sparkles, Plus, X, Check, ArrowUpRight, ShieldCheck, Receipt, Coins, Trophy, LayoutGrid } from 'lucide-react';
 import CardVisual from './CardVisual';
 import FinePrint from './FinePrint';
 import BubbleFilters from './BubbleFilters';
@@ -29,16 +29,14 @@ const providerLabel = (p: string) =>
   PROVIDER_LABELS[p] ?? p.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 
 // Landing-page trust strip. Every claim must stay literally true of the
-// product: no issuer pays for placement (there are no affiliate links), and
-// no credit data is ever requested.
+// product (e.g. no credit data is ever requested).
 const TRUST_POINTS = [
   { icon: ShieldCheck, title: 'No credit check', body: 'Seeing your matches never touches your credit score.' },
   { icon: Receipt, title: 'Fees counted, not hidden', body: 'Every estimate subtracts the annual fee before you see it.' },
-  { icon: Scale, title: 'Not paid to rank', body: 'No card issuer pays for placement or a better spot.' },
   { icon: Coins, title: 'Honest point values', body: 'Points and miles are valued conservatively, not at best-case.' },
 ];
 
-const TRUST_COLORS = ['bg-[var(--cl-lime)]', 'bg-[var(--cl-sky)]', 'bg-[var(--cl-pink)]', 'bg-[var(--cl-sun)]'];
+const TRUST_COLORS = ['bg-[var(--cl-lime)]', 'bg-[var(--cl-sky)]', 'bg-[var(--cl-sun)]'];
 
 const RANK_STEPS = [
   { title: 'Your spending', body: 'Groceries, dining, gas, travel and everything else, in your own monthly dollars.' },
@@ -409,7 +407,7 @@ export default function CardCarousel({
 
         {/* Trust strip: the four worries people bring to card shopping, each
             answered with something this product actually does. */}
-        <ul className="mt-14 grid w-full max-w-6xl gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <ul className="mt-14 grid w-full max-w-6xl gap-3 sm:grid-cols-3">
           {TRUST_POINTS.map(({ icon: Icon, title, body }, i) => (
             <li key={title} className={`pop pop-lift rounded-[1.5rem] p-6 ${TRUST_COLORS[i % TRUST_COLORS.length]}`}>
               <span className="pop-sm grid h-10 w-10 place-items-center rounded-xl bg-white text-[var(--cl-ink)]">
