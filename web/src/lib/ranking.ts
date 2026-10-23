@@ -813,6 +813,10 @@ export function getTopCards(cards: CreditCard[], context: PublicRankingContext, 
       } satisfies RankedCardResult & { hardTier?: number };
     })
     .sort((a, b) =>
+      // Balance transfers rank strictly by dollars saved (hardScore is
+      // savings / 15); banding them would let other factors reorder cards
+      // that save different amounts.
+      (explicitSegment === 'balance_transfer' ? (b.hardScore || 0) - (a.hardScore || 0) : 0) ||
       Math.floor((b.hardScore || 0) / 5) - Math.floor((a.hardScore || 0) / 5) ||
       (b.softScore || 0) - (a.softScore || 0) ||
       (b.hardScore || 0) - (a.hardScore || 0) ||
