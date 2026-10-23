@@ -17,7 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from src.config import settings
 from src.discovery import coarse_filter, canonical_url
 from src.validate import validate_card, _parse_apr_high
-from src.extract import CardData, _parse_dollar, _clean_reward_rates, _clean_credits, _fix_credit_kind, _norm
+from src.extract import CardData, _parse_dollar, _clean_reward_rates, _clean_credits, _fix_credit_kind, _is_one_time, _norm
 from src.fetch import _is_bad_asset, _is_card_sized
 from src.storage import _slug, dedupe_records
 from src.tagging import infer_top_perk
@@ -376,6 +376,15 @@ def test_spend_gated_and_either_or_credits():
     assert by["Reward Flight Statement Credits"]["amount"] == 100, by
     assert "Free Night Reward" in by
     print("OK: spend-gated perks dropped; either/or credits take the smaller amount")
+
+
+def test_signup_and_time_limited_credits_are_one_time():
+    assert _is_one_time("Travel Stays Credit Enjoy a $300 stays credit, plus earn 75K bonus miles.")
+    assert _is_one_time("Apple TV Benefit Get a year of complimentary Apple TV")
+    assert _is_one_time("DashPass Get a complimentary DashPass membership, a $120 value for 12 months")
+    assert not _is_one_time("Anniversary Bonus You will earn 10,000 bonus miles after your anniversary each year")
+    assert not _is_one_time("Annual Travel Credit Receive a $300 annual credit for bookings through Capital One Travel")
+    print("OK: sign-up and time-limited credits are one-time; anniversary bonuses are not")
 
 
 def run_all():

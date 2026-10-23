@@ -27,7 +27,8 @@ logger = logging.getLogger("extract")
 # v3 added credits (ongoing statement credits and perks) and reads 16k chars
 # of page text instead of 6k: premium cards list their credits further down.
 # v4 added balance_transfer_fee, and keeps one-time offers out of credits.
-EXTRACT_VERSION = 4
+# v5 drops sign-up-offer and time-limited credits (see _is_one_time).
+EXTRACT_VERSION = 5
 EXTRACT_TEXT_CHARS = 16000
 
 REQUIRED_FIELDS = [
@@ -264,9 +265,21 @@ _TRAVEL_WORD = re.compile(r"travel|hotel|stays?\b|vacation", re.I)
 # bookings ... in your first cardholder year"): part of the welcome offer,
 # not something earned every year.
 _ONE_TIME = re.compile(
-    r"first (?:cardholder |card ?member |account )?year|one-time|limited[- ]time|welcome (?:offer|bonus)|new (?:card ?member|cardholder)",
+    r"first (?:cardholder |card ?member |account )?year|one-time|limited[- ]time|welcome (?:offer|bonus)|new (?:card ?member|cardholder)"
+    # Time-limited freebies: "a year of complimentary Apple TV", "DashPass
+    # ... for 12 months", "through 12/31/2027".
+    r"|a year of complimentary|for (?:the first )?(?:12|twelve) months|through \d{1,2}/\d{1,2}/\d{2,4}",
     re.I,
 )
+# A credit quoted beside the sign-up miles ("Enjoy a $300 stays credit, plus
+# earn 75K bonus miles") belongs to the welcome offer, unlike an anniversary
+# bonus ("10,000 bonus miles after your anniversary each year").
+_WITH_SIGNUP_BONUS = re.compile(r"bonus (?:miles|points)", re.I)
+_RECURRING = re.compile(r"anniversar|each (?:account )?year|every year|annually", re.I)
+
+
+def _is_one_time(text: str) -> bool:
+    return bool(_ONE_TIME.search(text) or (_WITH_SIGNUP_BONUS.search(text) and not _RECURRING.search(text)))
 
 
 def _clean_credits(raw, page_norm: str) -> tuple[list[dict], int]:
@@ -295,7 +308,7 @@ def _clean_credits(raw, page_norm: str) -> tuple[list[dict], int]:
         if kind == "trusted_traveler" and per == "year":
             per = "4_years"
         quote = str(item.get("quote") or "")
-        if _ONE_TIME.search(f"{name} {quote}") or _SPEND_GATED.search(quote):
+        if _is_one_time(f"{name} {quote}") or _SPEND_GATED.search(quote):
             dropped += 1
             continue
         # "$100 for Economy ... or $600 for Business": the model tends to take

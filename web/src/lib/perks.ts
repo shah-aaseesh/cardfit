@@ -83,7 +83,9 @@ const ROTATING_TIER = /each quarter|rotat|different places|categor(?:y|ies) (?:o
 // apply when booking via the issuer's own site, so they don't credit the
 // general travel category — otherwise every portal card read as a travel card.
 // "select travel" is issuer shorthand for portal bookings (Citi Double Cash).
-const PORTAL_TIER = /(?:chase|citi|capital one|amex|american express|u\.s\. bank)\s*travel|amextravel\.com|cititravel\.com|travel portal|travel center|rewards center|\bselect travel\b/i;
+// Expedia / Hotels.com / Vrbo are One Key's own booking sites: the same
+// situation as a bank portal ("3% on Expedia" was crediting all travel).
+const PORTAL_TIER = /(?:chase|citi|capital one|amex|american express|u\.s\. bank)\s*travel|amextravel\.com|cititravel\.com|travel portal|travel center|rewards center|\bselect travel\b|expedia|hotels\.com|vrbo/i;
 // Rates that ALSO apply when booking directly still count as general travel.
 const DIRECT_BOOKING = /directly (?:with|through)/i;
 

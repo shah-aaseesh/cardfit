@@ -98,6 +98,18 @@ const OTHER_BRAND_NIGHT = 40;
 const LOUNGE_VALUE = { rarely: 0, some: 50, often: 150 } as const;
 const BAG_VALUE = { rarely: 0, some: 60, often: 120 } as const;
 
+// Sign-up-offer and time-limited credits are not yearly value. Mirrors
+// _is_one_time in crawler/src/extract.py, so data crawled before that rule
+// (Venture's first-year "$300 stays credit") is still left out.
+const ONE_TIME = /first (?:cardholder |card ?member |account )?year|one-time|limited[- ]time|welcome (?:offer|bonus)|new (?:card ?member|cardholder)|a year of complimentary|for (?:the first )?(?:12|twelve) months|through \d{1,2}\/\d{1,2}\/\d{2,4}/i;
+const WITH_SIGNUP_BONUS = /bonus (?:miles|points)/i;
+const RECURRING = /anniversar|each (?:account )?year|every year|annually/i;
+
+function isOneTime(c: CardCredit): boolean {
+  const text = `${c.name} ${c.quote || ''}`;
+  return ONE_TIME.test(text) || (WITH_SIGNUP_BONUS.test(text) && !RECURRING.test(text));
+}
+
 /** pointValueCents: the card's cents-per-point estimate, for anniversary
  *  points/miles (lib/pointValues.ts). cardName: names the program for
  *  credits that don't (an Aspire "resort credit" is a Hilton credit). */
@@ -109,7 +121,7 @@ export function valueCredits(
 ): CreditsValue {
   const cardBrand = brandOf(cardName);
   const knowsBrands = Array.isArray(prefs?.brands);
-  const items: ValuedCredit[] = (credits || []).map((credit) => {
+  const items: ValuedCredit[] = (credits || []).filter((c) => !isOneTime(c)).map((credit) => {
     const yearly = credit.amount != null ? credit.amount * PER_YEAR[credit.per] : null;
     const brand = brandOf(credit.name) ?? cardBrand;
     const uses = brand != null && knowsBrands && prefs!.brands!.includes(brand);
