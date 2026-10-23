@@ -27,6 +27,8 @@ export interface CardFacts {
   bestFor: string;
   creditNeeded: string;
   foreignFee: string;
+  /** Balance transfer fee terms as the issuer states them; absent if unknown. */
+  balanceTransferFee?: string;
   topPerk: string;
 }
 

@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { Info } from 'lucide-react';
 import { CreditCard } from '../types';
 import { estimateValue, MonthlySpend, TYPICAL_SPEND } from '../lib/insights';
-import { RankMode } from '../lib/ranking';
+import { RankMode, ValuePrefs } from '../lib/ranking';
 import Sparkle from './Sparkle';
 
 // The headline of every card: what it's worth to *you* in dollars per year.
@@ -28,10 +28,12 @@ interface ValueBlockProps {
   basis?: { label: string; note: string };
   /** Which value is the headline: every year (default) or year one. */
   mode?: RankMode;
+  /** Quiz answers that personalise perks and bonus eligibility. */
+  prefs?: ValuePrefs;
 }
 
-export default function ValueBlock({ card, spend, owned = [], hideNotes = false, basis, mode = 'ongoing' }: ValueBlockProps) {
-  const v = useMemo(() => estimateValue(card, spend, owned, mode), [card, spend, owned, mode]);
+export default function ValueBlock({ card, spend, owned = [], hideNotes = false, basis, mode = 'ongoing', prefs }: ValueBlockProps) {
+  const v = useMemo(() => estimateValue(card, spend, owned, mode, prefs), [card, spend, owned, mode, prefs]);
   const firstYear = mode === 'first_year';
 
   const what = v.incremental ? 'Extra value over your cards' : firstYear ? 'First-year value' : 'Estimated value every year';
@@ -57,6 +59,8 @@ export default function ValueBlock({ card, spend, owned = [], hideNotes = false,
         <p className="mt-2 text-sm text-[var(--cl-ink)]/80">
           {!v.annualFeeKnown
             ? "Before the annual fee — we couldn't confirm it, so check the issuer's site."
+            : v.bonusIneligible
+              ? <>Every year, after the annual fee. {v.bonusIneligible}</>
             : v.bonus === 0
               ? 'Every year, after the annual fee. No welcome bonus.'
               : firstYear
@@ -75,14 +79,14 @@ export default function ValueBlock({ card, spend, owned = [], hideNotes = false,
         </div>
       </div>
 
-      {!hideNotes && <ValueNotes card={card} spend={spend} owned={owned} basis={basis} />}
+      {!hideNotes && <ValueNotes card={card} spend={spend} owned={owned} basis={basis} prefs={prefs} />}
     </div>
   );
 }
 
 /** The estimate's basis and the carry-a-balance caution — quiet fine print. */
-export function ValueNotes({ card, spend, owned = [], basis }: { card: CreditCard; spend?: MonthlySpend; owned?: CreditCard[]; basis?: { label: string; note: string } }) {
-  const v = useMemo(() => estimateValue(card, spend, owned), [card, spend, owned]);
+export function ValueNotes({ card, spend, owned = [], basis, prefs }: { card: CreditCard; spend?: MonthlySpend; owned?: CreditCard[]; basis?: { label: string; note: string }; prefs?: ValuePrefs }) {
+  const v = useMemo(() => estimateValue(card, spend, owned, 'ongoing', prefs), [card, spend, owned, prefs]);
   const monthlyTotal = Object.values(v.personalized ? { ...TYPICAL_SPEND, ...spend } : TYPICAL_SPEND)
     .reduce((a, b) => a + (b || 0), 0);
   return (
@@ -98,7 +102,7 @@ export function ValueNotes({ card, spend, owned = [], basis }: { card: CreditCar
       </p>
       {v.creditItems.length > 0 && (
         <p className="max-w-xl">
-          Credits & perks, at estimated real use:{' '}
+          Credits & perks, at estimated real use{prefs?.brands || prefs?.travel ? ' for how you travel' : ''}:{' '}
           {v.creditItems.map((i, k) => (
             <span key={k}>
               {k > 0 && ' · '}

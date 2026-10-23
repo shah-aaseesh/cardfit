@@ -22,7 +22,7 @@
 import { FILTER_BY_ID } from './filters';
 import { CardPerks, getPerks, PerkCategory } from './perks';
 import { pointValue } from './pointValues';
-import { valueCredits } from './perkValues';
+import { PerkPrefs, valueCredits } from './perkValues';
 import { CreditCard } from '../types';
 
 export type Audience = 'personal' | 'student' | 'business';
@@ -79,6 +79,8 @@ export interface RankingCard {
   regularAprMin?: number;
   regularAprMax?: number;
   welcomeBonusValue: number;
+  /** Why the bonus counts as $0 for this person despite being offered. */
+  bonusIneligible?: string;
   welcomeBonusSpendRequirement?: number;
   annualCreditsValue: number;
   perksValue: number;
@@ -129,7 +131,15 @@ export interface ExistingCardInput {
   id: string;
 }
 
+/** What the quiz knows that changes a card's value for this person. */
+export interface ValuePrefs extends PerkPrefs {
+  /** Opened 5+ personal cards in 24 months: Chase approves (and pays a
+   *  bonus) only under that ("5/24"). */
+  over524?: boolean;
+}
+
 export interface UserProfile {
+  valuePrefs?: ValuePrefs;
   hasCreditCards: boolean;
   existingCards: ExistingCardInput[];
   creditScore?: number;
@@ -386,6 +396,31 @@ function parseAprNumbers(text: string | undefined): number[] {
   return (text?.match(/\d+\.?\d*\s*%/g) || []).map((x) => parseFloat(x));
 }
 
+/** The fee on a transfer made now: the first percentage stated (issuers
+ *  list the intro-period fee first: "3% for 4 months, then 5%"). "None" = 0. */
+function parseTransferFeePct(text: string | undefined): number | undefined {
+  if (!text) return undefined;
+  if (/^\s*(none|no fee|\$0)\b/i.test(text)) return 0;
+  const m = text.match(/(\d+(?:\.\d+)?)\s*%/);
+  return m ? Number(m[1]) : undefined;
+}
+
+/** Balance-transfer searches rank by dollars saved: a $5,000 balance paid off
+ *  in equal payments over the 0% period avoids interest at the card's regular
+ *  APR on the average balance, less the transfer fee and any annual fees in
+ *  that time. An unknown fee is assumed to be 5% (the common post-intro fee),
+ *  so missing data never looks cheaper than a stated fee. */
+export const TRANSFER_BALANCE = 5000;
+export function transferSavings(card: RankingCard): number {
+  const months = card.balanceTransferIntroAprMonths ?? card.introAprMonths ?? 0;
+  if (!months) return 0;
+  const apr = card.regularAprMax != null && card.regularAprMin != null ? (card.regularAprMin + card.regularAprMax) / 2 : 24;
+  const avgBalance = TRANSFER_BALANCE * (months + 1) / (2 * months);
+  const interestAvoided = avgBalance * (apr / 100) * (months / 12);
+  const fee = TRANSFER_BALANCE * (card.balanceTransferFeePct ?? 5) / 100;
+  return interestAvoided - fee - card.annualFee * Math.ceil(months / 12);
+}
+
 function parseIntroMonths(text: string | undefined): number | undefined {
   if (!text || !/0%|intro|introductory|promotional/i.test(text)) return undefined;
   const months = (text.match(/\d+\s*(?:months|billing cycles)/gi) || []).map((x) => parseInt(x, 10));
@@ -445,7 +480,7 @@ function rankingCaps(caps: CardPerks['caps'], valued: (n: number) => number, bas
   return out;
 }
 
-export function deriveRankingCard(card: CreditCard): RankingCard {
+export function deriveRankingCard(card: CreditCard, prefs?: ValuePrefs): RankingCard {
   const fee = parseAnnualFee(card);
   const perks = getPerks(card);
   const cpp = perks.currency === 'points' ? pointValue(`${card.name} ${card.issuer}`, card.facts.rewards).cents : 1;
@@ -485,12 +520,16 @@ export function deriveRankingCard(card: CreditCard): RankingCard {
     streamingRate: valued(structuredRate(card, 'streaming') ?? (/streaming/i.test(card.facts.rewards) ? Math.max(perks.rates.other ?? 1, 3) : 0)),
     introAprMonths: parseIntroMonths(aprText),
     balanceTransferIntroAprMonths: /balance transfer/i.test(aprText) ? parseIntroMonths(aprText) : undefined,
+    balanceTransferFeePct: parseTransferFeePct(card.facts.balanceTransferFee),
     purchaseIntroAprMonths: /purchase/i.test(aprText) ? parseIntroMonths(aprText) : undefined,
     regularAprMin: aprs.length ? Math.min(...aprs) : undefined,
     regularAprMax: aprs.length ? Math.max(...aprs) : undefined,
     caps: rankingCaps(perks.caps, valued, valued(perks.rates.other ?? 1)),
-    welcomeBonusValue: bonusValue(card, cpp),
-    annualCreditsValue: valueCredits(card.credits, cpp).total,
+    welcomeBonusValue: prefs?.over524 && /chase/i.test(card.issuer) ? 0 : bonusValue(card, cpp),
+    bonusIneligible: prefs?.over524 && /chase/i.test(card.issuer) && bonusValue(card, cpp) > 0
+      ? "Chase's 5/24 rule: you've opened 5+ cards in 24 months, so you likely wouldn't get this bonus."
+      : undefined,
+    annualCreditsValue: valueCredits(card.credits, cpp, card.name, prefs).total,
     perksValue: 0,
     redemptionFlexibilityScore: isTravel ? 75 : isCash ? 90 : 50,
     simplicityScore: clamp((fee === 0 ? 20 : 0) + (isCash ? 45 : 25) + (card.facts.rewards.length < 180 ? 25 : 15) + (audience === 'student' ? 10 : 0)),
@@ -541,10 +580,8 @@ function computeSegmentScore(card: RankingCard, segment: PublicSegment): number 
     return clamp(0.40 * availability + 0.30 * card.simplicityScore + 0.20 * creditBuilding + 0.10 * normalize(annualRewardValue(card), 300));
   }
   if (segment === 'balance_transfer') {
-    const months = card.balanceTransferIntroAprMonths ?? card.introAprMonths ?? 0;
-    const interestSavings = normalize(months * 40 - card.annualFee, 900);
-    const feeEfficiency = card.balanceTransferFeePct === undefined ? 50 : clamp(100 - card.balanceTransferFeePct * 18);
-    return clamp(0.70 * interestSavings + 0.20 * normalize(months, 21) + 0.10 * feeEfficiency);
+    // Dollars saved (see transferSavings), on a 0-100 scale: $1,500 = 100.
+    return clamp(transferSavings(card) / 15);
   }
   const businessValue = normalize(expectedNetValue(card, { ...DEFAULT_MONTHLY_SPEND, dining: 500, travel: 500, general: 1800 }), 1400);
   const businessCategoryFit = card.audience === 'business' ? Math.max(card.gasRate, card.diningRate, card.travelRate, card.baseRate) * 15 : 0;
@@ -640,7 +677,10 @@ function publicExplanation(card: RankingCard, segment: PublicSegment, softCatego
   if (segment === 'cash_back') lines.push(`Strong estimated net cash value with a ${card.annualFee === 0 ? '$0' : `$${card.annualFee}`} annual fee.`);
   if (segment === 'travel_points') lines.push('Ranks on travel earning potential, flexibility, and fee justification.');
   if (segment === 'student') lines.push('Prioritizes accessibility, simplicity, and credit-building value.');
-  if (segment === 'balance_transfer') lines.push('Prioritizes intro APR length and debt-payoff fit over rewards.');
+  if (segment === 'balance_transfer') {
+    const months = card.balanceTransferIntroAprMonths ?? card.introAprMonths ?? 0;
+    lines.push(`Saves about ${usd(transferSavings(card))} in interest on a ${usd(TRANSFER_BALANCE)} transfer paid off over ${months} months, after a ${card.balanceTransferFeePct ?? 5}% transfer fee${card.balanceTransferFeePct == null ? ' (assumed; not listed)' : ''}.`);
+  }
   if (segment === 'business') lines.push('Ranks on expected business value and business-category fit.');
   if (softCategories.length) lines.push(`Matches soft preference${softCategories.length > 1 ? 's' : ''}: ${softCategories.join(', ')}.`);
   lines.push(`Requires ${card.creditBand.replace('_', ' ')} credit profile or better.`);
@@ -690,7 +730,7 @@ export function chipSpendBasis(filters: string[]): SpendBasis | undefined {
 function rankByValue(cards: CreditCard[], context: PublicRankingContext, softCategories: SoftCategory[], limit: number): RankedCardResult[] {
   const spend = spendForChips(softCategories, context.segment === 'business');
   return cards
-    .map(deriveRankingCard)
+    .map((c) => deriveRankingCard(c))
     // A card whose fee the crawler couldn't read can't get an honest dollar
     // value (a missing fee would count as $0 and inflate it), so it's left out
     // of value rankings — same rule as the quiz (PRD §13.3).
@@ -737,7 +777,7 @@ export function getTopCards(cards: CreditCard[], context: PublicRankingContext, 
   }
 
   const ranked = cards
-    .map(deriveRankingCard)
+    .map((c) => deriveRankingCard(c))
     .map((card) => {
       // With no chosen reward type, score each card by its own segment so
       // cash-back and travel cards compete fairly under a quality-only filter.
@@ -970,7 +1010,7 @@ function userSpend(user: UserProfile): MonthlySpend {
 }
 
 export function recommendCards(cards: CreditCard[], user: UserProfile, limit = 5, mode: RankMode = 'ongoing'): PersonalizedRecommendationResult {
-  const rankingCards = cards.map(deriveRankingCard);
+  const rankingCards = cards.map((c) => deriveRankingCard(c, user.valuePrefs));
   const ownedIds = new Set(user.existingCards.map((c) => c.id));
   const ownedCards = rankingCards.filter((card) => ownedIds.has(card.id));
   const excluded: RankingDebugOutput[] = [];
@@ -1062,6 +1102,15 @@ export function scoreCard(card: CreditCard, filters: string[]): number {
   return computeSegmentScore(rankingCard, context.segment || 'cash_back') + computeSoftScore(rankingCard, context.softCategories);
 }
 
+/** The quiz answers that personalise card value (perks, bonus eligibility). */
+export function answersToPrefs(answers?: Record<string, unknown>): ValuePrefs | undefined {
+  if (!answers) return undefined;
+  const travel = answers.travel === 'rarely' || answers.travel === 'some' || answers.travel === 'often' ? answers.travel : undefined;
+  const brands = Array.isArray(answers.brands) ? (answers.brands as unknown[]).filter((b): b is string => typeof b === 'string') : undefined;
+  const over524 = answers.newCards === 'over5' ? true : undefined;
+  return travel || brands || over524 ? { travel, brands, over524 } : undefined;
+}
+
 function matchResultToUser(filters: string[], ownedIds: string[], answers?: Record<string, unknown>): UserProfile {
   const credit = typeof answers?.credit === 'string' ? answers.credit : undefined;
   const spendRaw = typeof answers?.spend === 'object' && answers.spend !== null ? answers.spend as Record<string, number> : {};
@@ -1070,6 +1119,7 @@ function matchResultToUser(filters: string[], ownedIds: string[], answers?: Reco
   const dollars = (key: string, fallback: number) =>
     typeof spendRaw[key] === 'number' ? spendRaw[key] : fallback;
   return {
+    valuePrefs: answersToPrefs(answers),
     hasCreditCards: ownedIds.length > 0,
     existingCards: ownedIds.map((id) => ({ id })),
     creditBand: credit === 'building' ? 'fair' : credit as CreditBand | undefined,

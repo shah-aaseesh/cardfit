@@ -106,7 +106,7 @@ assert(nextCard.recommendations.some((r) => (r.debug.complementarityScore ?? 0) 
 assert(nextCard.recommendations.every((r) => r.explanation.length > 0), 'Existing-card explanation missing.');
 console.log(`Duplicate/complementarity OK: owned=${owned.name}; topNext=${nextCard.recommendations[0].card.name}; complementarity=${nextCard.recommendations[0].debug.complementarityScore?.toFixed(1)}.`);
 
-const premium = cards.map(deriveRankingCard).find((card) => card.creditBand === 'excellent');
+const premium = cards.map((c) => deriveRankingCard(c)).find((card) => card.creditBand === 'excellent');
 assert(premium, 'Expected at least one excellent-credit card for approval test.');
 const poorUser: UserProfile = {
   hasCreditCards: false,
@@ -149,6 +149,23 @@ for (const r of firstYearTop) {
 }
 for (const r of getTopCards(cards, { filters: ['rewards'] }, 10)) {
   assert(Math.round(r.finalScore) === estimateValue(r.card).everyYear, `ongoing: ${r.card.name} rank != every-year value`);
+}
+
+// Personal perk values: a Hilton card's Hilton credits are worth more to a
+// Hilton regular than to someone who never stays there; unanswered = generic.
+const aspireWithCredits = cards.find((c) => /aspire/i.test(c.name) && c.credits?.length);
+if (aspireWithCredits) {
+  const generic = estimateValue(aspireWithCredits).credits;
+  const regular = estimateValue(aspireWithCredits, undefined, [], 'ongoing', { brands: ['hilton'], travel: 'often' }).credits;
+  const stranger = estimateValue(aspireWithCredits, undefined, [], 'ongoing', { brands: ['marriott'], travel: 'rarely' }).credits;
+  assert(regular > generic && generic > stranger, `brand prefs: expected ${regular} > ${generic} > ${stranger}`);
+}
+
+// Chase 5/24: over the limit, a Chase card's bonus counts $0 and says why.
+const chaseWithBonus = cards.find((c) => /chase/i.test(c.issuer) && estimateValue(c).bonus > 0);
+if (chaseWithBonus) {
+  const v = estimateValue(chaseWithBonus, undefined, [], 'first_year', { over524: true });
+  assert(v.bonus === 0 && !!v.bonusIneligible, `5/24: ${chaseWithBonus.name} still counts a bonus`);
 }
 
 // Spending caps: "3% on up to $6,000 a year, then 1%" earns 3% on the first

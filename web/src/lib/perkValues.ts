@@ -9,6 +9,37 @@
 
 import { CardCredit, CreditKind } from '../types';
 
+/** What the quiz knows about the person, so perks are valued for them:
+ *  a Hilton credit is real money to a Hilton regular and close to nothing
+ *  to someone who never stays there. Absent = the generic estimates below. */
+export interface PerkPrefs {
+  /** Loyalty programs they use (keys of TRAVEL_BRANDS); [] = none. */
+  brands?: string[];
+  /** How often they travel. */
+  travel?: 'rarely' | 'some' | 'often';
+}
+
+/** Hotel and airline programs, by the words that name them on a card or
+ *  credit. Order matters only for overlaps (none today). */
+export const TRAVEL_BRANDS: { key: string; label: string; kind: 'hotel' | 'airline'; match: RegExp }[] = [
+  { key: 'hilton', label: 'Hilton', kind: 'hotel', match: /hilton/i },
+  { key: 'marriott', label: 'Marriott', kind: 'hotel', match: /marriott|bonvoy/i },
+  { key: 'hyatt', label: 'Hyatt', kind: 'hotel', match: /hyatt/i },
+  { key: 'ihg', label: 'IHG', kind: 'hotel', match: /\bihg\b/i },
+  { key: 'wyndham', label: 'Wyndham', kind: 'hotel', match: /wyndham/i },
+  { key: 'delta', label: 'Delta', kind: 'airline', match: /delta/i },
+  { key: 'united', label: 'United', kind: 'airline', match: /united/i },
+  { key: 'american', label: 'American Airlines', kind: 'airline', match: /aadvantage|american airlines/i },
+  { key: 'southwest', label: 'Southwest', kind: 'airline', match: /southwest/i },
+  { key: 'jetblue', label: 'JetBlue', kind: 'airline', match: /jetblue/i },
+  { key: 'alaska', label: 'Alaska', kind: 'airline', match: /alaska/i },
+];
+
+/** The program a card or credit belongs to, from its name. */
+export function brandOf(text: string): string | undefined {
+  return TRAVEL_BRANDS.find((b) => b.match.test(text))?.key;
+}
+
 /** Share of a credit's yearly face value counted, by kind. */
 const USE_SHARE: Record<CreditKind, number> = {
   // Usable on nearly any travel purchase; anyone who travels at all uses it.
@@ -58,16 +89,42 @@ export interface CreditsValue {
   items: ValuedCredit[];
 }
 
+// With quiz answers: a brand credit at a program they use counts nearly in
+// full, at one they don't use barely at all; lounges and bags count for
+// people who travel.
+const OWN_BRAND_SHARE = 0.9;
+const OTHER_BRAND_SHARE = 0.15;
+const OTHER_BRAND_NIGHT = 40;
+const LOUNGE_VALUE = { rarely: 0, some: 50, often: 150 } as const;
+const BAG_VALUE = { rarely: 0, some: 60, often: 120 } as const;
+
 /** pointValueCents: the card's cents-per-point estimate, for anniversary
- *  points/miles (lib/pointValues.ts). */
-export function valueCredits(credits: CardCredit[] | undefined, pointValueCents: number): CreditsValue {
+ *  points/miles (lib/pointValues.ts). cardName: names the program for
+ *  credits that don't (an Aspire "resort credit" is a Hilton credit). */
+export function valueCredits(
+  credits: CardCredit[] | undefined,
+  pointValueCents: number,
+  cardName = '',
+  prefs?: PerkPrefs,
+): CreditsValue {
+  const cardBrand = brandOf(cardName);
+  const knowsBrands = Array.isArray(prefs?.brands);
   const items: ValuedCredit[] = (credits || []).map((credit) => {
     const yearly = credit.amount != null ? credit.amount * PER_YEAR[credit.per] : null;
+    const brand = brandOf(credit.name) ?? cardBrand;
+    const uses = brand != null && knowsBrands && prefs!.brands!.includes(brand);
+    const personal = knowsBrands && brand != null;
     let counted = 0;
     if (credit.kind === 'free_night') {
-      counted = FREE_NIGHT_VALUE * PER_YEAR[credit.per];
+      counted = (personal && !uses ? OTHER_BRAND_NIGHT : FREE_NIGHT_VALUE) * PER_YEAR[credit.per];
     } else if (credit.kind === 'anniversary_points') {
       counted = yearly != null ? (yearly * pointValueCents) / 100 : 0;
+    } else if (credit.kind === 'lounge' && prefs?.travel) {
+      counted = LOUNGE_VALUE[prefs.travel];
+    } else if (credit.kind === 'checked_bag' && prefs?.travel && (!personal || uses)) {
+      counted = BAG_VALUE[prefs.travel];
+    } else if (credit.kind === 'brand_travel' && personal && yearly != null) {
+      counted = yearly * (uses ? OWN_BRAND_SHARE : OTHER_BRAND_SHARE);
     } else if (yearly != null) {
       counted = yearly * USE_SHARE[credit.kind];
     }

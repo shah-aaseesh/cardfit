@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { TRAVEL_BRANDS } from '../lib/perkValues';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { ChevronLeft, ChevronRight, X, Search, Plus } from 'lucide-react';
 import { normalizeFilters } from '../lib/filters';
@@ -25,7 +26,14 @@ type Answers = {
   rewards?: string;
   maxFee: number;                 // exact dollar cutoff — one of FEE_STOPS
   spend: Record<string, number>;  // dollars/month per category
+  travel?: 'rarely' | 'some' | 'often';
+  brands: string[];               // loyalty programs used (TRAVEL_BRANDS keys)
+  newCards?: 'under5' | 'over5' | 'unsure'; // personal cards opened in 24 months
 };
+
+// Monthly travel spend implied by how often they travel (the spend sliders
+// don't ask about travel; the recommender's default was a flat $150).
+const TRAVEL_SPEND = { rarely: 50, some: 250, often: 700 } as const;
 
 // PRD §13.4 recommended annual-fee slider stops. The last is shown as "$695+".
 const FEE_STOPS = [0, 49, 95, 150, 250, 395, 550, 695];
@@ -44,6 +52,7 @@ const BLANK: Answers = {
   firstName: '', lastName: '', email: '',
   ownedCards: [], maxFee: 95, // PRD default for a general cash-back user
   spend: { dining: 300, groceries: 400, gas: 150, general: 800 },
+  brands: [],
 };
 
 function deriveFilters(a: Answers): string[] {
@@ -94,6 +103,9 @@ export default function FindMyCard({ open, onClose, onComplete }: FindMyCardProp
       rewards: typeof a.rewards === 'string' ? a.rewards : undefined,
       maxFee: typeof a.maxFee === 'number' ? a.maxFee : BLANK.maxFee,
       spend: a.spend && typeof a.spend === 'object' ? (a.spend as Record<string, number>) : BLANK.spend,
+      travel: a.travel === 'rarely' || a.travel === 'some' || a.travel === 'often' ? a.travel : undefined,
+      brands: Array.isArray(a.brands) ? a.brands : [],
+      newCards: a.newCards === 'under5' || a.newCards === 'over5' || a.newCards === 'unsure' ? a.newCards : undefined,
     });
     setIndex(0);
   }, [open]);
@@ -126,8 +138,8 @@ export default function FindMyCard({ open, onClose, onComplete }: FindMyCardProp
   // come first; saving (name + email) is an optional last step, so nobody
   // has to hand over an email before seeing any value.
   const steps = useMemo(() => {
-    const owns = answers.hasCard === true ? ['ownedCards', 'credit'] : [];
-    return ['hasCard', ...owns, 'type', 'rewards', 'fee', 'spend', 'email'];
+    const owns = answers.hasCard === true ? ['ownedCards', 'credit', 'newCards'] : [];
+    return ['hasCard', ...owns, 'type', 'rewards', 'fee', 'spend', 'travel', 'email'];
   }, [answers.hasCard]);
 
   const step = steps[Math.min(index, steps.length - 1)];
@@ -142,6 +154,8 @@ export default function FindMyCard({ open, onClose, onComplete }: FindMyCardProp
       case 'credit': return !!answers.credit;
       case 'type': return !!answers.type;
       case 'rewards': return !!answers.rewards;
+      case 'newCards': return !!answers.newCards;
+      case 'travel': return !!answers.travel;
       default: return true; // fee + spend always have a value
     }
   })();
@@ -154,7 +168,11 @@ export default function FindMyCard({ open, onClose, onComplete }: FindMyCardProp
     ownedCards: answers.ownedCards,
     name: save ? `${answers.firstName} ${answers.lastName}`.trim() || undefined : undefined,
     email: save ? answers.email || undefined : undefined,
-    answers: { credit: answers.credit, type: answers.type, rewards: answers.rewards, maxFee: answers.maxFee, spend: answers.spend, hasCard: answers.hasCard },
+    answers: {
+      credit: answers.credit, type: answers.type, rewards: answers.rewards, maxFee: answers.maxFee, hasCard: answers.hasCard,
+      spend: answers.travel ? { ...answers.spend, travel: TRAVEL_SPEND[answers.travel] } : answers.spend,
+      travel: answers.travel, brands: answers.brands, newCards: answers.newCards,
+    },
   });
 
   return (
@@ -201,6 +219,8 @@ export default function FindMyCard({ open, onClose, onComplete }: FindMyCardProp
               {step === 'rewards' && <RewardsStep answers={answers} set={set} />}
               {step === 'fee' && <FeeStep answers={answers} set={set} />}
               {step === 'spend' && <SpendStep answers={answers} set={set} />}
+              {step === 'newCards' && <NewCardsStep answers={answers} set={set} />}
+              {step === 'travel' && <TravelStep answers={answers} set={set} />}
             </motion.div>
 
             <div className="flex items-center justify-center gap-3 mt-10">
@@ -543,6 +563,54 @@ function SpendStep({ answers, set }: StepProps) {
             </div>
           );
         })}
+      </div>
+    </div>
+  );
+}
+
+function NewCardsStep({ answers, set }: StepProps) {
+  return (
+    <div className="w-full flex flex-col items-center">
+      <Heading
+        title="How many personal cards have you opened in the last 24 months?"
+        hint="Chase only approves (and pays a welcome bonus to) people under 5 new cards in 24 months."
+      />
+      <ToggleRow
+        options={[{ id: 'under5', label: 'Fewer than 5' }, { id: 'over5', label: '5 or more' }, { id: 'unsure', label: 'Not sure' }]}
+        active={answers.newCards}
+        onChange={id => set({ newCards: id as Answers['newCards'] })}
+      />
+    </div>
+  );
+}
+
+function TravelStep({ answers, set }: StepProps) {
+  const toggle = (key: string) =>
+    set({ brands: answers.brands.includes(key) ? answers.brands.filter(b => b !== key) : [...answers.brands, key] });
+  return (
+    <div className="w-full flex flex-col items-center">
+      <Heading title="How often do you travel?" hint="Hotel credits, lounges and free bags are only worth something if you'd use them." />
+      <ToggleRow
+        options={[
+          { id: 'rarely', label: 'Rarely', desc: 'Once a year or less' },
+          { id: 'some', label: 'Sometimes', desc: '2–4 trips a year' },
+          { id: 'often', label: 'Often', desc: '5+ trips a year' },
+        ]}
+        active={answers.travel}
+        onChange={id => set({ travel: id as Answers['travel'] })}
+      />
+      <p className="mt-8 mb-3 text-sm font-semibold text-[var(--cl-ink)]">Hotels or airlines you stick with <span className="font-normal text-[var(--cl-muted)]">(optional)</span></p>
+      <div className="flex max-w-lg flex-wrap justify-center gap-2">
+        {TRAVEL_BRANDS.map(b => (
+          <button
+            key={b.key}
+            onClick={() => toggle(b.key)}
+            aria-pressed={answers.brands.includes(b.key)}
+            className={`h-9 px-4 rounded-full border text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cl-ink)]/30 ${answers.brands.includes(b.key) ? 'bg-[var(--cl-ink)] border-[var(--cl-ink)] text-white' : tileIdle}`}
+          >
+            {b.label}
+          </button>
+        ))}
       </div>
     </div>
   );

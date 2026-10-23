@@ -5,7 +5,7 @@ import CardVisual from './CardVisual';
 import FinePrint from './FinePrint';
 import BubbleFilters from './BubbleFilters';
 import AISearchBar from './AISearchBar';
-import { buildDeck, chipSpendBasis, getTopCards, RankMode } from '../lib/ranking';
+import { answersToPrefs, buildDeck, chipSpendBasis, getTopCards, RankMode } from '../lib/ranking';
 import { describeFilters } from '../lib/filters';
 import { fetchAdvisorNote, advisorEnabled } from '../lib/advisor';
 import { pushRecentlyViewed } from '../lib/recentlyViewed';
@@ -109,6 +109,8 @@ export default function CardCarousel({
     [matchMode, activeFilters],
   );
   const valueSpend = chipBasis?.spend ?? userSpend;
+  // Quiz answers that personalise perks and bonus eligibility (quiz results only).
+  const valuePrefs = useMemo(() => (matchMode ? answersToPrefs(matchAnswers) : undefined), [matchMode, matchAnswers]);
   // In quiz mode cards are ranked by what they add over the user's wallet,
   // so the value block measures the same thing.
   const ownedForValue = useMemo(
@@ -564,7 +566,7 @@ export default function CardCarousel({
           </div>
 
           <div className="order-3 w-full max-w-[26rem] lg:order-2">
-            <ValueBlock card={activeCard} spend={valueSpend} basis={chipBasis} mode={ranked && byValue ? rankMode : 'ongoing'} stacked owned={ownedForValue} hideNotes />
+            <ValueBlock card={activeCard} spend={valueSpend} basis={chipBasis} mode={ranked && byValue ? rankMode : 'ongoing'} prefs={valuePrefs} stacked owned={ownedForValue} hideNotes />
           </div>
 
           {/* Controls: ‹ 1 of N ›  ·  Watchlist  ·  View all  ·  Visit — labelled, centred. */}
@@ -671,7 +673,7 @@ export default function CardCarousel({
 
         {!atEnd && (
           <>
-            <ValueNotes card={activeCard} spend={valueSpend} basis={chipBasis} owned={ownedForValue} />
+            <ValueNotes card={activeCard} spend={valueSpend} basis={chipBasis} owned={ownedForValue} prefs={valuePrefs} />
             {/* Everything else, sticker style. */}
             <FinePrint card={activeCard} whyBullets={activeWhy} />
           </>

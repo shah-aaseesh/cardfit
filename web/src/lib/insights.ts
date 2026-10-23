@@ -7,7 +7,7 @@
 
 import { CreditCard } from '../types';
 import { valueCredits, ValuedCredit } from './perkValues';
-import { deriveRankingCard, RankingCard, parseAnnualFee, incrementalRewards, rankValue, RankMode, TYPICAL_SPEND, MonthlySpend } from './ranking';
+import { deriveRankingCard, RankingCard, parseAnnualFee, incrementalRewards, rankValue, RankMode, TYPICAL_SPEND, MonthlySpend, ValuePrefs } from './ranking';
 
 // The typical spend and spend type live with the ranking (one source of
 // truth for "value"); re-exported for UI callers.
@@ -50,6 +50,8 @@ export interface ValueEstimate {
   rewards: number;
   /** Welcome bonus value (one-time). */
   bonus: number;
+  /** Set when the bonus counts as $0 for this person (e.g. Chase 5/24). */
+  bonusIneligible?: string;
   /** Ongoing credits & perks at estimated real use, per year. */
   credits: number;
   /** How each credit was counted, for the breakdown under the number. */
@@ -73,19 +75,20 @@ export interface ValueEstimate {
 /** Estimated yearly value of a card on the user's spend (or a typical one),
  *  optionally as the extra it adds over cards the user already holds.
  *  Points/miles use the conservative values in lib/pointValues.ts. */
-export function estimateValue(card: CreditCard, spend?: MonthlySpend, owned: CreditCard[] = [], mode: RankMode = 'ongoing'): ValueEstimate {
-  const rc = deriveRankingCard(card);
-  const ownedRc = owned.filter((o) => o.id !== card.id).map(deriveRankingCard);
+export function estimateValue(card: CreditCard, spend?: MonthlySpend, owned: CreditCard[] = [], mode: RankMode = 'ongoing', prefs?: ValuePrefs): ValueEstimate {
+  const rc = deriveRankingCard(card, prefs);
+  const ownedRc = owned.filter((o) => o.id !== card.id).map((o) => deriveRankingCard(o, prefs));
   const rewards = Math.round(incrementalRewards(rc, ownedRc, spend));
   const bonus = Math.round(rc.welcomeBonusValue);
   const annualFee = rc.annualFee;
-  const creditsValue = valueCredits(card.credits, rc.pointValueCents);
+  const creditsValue = valueCredits(card.credits, rc.pointValueCents, card.name, prefs);
   const credits = creditsValue.total;
   return {
     rewards,
     bonus,
     credits,
     creditItems: creditsValue.items,
+    bonusIneligible: rc.bonusIneligible,
     annualFee,
     annualFeeKnown: rc.annualFeeKnown,
     headline: Math.round(rankValue(rc, rewards, mode)),

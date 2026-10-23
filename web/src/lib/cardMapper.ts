@@ -24,6 +24,7 @@ export interface CardRow {
   top_perk: string | null;
   image_url: string | null;
   retired?: boolean | null;
+  balance_transfer_fee?: string | null;
   credits?: CardCredit[] | null;
 }
 
@@ -102,6 +103,7 @@ export function mapRowToCard(row: CardRow): CreditCard {
       bestFor: row.best_for || 'Everyday Spend',
       creditNeeded: row.recommended_credit_score || 'Not specified',
       foreignFee: row.foreign_transaction_fee || 'Not specified',
+      balanceTransferFee: row.balance_transfer_fee || undefined,
       topPerk: row.top_perk || 'See issuer site for full benefits',
     },
   };
