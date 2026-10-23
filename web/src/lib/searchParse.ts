@@ -15,14 +15,19 @@ import { FILTERS, normalizeFilters as resolveConflicts } from './filters';
   nothing either way.
 */
 
+// A travel search means points/miles cards ranked with travel spending
+// weighted: on its own, the Travel weighting still let grocery cards into a
+// "travel" top 10, and Rewards alone ignored how much a card earns on travel.
+const TRAVEL_WORDS = [
+  'travel', 'trip', 'vacation', 'abroad', 'international',
+  'flight', 'flights', 'airline', 'airlines', 'fly', 'flying', 'airfare',
+  'hotel', 'hotels', 'resort', 'stays', 'marriott', 'hyatt', 'ihg',
+  'lounge', 'priority pass', 'airport lounge',
+];
+
 const SYNONYMS: Record<string, string[]> = {
-  rewards: [
-    'rewards', 'points', 'miles',
-    'travel', 'trip', 'vacation', 'abroad', 'international',
-    'flight', 'flights', 'airline', 'airlines', 'fly', 'flying', 'airfare',
-    'hotel', 'hotels', 'resort', 'stays', 'marriott', 'hyatt', 'ihg',
-    'lounge', 'priority pass', 'airport lounge',
-  ],
+  rewards: ['rewards', 'points', 'miles', ...TRAVEL_WORDS],
+  travel: TRAVEL_WORDS,
   dining: ['dining', 'restaurant', 'food', 'takeout', 'eating out', 'eat out', 'dine', 'foodie'],
   business: ['business', 'llc', 'company', 'startup', 'freelance'],
   premium: ['premium', 'luxury', 'metal card', 'high end', 'exclusive'],

@@ -251,6 +251,7 @@ const SPEND_FILTERS: Record<string, SoftCategory> = {
   dining: 'dining',
   groceries: 'groceries',
   gas: 'gas',
+  travel: 'travel',
   balance: 'balance',
 };
 

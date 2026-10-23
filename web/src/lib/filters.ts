@@ -44,6 +44,9 @@ export const FILTERS: FilterDef[] = [
   { id: 'dining', label: 'Dining', group: 'spend', matchTags: ['dining'] },
   { id: 'groceries', label: 'Groceries', group: 'spend', matchTags: ['groceries'] },
   { id: 'gas', label: 'Gas', group: 'spend', matchTags: ['gas'] },
+  // Travel weights travel spending, like Dining/Gas. It isn't the same as
+  // Rewards: a cash-back card that earns well on travel counts too.
+  { id: 'travel', label: 'Travel', group: 'spend', matchTags: ['travel', 'flights', 'hotels'] },
   { id: 'balance', label: 'Balance Transfer', group: 'spend', matchTags: ['balance'] },
 
   // Quality — property of the card. Premium/No Annual Fee are checked
@@ -130,8 +133,12 @@ export function describeFilters(activeFilters: string[]): string | null {
   const spend = defs.filter(d => d.group === 'spend');
   const quality = defs.filter(d => d.group === 'quality');
 
-  let phrase = [account?.label, reward?.label].filter(Boolean).join(' ');
-  if (spend.length) phrase += `${phrase ? ' for ' : 'For '}${spend.map(d => d.label).join(' & ')}`;
+  // Rewards + Travel reads as one thing: "Travel Rewards", not "Rewards for Travel".
+  const travelRewards = reward?.id === 'rewards' && spend.some(d => d.id === 'travel');
+  const rewardLabel = travelRewards ? 'Travel Rewards' : reward?.label;
+  const spendShown = travelRewards ? spend.filter(d => d.id !== 'travel') : spend;
+  let phrase = [account?.label, rewardLabel].filter(Boolean).join(' ');
+  if (spendShown.length) phrase += `${phrase ? ' for ' : 'For '}${spendShown.map(d => d.label).join(' & ')}`;
   if (quality.length) {
     const qualityPhrase = quality.map(d => QUALITY_PHRASE[d.id] ?? d.label.toLowerCase()).join(' & ');
     phrase += `${phrase ? ' with ' : 'With '}${qualityPhrase}`;

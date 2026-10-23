@@ -184,9 +184,13 @@ export default function CardCarousel({
   const activeCard = cards[currentIndex];
   const filterDetail = describeFilters(activeFilters);
   // "Top 10 for travel" — always the real count, and what it's ranked for.
+  // Lowercased to read as a phrase; a detail that already starts with
+  // "for"/"with" (spend- or fee-only filters) doesn't get a second "for".
+  const detail = filterDetail?.toLowerCase();
   const topLabel = matchMode
     ? `Your top ${topCount}`
-    : filterDetail ? `Top ${topCount} for ${filterDetail}` : `Top ${topCount}`;
+    : !detail ? `Top ${topCount}`
+    : /^(for|with) /.test(detail) ? `Top ${topCount} ${detail}` : `Top ${topCount} for ${detail}`;
   const moreLabel = matchMode ? 'Other cards that fit your answers' : 'More matching cards';
   // Results appear only after an explicit submit (Enter / arrow) or a Find Me
   // a Card match. Landing filters can be staged without navigating away.
