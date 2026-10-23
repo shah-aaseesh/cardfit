@@ -50,33 +50,35 @@
     "apr_range": "19.74% to 28.74% variable APR on eligible charges.",
     "apr_intro": null,
     "apr_regular": "19.74% to 28.74% variable",
-    "rewards_summary": "Earn Membership Rewards® points on dining, groceries, travel and other eligible purchases.",
-    "signup_bonus": "AS HIGH AS 100,000 Membership Rewards® points after you spend $8,000 in purchases on your new Card within the first 6 months of Card Membership.",
+    "rewards_summary": "Earn 4X points at restaurants and U.S. supermarkets, 5X points on prepaid hotels booked through AmexTravel.com, and 3X points on flights booked through AmexTravel.com or directly with airlines.",
+    "signup_bonus": "100,000 Membership Rewards® points after you spend $8,000 in purchases on your new Card within the first 6 months of Card Membership.",
     "recommended_credit_score": null,
     "foreign_transaction_fee": null,
     "tags": [
       "travel",
       "dining",
+      "flights",
       "groceries",
+      "hotels",
       "premium",
       "personal"
     ],
     "best_for": "Casual Travelers",
-    "top_perk": null,
+    "top_perk": "$500+ in annual value with various credits including dining and travel.",
     "image_url": "/card-art/16627635-995b-4806-867f-feac9e97af10.webp",
     "reward_rates": [
       {
         "category": "dining",
         "rate": 4.0,
         "unit": "points",
-        "cap": "up to $50K in purchases per calendar year.",
+        "cap": "up to $50K in purchases per calendar year",
         "quote": "4X POINTS At Restaurants Worldwide, on up to $50K in purchases per calendar year."
       },
       {
         "category": "groceries",
         "rate": 4.0,
         "unit": "points",
-        "cap": "up to $25K in purchases per calendar year.",
+        "cap": "up to $25K in purchases per calendar year",
         "quote": "4X POINTS On Groceries At U.S. supermarkets, on up to $25K in purchases per calendar year."
       },
       {
@@ -84,7 +86,7 @@
         "rate": 5.0,
         "unit": "points",
         "cap": null,
-        "quote": "5X POINTS On Prepaid Hotels Booked through AmexTravel.com or Amex Travel App™."
+        "quote": "5X POINTS On Prepaid Hotels Booked through AmexTravel.com or Amex Travel App."
       },
       {
         "category": "other",
@@ -137,11 +139,11 @@
     "issuer": "American Express",
     "annual_fee": 0,
     "apr_range": "0% intro APR on purchases and balance transfers for 15 months from the date of account opening, then a variable APR, 19.74% to 28.74%.",
-    "apr_intro": "0% intro APR on purchases and balance transfers for 15 months from the date of account opening.",
+    "apr_intro": "0% intro APR on purchases and balance transfers for 15 months from the date of account opening",
     "apr_regular": "19.74% to 28.74%",
-    "rewards_summary": "Card Members can earn 3% cash back on eligible purchases at U.S. supermarkets, U.S. online retail purchases, and U.S. gas stations, on up to $6,000 per year in purchases (then 1%).",
+    "rewards_summary": "Card Members can earn 3% cash back on eligible purchases at U.S. supermarkets, U.S. online retail purchases, and U.S. gas stations on up to $6,000 per year in purchases (then 1%). They earn 1% cash back on other eligible purchases.",
     "signup_bonus": "$200 Cash Back after you spend $2,000 in purchases on your new Card within the first 6 months of Card Membership.",
-    "recommended_credit_score": null,
+    "recommended_credit_score": "Good/Excellent",
     "foreign_transaction_fee": "None",
     "tags": [
       "gas",
@@ -198,7 +200,7 @@
     "apr_regular": "19.74% to 28.74%",
     "rewards_summary": "Card Members can earn 6% cash back on eligible purchases at U.S. supermarkets, 6% on select U.S. streaming subscriptions, 3% on transit and gas, and 1% on other eligible purchases.",
     "signup_bonus": "$300 Cash Back after you spend $3,000 in purchases on your new Card within the first 6 months of Card Membership.",
-    "recommended_credit_score": null,
+    "recommended_credit_score": "Good/Excellent",
     "foreign_transaction_fee": "None",
     "tags": [
       "gas",
@@ -318,7 +320,7 @@
     "annual_fee": 0,
     "apr_range": "19.74% to 28.74% variable APR on purchases.",
     "apr_intro": null,
-    "apr_regular": "19.74% to 28.74% variable",
+    "apr_regular": "19.74% to 28.74% variable APR on purchases.",
     "rewards_summary": "Earn 2X Miles at restaurants and on Delta purchases, and 1X Miles on all other eligible purchases.",
     "signup_bonus": "Earn 10,000 Bonus Miles after you spend $1,000 on eligible purchases on your new Card within your first 6 months of Card Membership.",
     "recommended_credit_score": null,
@@ -366,7 +368,7 @@
     "apr_range": "19.74% to 28.74% variable APR on purchases.",
     "apr_intro": null,
     "apr_regular": "19.74% to 28.74% variable APR on purchases.",
-    "rewards_summary": "Earn 2X Miles at restaurants, U.S. supermarkets, and Delta purchases, and 1X Miles on all other eligible purchases.",
+    "rewards_summary": "Earn 2X Miles at restaurants, U.S. supermarkets, and on Delta purchases, and 1X Miles on all other eligible purchases.",
     "signup_bonus": "$250 Statement Credit and as high as 80,000 Bonus Miles after you spend $3,000 in purchases on your new Card within the first 6 months of Card Membership.",
     "recommended_credit_score": null,
     "foreign_transaction_fee": null,
@@ -422,7 +424,7 @@
     "apr_range": "19.74% to 28.74% variable APR on purchases.",
     "apr_intro": null,
     "apr_regular": "19.74% to 28.74% variable APR on purchases.",
-    "rewards_summary": "Earn 3X Miles on Delta purchases and at hotels, 2X Miles on dining and groceries, and 1X Mile on all other eligible purchases.",
+    "rewards_summary": "Earn 3X Miles on Delta purchases and at hotels, 2X Miles on dining and groceries, and 1X Mile on other purchases.",
     "signup_bonus": "Earn a $300 Statement Credit and up to 90,000 Bonus Miles after you spend $4,000 in purchases on your new Card within the first 6 months of Card Membership.",
     "recommended_credit_score": null,
     "foreign_transaction_fee": null,
@@ -435,7 +437,7 @@
       "personal"
     ],
     "best_for": "Foodies",
-    "top_perk": "Companion Certificate on a Delta Main round-trip flight each year after renewal of your Card.",
+    "top_perk": "Companion Certificate on a Delta Main round-trip flight within the U.S. each year after renewal of your Card.",
     "image_url": "/card-art/79ef03a3-ab58-45f2-99aa-ed5641235155.webp",
     "reward_rates": [
       {
@@ -485,6 +487,13 @@
         "unit": "miles",
         "cap": null,
         "quote": "Earn 3X Miles on Delta Purchases"
+      },
+      {
+        "category": "other",
+        "rate": 1.0,
+        "unit": "miles",
+        "cap": null,
+        "quote": "Earn 1X Miles on All Other Eligible Purchases"
       }
     ],
     "id": "0588fc76-7d9b-4c4c-acd2-7d4f959f7a2b",
@@ -800,7 +809,7 @@
     "apr_intro": null,
     "apr_regular": "19.74% to 28.74% variable APR on purchases.",
     "rewards_summary": "Earn 6X points at hotels participating in Marriott Bonvoy, 3X points at restaurants and on flights booked directly with airlines, and 2X points on all other eligible purchases.",
-    "signup_bonus": "Earn 100,000 Marriott Bonvoy Bonus Points after you use your new Card to make $6,000 in purchases within the first 6 months of Card Membership.",
+    "signup_bonus": "Earn 100,000 Marriott Bonvoy® Bonus Points after you use your new Card to make $6,000 in purchases within the first 6 months of Card Membership.",
     "recommended_credit_score": null,
     "foreign_transaction_fee": "None",
     "tags": [
@@ -819,21 +828,21 @@
         "rate": 6.0,
         "unit": "points",
         "cap": null,
-        "quote": "6X points at hotels participating in Marriott Bonvoy."
+        "quote": "6X Points On Hotels For eligible purchases at hotels participating in Marriott Bonvoy."
       },
       {
         "category": "dining",
         "rate": 3.0,
         "unit": "points",
         "cap": null,
-        "quote": "3X points at restaurants worldwide."
+        "quote": "3X Points At Restaurants At restaurants worldwide."
       },
       {
         "category": "other",
         "rate": 2.0,
         "unit": "points",
         "cap": null,
-        "quote": "2X points on all other eligible purchases."
+        "quote": "2X Points For Each Dollar Spent on other eligible purchases."
       }
     ],
     "id": "50cfb46d-c5b6-40ad-a46d-1b4beb941840",
@@ -896,21 +905,21 @@
     "annual_fee": 895,
     "apr_range": "19.74% to 28.74% variable APR on eligible charges.",
     "apr_intro": null,
-    "apr_regular": "19.74% to 28.74% variable",
-    "rewards_summary": "Earn 5X points on flights and hotels booked directly with airlines or through American Express Travel, and enjoy premium benefits across travel, dining, entertainment, shopping, and wellness.",
+    "apr_regular": "19.74% to 28.74% variable APR on eligible charges.",
+    "rewards_summary": "Earn 5X points on flights and hotels booked directly with airlines or through American Express Travel, and enjoy access to over 1,550 airport lounges worldwide.",
     "signup_bonus": "AS HIGH AS 175,000 Membership Rewards® points after you spend $12,000 in purchases on your new Card within the first 6 months of Card Membership.",
     "recommended_credit_score": null,
     "foreign_transaction_fee": null,
     "tags": [
       "travel",
-      "dining",
       "flights",
       "hotels",
+      "lounge",
       "premium",
       "personal"
     ],
     "best_for": "Casual Travelers",
-    "top_perk": "Access to 1,550+ airport lounges",
+    "top_perk": "Access to over 1,550 airport lounges worldwide",
     "image_url": "/card-art/7acd7995-2ac7-4b9a-99a9-9373e678d0cf.webp",
     "reward_rates": [
       {
@@ -918,7 +927,7 @@
         "rate": 5.0,
         "unit": "points",
         "cap": "$500,000 on these purchases per calendar year.",
-        "quote": "5X Points on Flights Booked directly with airlines or through American Express Travel®."
+        "quote": "5X Points on Flights Booked directly with airlines or through American Express Travel"
       }
     ],
     "id": "7acd7995-2ac7-4b9a-99a9-9373e678d0cf",
@@ -1838,7 +1847,7 @@
     ],
     "best_for": "Commuters",
     "top_perk": "Unlimited rewards never expire.",
-    "image_url": null,
+    "image_url": "/card-art/63c278c0-6ae7-48fb-861b-c5b6c80d97d5.webp",
     "reward_rates": [
       {
         "category": "gas",
@@ -1862,7 +1871,8 @@
         "quote": "Earn Unlimited 1% Cash Back on all other purchases."
       }
     ],
-    "id": "63c278c0-6ae7-48fb-861b-c5b6c80d97d5"
+    "id": "63c278c0-6ae7-48fb-861b-c5b6c80d97d5",
+    "source_image_url": "https://cards.barclaycardus.com/content/dam/bcuspublic/credit-card/aarp/card-art/ARE_LP_C_Card_Essential_320x205.png"
   },
   {
     "url": "https://cards.barclaycardus.com/banking/cards/aarp-travel-rewards-mastercard/",
@@ -1888,7 +1898,7 @@
     ],
     "best_for": "Casual Travelers",
     "top_perk": "Unlimited rewards that never expire",
-    "image_url": null,
+    "image_url": "/card-art/62a1b02e-8f46-4346-a53e-a2bf9eae1b6e.webp",
     "reward_rates": [
       {
         "category": "travel",
@@ -1912,7 +1922,8 @@
         "quote": "Earn 1% Cash Back on all other purchases."
       }
     ],
-    "id": "62a1b02e-8f46-4346-a53e-a2bf9eae1b6e"
+    "id": "62a1b02e-8f46-4346-a53e-a2bf9eae1b6e",
+    "source_image_url": "https://cards.barclaycardus.com/content/dam/bcuspublic/credit-card/aarp/card-art/ART_LP_Card_Travel_320x205.png"
   },
   {
     "url": "https://cards.barclaycardus.com/banking/cards/athleta-encore-mastercard/",
@@ -1933,7 +1944,7 @@
     ],
     "best_for": "Everyday Spend",
     "top_perk": "Early access & partner perks with special events, discounts, and other top perks",
-    "image_url": null,
+    "image_url": "/card-art/8c75db34-d23d-4846-bff1-81520fb2c326.webp",
     "reward_rates": [
       {
         "category": "other",
@@ -1957,7 +1968,8 @@
         "quote": "Earn 5X points for every $1 spent at the Gap Inc. family of brands"
       }
     ],
-    "id": "8c75db34-d23d-4846-bff1-81520fb2c326"
+    "id": "8c75db34-d23d-4846-bff1-81520fb2c326",
+    "source_image_url": "https://cards.barclaycardus.com/content/dam/bcuspublic/card-plastic/card-front/AT_Encore_CD_Flat_Card_Art_230x157.png"
   },
   {
     "url": "https://cards.barclaycardus.com/banking/cards/banana-republic-encore-mastercard/",
@@ -1978,7 +1990,7 @@
     ],
     "best_for": "Everyday Spend",
     "top_perk": "Early access & partner perks with special events, discounts, and other top perks",
-    "image_url": null,
+    "image_url": "/card-art/8ea5694f-9bd3-424f-a7d9-81635077b9ed.webp",
     "reward_rates": [
       {
         "category": "other",
@@ -2002,7 +2014,8 @@
         "quote": "Earn 5X points for every $1 spent at the Gap Inc. family of brands"
       }
     ],
-    "id": "8ea5694f-9bd3-424f-a7d9-81635077b9ed"
+    "id": "8ea5694f-9bd3-424f-a7d9-81635077b9ed",
+    "source_image_url": "https://cards.barclaycardus.com/content/dam/bcuspublic/card-plastic/card-front/BR_Encore_CD_Flat_Card_Art_230x157.png"
   },
   {
     "url": "https://cards.barclaycardus.com/banking/cards/barnes-noble-mastercard/",
@@ -2025,7 +2038,7 @@
     ],
     "best_for": "Foodies",
     "top_perk": "Free online FICO® Credit Score access",
-    "image_url": null,
+    "image_url": "/card-art/0d69f111-bfc1-4d8c-bcd5-3d21dcab4b7e.webp",
     "reward_rates": [
       {
         "category": "other",
@@ -2042,7 +2055,8 @@
         "quote": "Earn 2x points for every $1 spent at restaurants (excluding Barnes & Noble Café purchases)"
       }
     ],
-    "id": "0d69f111-bfc1-4d8c-bcd5-3d21dcab4b7e"
+    "id": "0d69f111-bfc1-4d8c-bcd5-3d21dcab4b7e",
+    "source_image_url": "https://cards.barclaycardus.com/content/dam/bcuspublic/card-plastic/card-front/BN1_card_BarnesNoble_MC_230x157.png"
   },
   {
     "url": "https://cards.barclaycardus.com/banking/cards/breeze-airways/",
@@ -2105,7 +2119,7 @@
     ],
     "best_for": "Casual Travelers",
     "top_perk": "5% of your Rewards back every time you redeem, as a bonus to use toward your next redemption",
-    "image_url": null,
+    "image_url": "/card-art/799826da-dd2b-40ed-9e1f-96b4297cc248.webp",
     "reward_rates": [
       {
         "category": "travel",
@@ -2122,7 +2136,8 @@
         "quote": "Earn 2X Rewards for every $1 spent on all eligible RCI and travel-related purchases"
       }
     ],
-    "id": "799826da-dd2b-40ed-9e1f-96b4297cc248"
+    "id": "799826da-dd2b-40ed-9e1f-96b4297cc248",
+    "source_image_url": "https://cards.barclaycardus.com/content/dam/bcuspublic/card-plastic/card-front/CAP_card_CapitalVaca_PM_WM_Flat_230x157.png"
   },
   {
     "url": "https://cards.barclaycardus.com/banking/cards/carnival-rewards-mastercard/",
@@ -2320,7 +2335,7 @@
     ],
     "best_for": "Everyday Spend",
     "top_perk": "Early access & partner perks with special events, discounts, and other top perks",
-    "image_url": null,
+    "image_url": "/card-art/2d690c85-2038-420f-90f4-a26bcf8e5172.webp",
     "reward_rates": [
       {
         "category": "other",
@@ -2344,7 +2359,8 @@
         "quote": "Earn 5X points for every $1 spent at the Gap Inc. family of brands"
       }
     ],
-    "id": "2d690c85-2038-420f-90f4-a26bcf8e5172"
+    "id": "2d690c85-2038-420f-90f4-a26bcf8e5172",
+    "source_image_url": "https://cards.barclaycardus.com/content/dam/bcuspublic/card-plastic/card-front/GP_Encore_CD_Flat_Card_Art_230x157.png"
   },
   {
     "url": "https://cards.barclaycardus.com/banking/cards/general-motors-business/",
@@ -2431,7 +2447,7 @@
     ],
     "best_for": "Foodies",
     "top_perk": "Free first checked bag for the primary cardmember and up to 3 eligible travel companions on JetBlue-operated flights",
-    "image_url": null,
+    "image_url": "/card-art/c9acaeee-4632-4c1b-a8b4-84954486f3d2.webp",
     "reward_rates": [
       {
         "category": "travel",
@@ -2455,7 +2471,8 @@
         "quote": "1X points on all other purchases"
       }
     ],
-    "id": "c9acaeee-4632-4c1b-a8b4-84954486f3d2"
+    "id": "c9acaeee-4632-4c1b-a8b4-84954486f3d2",
+    "source_image_url": "https://cards.barclaycardus.com/content/dam/bcuspublic/card-plastic/card-front/BJT_card_BC_WE_Flat_230x157.png"
   },
   {
     "url": "https://cards.barclaycardus.com/banking/cards/jetblue-card/",
@@ -2478,7 +2495,7 @@
     ],
     "best_for": "Foodies",
     "top_perk": "50% savings on eligible inflight purchases on JetBlue-operated flights",
-    "image_url": null,
+    "image_url": "/card-art/484141a4-a426-450b-b936-001d3fe76c95.webp",
     "reward_rates": [
       {
         "category": "travel",
@@ -2502,7 +2519,8 @@
         "quote": "1X points on all other purchases"
       }
     ],
-    "id": "484141a4-a426-450b-b936-001d3fe76c95"
+    "id": "484141a4-a426-450b-b936-001d3fe76c95",
+    "source_image_url": "https://cards.barclaycardus.com/content/dam/bcuspublic/card-plastic/card-front/JBM_card_NoFee_WM_Flat_230x157.png"
   },
   {
     "url": "https://cards.barclaycardus.com/banking/cards/jetblue-plus-card/",
@@ -2525,7 +2543,7 @@
     ],
     "best_for": "Foodies",
     "top_perk": "Free first checked bag for you and up to 3 eligible travel companions on JetBlue-operated flights",
-    "image_url": null,
+    "image_url": "/card-art/f1f12706-0fae-4e1c-a93f-86a2e1456828.webp",
     "reward_rates": [
       {
         "category": "travel",
@@ -2549,7 +2567,8 @@
         "quote": "1X points on all other purchases"
       }
     ],
-    "id": "f1f12706-0fae-4e1c-a93f-86a2e1456828"
+    "id": "f1f12706-0fae-4e1c-a93f-86a2e1456828",
+    "source_image_url": "https://cards.barclaycardus.com/content/dam/bcuspublic/card-plastic/card-front/JBE_card_Plus_WE_Flat_230x157.png"
   },
   {
     "url": "https://cards.barclaycardus.com/banking/cards/jetblue-premier-card/",
@@ -2572,7 +2591,7 @@
     ],
     "best_for": "Foodies",
     "top_perk": "Access to over 1,800 participating lounges and travel experiences in over 700 airports in 146 countries with Priority Pass",
-    "image_url": null,
+    "image_url": "/card-art/c91d68cf-9908-4330-bb88-bda59944aee4.webp",
     "reward_rates": [
       {
         "category": "travel",
@@ -2596,7 +2615,8 @@
         "quote": "1X points on all other purchases"
       }
     ],
-    "id": "c91d68cf-9908-4330-bb88-bda59944aee4"
+    "id": "c91d68cf-9908-4330-bb88-bda59944aee4",
+    "source_image_url": "https://cards.barclaycardus.com/content/dam/bcuspublic/card-plastic/card-front/JBP_CD_card_Premier_WE_Flat_230x157.png"
   },
   {
     "url": "https://cards.barclaycardus.com/banking/cards/lufthansa-miles-more-world-elite-mastercard/",
@@ -2618,7 +2638,7 @@
     ],
     "best_for": "Frequent Flyers",
     "top_perk": "Receive lounge access with two complimentary Lufthansa Business Lounge Vouchers annually.",
-    "image_url": null,
+    "image_url": "/card-art/8d157b85-27dc-4fc9-ac00-a928cb46d67c.webp",
     "reward_rates": [
       {
         "category": "travel",
@@ -2635,7 +2655,8 @@
         "quote": "Earn 1 mile per $1 spent on all other purchases."
       }
     ],
-    "id": "8d157b85-27dc-4fc9-ac00-a928cb46d67c"
+    "id": "8d157b85-27dc-4fc9-ac00-a928cb46d67c",
+    "source_image_url": "https://cards.barclaycardus.com/content/dam/bcuspublic/card-plastic/card-front/LFT_DFW1ZLF1.png"
   },
   {
     "url": "https://cards.barclaycardus.com/banking/cards/old-navy-encore-mastercard/",
@@ -2656,7 +2677,7 @@
     ],
     "best_for": "Everyday Spend",
     "top_perk": "Early access & partner perks with special events, discounts, and other top perks",
-    "image_url": null,
+    "image_url": "/card-art/124083df-65ae-4530-9eea-75b40997f327.webp",
     "reward_rates": [
       {
         "category": "other",
@@ -2680,7 +2701,8 @@
         "quote": "Earn 5X points for every $1 spent at the Gap Inc. family of brands"
       }
     ],
-    "id": "124083df-65ae-4530-9eea-75b40997f327"
+    "id": "124083df-65ae-4530-9eea-75b40997f327",
+    "source_image_url": "https://cards.barclaycardus.com/content/dam/bcuspublic/card-plastic/card-front/ON_Encore_CD_Flat_Card_Art_230x157.png"
   },
   {
     "url": "https://cards.barclaycardus.com/banking/cards/rci-elite-rewards-mastercard/",
@@ -2702,7 +2724,7 @@
     ],
     "best_for": "Casual Travelers",
     "top_perk": "$250 USD Vacation Credit after spending $10,000 in net purchases each calendar year.",
-    "image_url": null,
+    "image_url": "/card-art/ed1cdaa0-be58-4a57-bb6f-92d73ea456b1.webp",
     "reward_rates": [
       {
         "category": "travel",
@@ -2719,7 +2741,8 @@
         "quote": "Earn 5X Rewards for every $1 spent on all eligible RCI purchases."
       }
     ],
-    "id": "ed1cdaa0-be58-4a57-bb6f-92d73ea456b1"
+    "id": "ed1cdaa0-be58-4a57-bb6f-92d73ea456b1",
+    "source_image_url": "https://cards.barclaycardus.com/content/dam/bcuspublic/card-plastic/card-front/RCI_CD_card_RCI_PM_WM_Flat_230x157.png"
   },
   {
     "url": "https://cards.barclaycardus.com/banking/cards/upromise-world-mastercard/",
@@ -2741,7 +2764,7 @@
     ],
     "best_for": "Maximizing Cash Back",
     "top_perk": "$0 Fraud Liability Protection",
-    "image_url": null,
+    "image_url": "/card-art/056ce14d-dfbe-4c92-a0c0-f21a8201b4b5.webp",
     "reward_rates": [
       {
         "category": "other",
@@ -2751,7 +2774,8 @@
         "quote": "Earn 1.529% Cash Back Rewards on your purchases when your Upromise Program account is linked to an eligible College Savings Plan."
       }
     ],
-    "id": "056ce14d-dfbe-4c92-a0c0-f21a8201b4b5"
+    "id": "056ce14d-dfbe-4c92-a0c0-f21a8201b4b5",
+    "source_image_url": "https://cards.barclaycardus.com/content/dam/bcuspublic/card-plastic/card-front/UPR_card_rRGB_Upromise_WM_230x157.png"
   },
   {
     "url": "https://cards.barclaycardus.com/banking/cards/wyndham-rewards-earner-premier-card/",
@@ -2776,7 +2800,7 @@
     ],
     "best_for": "Casual Travelers",
     "top_perk": "$100 statement credit after making eligible hotel purchases",
-    "image_url": null,
+    "image_url": "/card-art/2f2f5aef-6bcf-49f2-b865-d2ab7870e863.webp",
     "reward_rates": [
       {
         "category": "travel",
@@ -2800,7 +2824,8 @@
         "quote": "Earn 1 point per $1 spent on all other purchases (excluding Wyndham Vacation Club down payments)."
       }
     ],
-    "id": "2f2f5aef-6bcf-49f2-b865-d2ab7870e863"
+    "id": "2f2f5aef-6bcf-49f2-b865-d2ab7870e863",
+    "source_image_url": "https://cards.barclaycardus.com/content/dam/bcuspublic/card-plastic/card-front/WYP_EarnerPremier_VS_noBleed_230x157.png"
   },
   {
     "url": "https://cards.barclaycardus.com/banking/cards/wyndham-rewards-earner-business-card/",
@@ -2823,7 +2848,7 @@
     ],
     "best_for": "Business Owners",
     "top_perk": "Automatically receive a Wyndham Rewards DIAMOND member level and enjoy suite upgrades, welcome amenity at check-in, and more.",
-    "image_url": null,
+    "image_url": "/card-art/6631599e-0ff8-4049-a225-dcb2a9ed6b92.webp",
     "reward_rates": [
       {
         "category": "travel",
@@ -2847,7 +2872,8 @@
         "quote": "Earn 1 point per $1 spent on all other purchases (excluding Wyndham Vacation Club down payments)."
       }
     ],
-    "id": "6631599e-0ff8-4049-a225-dcb2a9ed6b92"
+    "id": "6631599e-0ff8-4049-a225-dcb2a9ed6b92",
+    "source_image_url": "https://cards.barclaycardus.com/content/dam/bcuspublic/card-plastic/card-front/BWY-Earner-Business-Card_VS_noBleed_230x157.png"
   },
   {
     "url": "https://cards.barclaycardus.com/banking/cards/wyndham-rewards-earner-card/",
@@ -2871,7 +2897,7 @@
     ],
     "best_for": "Foodies",
     "top_perk": "Automatically receive a Wyndham Rewards GOLD member level and enjoy perks like preferred room selection, late checkout, and more.",
-    "image_url": null,
+    "image_url": "/card-art/578be95a-fd9c-40af-a3a5-114053bfd955.webp",
     "reward_rates": [
       {
         "category": "travel",
@@ -2902,7 +2928,8 @@
         "quote": "Earn 1 point per $1 spent on all other purchases (excluding Wyndham Vacation Club down payments)."
       }
     ],
-    "id": "578be95a-fd9c-40af-a3a5-114053bfd955"
+    "id": "578be95a-fd9c-40af-a3a5-114053bfd955",
+    "source_image_url": "https://cards.barclaycardus.com/content/dam/bcuspublic/card-plastic/card-front/WYD-WYZ-Rewards-Earner-VS_noBleed_230x157.png"
   },
   {
     "url": "https://cards.barclaycardus.com/banking/cards/wyndham-rewards-earner-plus-card/",
@@ -2927,7 +2954,7 @@
     ],
     "best_for": "Casual Travelers",
     "top_perk": "Automatically receive a Wyndham Rewards DIAMOND member level during your first year.",
-    "image_url": null,
+    "image_url": "/card-art/61946cb2-1615-4014-b58e-c4e5d6ec6c46.webp",
     "reward_rates": [
       {
         "category": "travel",
@@ -2958,7 +2985,8 @@
         "quote": "Earn 1 point per $1 spent on all other purchases (excluding Wyndham Vacation Club down payments)."
       }
     ],
-    "id": "61946cb2-1615-4014-b58e-c4e5d6ec6c46"
+    "id": "61946cb2-1615-4014-b58e-c4e5d6ec6c46",
+    "source_image_url": "https://cards.barclaycardus.com/content/dam/bcuspublic/card-plastic/card-front/WYF-Earner-Plus_VS_noBleed_230x157.png"
   },
   {
     "url": "https://www.capitalone.com/credit-cards/club-business/",
@@ -3969,9 +3997,9 @@
     "card_name": "Aer Lingus Visa Signature® Credit Card",
     "issuer": "Chase",
     "annual_fee": 95,
-    "apr_range": "19.49%–27.99% variable APR.",
+    "apr_range": "19.49%–27.99% Variable",
     "apr_intro": "None",
-    "apr_regular": "19.49%–27.99% variable",
+    "apr_regular": "19.49%–27.99% Variable",
     "rewards_summary": "Cardmembers earn 3 Avios for every $1 spent on Aer Lingus, British Airways, and Iberia flight purchases, 2 Avios for every $1 spent on hotel accommodations booked directly with the hotel, and 1 Avios for every $1 spent on all other purchases.",
     "signup_bonus": "Earn 75,000 Avios after you spend $5,000 on purchases within the first 3 months of account opening.",
     "recommended_credit_score": null,
@@ -3983,7 +4011,7 @@
       "personal"
     ],
     "best_for": "Frequent Flyers",
-    "top_perk": "Economy Companion Ticket each year after spending $30,000.",
+    "top_perk": "Economy Companion Ticket each year after spending $30,000",
     "image_url": "/card-art/8e63079e-e985-4945-8b17-bfc586eac0d7.webp",
     "reward_rates": [
       {
@@ -3994,15 +4022,22 @@
         "quote": "Earn 3 Avios for every $1 spent on Aer Lingus, British Airways, and Iberia flight purchases."
       },
       {
-        "category": "other",
+        "category": "dining",
         "rate": 2.0,
         "unit": "points",
         "cap": null,
         "quote": "Earn 2 Avios for every $1 spent on hotel accommodations booked directly with the hotel."
+      },
+      {
+        "category": "other",
+        "rate": 1.0,
+        "unit": "points",
+        "cap": null,
+        "quote": "Earn 1 Avios for every $1 spent on all other purchases."
       }
     ],
     "id": "8e63079e-e985-4945-8b17-bfc586eac0d7",
-    "source_image_url": "https://creditcards.chase.com/bcs/api/images/file/public-card-marketplace/card-art/aer-lingus.png"
+    "source_image_url": "https://creditcards.chase.com/content/dam/jpmc-marketplace/card-art/aer_lingus_card.png"
   },
   {
     "url": "https://creditcards.chase.com/travel-credit-cards/aircanada/aeroplan",
@@ -4127,13 +4162,13 @@
     "card_name": "British Airways Visa Signature® Credit Card",
     "issuer": "Chase",
     "annual_fee": 95,
-    "apr_range": "19.49%–27.99% Variable",
+    "apr_range": "19.49%–27.99% variable APR.",
     "apr_intro": null,
-    "apr_regular": "19.49%–27.99% Variable",
+    "apr_regular": "19.49%–27.99% variable",
     "rewards_summary": "Cardmembers earn 3 Avios for every $1 spent on British Airways, Aer Lingus, and Iberia flight purchases, and 2 Avios for every $1 spent on stays booked directly with the hotel. Earn 1 Avios for every $1 spent on all other purchases.",
-    "signup_bonus": "Earn 75,000 Bonus Avios after you spend $5,000 on purchases within the first 3 months of account opening.",
+    "signup_bonus": "Earn 75,000 Avios after you spend $5,000 on purchases within the first 3 months of account opening.",
     "recommended_credit_score": null,
-    "foreign_transaction_fee": null,
+    "foreign_transaction_fee": "None",
     "tags": [
       "flights",
       "hotels",
@@ -4153,14 +4188,14 @@
       },
       {
         "category": "other",
-        "rate": 2.0,
+        "rate": 1.0,
         "unit": "points",
         "cap": null,
-        "quote": "Earn 2 Avios for every $1 spent on hotel accommodations booked directly with the hotel."
+        "quote": "Earn 1 Avios for every $1 spent on all other purchases."
       }
     ],
     "id": "54320a7d-e444-4782-bd0e-3dfa21efbbaf",
-    "source_image_url": "https://creditcards.chase.com/content/dam/jpmc-marketplace/card-art/british-airways.png"
+    "source_image_url": "https://creditcards.chase.com/bcs/api/images/file/public-card-marketplace/card-art/british-airways.png"
   },
   {
     "url": "https://creditcards.chase.com/cash-back-credit-cards/freedom/flex",
@@ -4295,69 +4330,6 @@
     "source_image_url": "https://creditcards.chase.com/content/dam/jpmc-marketplace/card-art/freedom_unlimited_card_alt.png"
   },
   {
-    "url": "https://creditcards.chase.com/rewards-credit-cards/sapphire/preferred",
-    "provider": "chase",
-    "card_name": "Chase Sapphire Preferred",
-    "issuer": "Chase",
-    "annual_fee": 95,
-    "apr_range": "19.49%–27.74% Variable",
-    "apr_intro": "None",
-    "apr_regular": "19.49%–27.74% Variable",
-    "rewards_summary": "Earn 5x points on Chase Travel, 3x points on dining, gas stations, and top streaming services, and 1x points on all other purchases.",
-    "signup_bonus": "Earn 75,000 points after you spend $5,000 in purchases in the first 3 months from account opening.",
-    "recommended_credit_score": "Good/Excellent",
-    "foreign_transaction_fee": "None",
-    "tags": [
-      "travel",
-      "dining",
-      "gas",
-      "premium",
-      "personal"
-    ],
-    "best_for": "Casual Travelers",
-    "top_perk": "$100 Chase Travel Hotel Credit",
-    "image_url": "/card-art/1fc76ed5-ea0d-413e-9767-cdef124aaeff.webp",
-    "reward_rates": [
-      {
-        "category": "travel",
-        "rate": 5.0,
-        "unit": "points",
-        "cap": null,
-        "quote": "5x points on Chase Travel"
-      },
-      {
-        "category": "dining",
-        "rate": 3.0,
-        "unit": "points",
-        "cap": null,
-        "quote": "3x points on dining"
-      },
-      {
-        "category": "gas",
-        "rate": 3.0,
-        "unit": "points",
-        "cap": null,
-        "quote": "3x points on gas stations, EV charging, and vacation homes at top brands"
-      },
-      {
-        "category": "streaming",
-        "rate": 3.0,
-        "unit": "points",
-        "cap": null,
-        "quote": "3x points on top streaming services and online grocery, exclusions apply"
-      },
-      {
-        "category": "other",
-        "rate": 1.0,
-        "unit": "points",
-        "cap": null,
-        "quote": "1X points on all other purchases"
-      }
-    ],
-    "id": "1fc76ed5-ea0d-413e-9767-cdef124aaeff",
-    "source_image_url": "https://creditcards.chase.com/content/dam/jpmc-marketplace/card-art/sapphire-preferredcard2026.png"
-  },
-  {
     "url": "https://creditcards.chase.com/rewards-credit-cards/sapphire/reserve",
     "provider": "chase",
     "card_name": "Chase Sapphire Reserve",
@@ -4413,13 +4385,13 @@
     "card_name": "Disney Inspire Visa Card",
     "issuer": "Chase",
     "annual_fee": 149,
-    "apr_range": "18.49%–27.99% Variable",
-    "apr_intro": "0% promotional APR for 6 months on select Disney vacation packages from the date of purchase",
-    "apr_regular": "18.49%–27.99% Variable",
+    "apr_range": "18.49%-27.99% variable APR.",
+    "apr_intro": "0% promotional APR for 6 months on select Disney vacation packages from the date of purchase, after that a variable APR of 18.49%–27.99%.",
+    "apr_regular": "18.49%-27.99%",
     "rewards_summary": "Cardmembers earn 10% in Disney Rewards Dollars on card purchases made directly at DisneyPlus.com, Hulu.com or Stream.ESPN.com. Earn 3% on card purchases at gas stations and most other U.S. Disney locations.",
     "signup_bonus": "$300 Disney Gift Card eGift to use today upon approval + earn a $200 statement credit after you spend $1,000 on purchases in the first 3 months from account opening.",
     "recommended_credit_score": null,
-    "foreign_transaction_fee": null,
+    "foreign_transaction_fee": "None",
     "tags": [
       "gas",
       "cashback",
@@ -4435,7 +4407,7 @@
         "rate": 10.0,
         "unit": "percent",
         "cap": null,
-        "quote": "Cardmembers earn 10% in Disney Rewards Dollars on card purchases made directly at DisneyPlus.com, Hulu.com or Stream.ESPN.com."
+        "quote": "Earn 10% in Disney Rewards Dollars on card purchases made directly at DisneyPlus.com, Hulu.com or Stream.ESPN.com."
       },
       {
         "category": "gas",
@@ -4460,7 +4432,7 @@
       }
     ],
     "id": "b46898df-a467-4b6e-b55e-bd48e7cef781",
-    "source_image_url": "https://creditcards.chase.com/content/dam/jpmc-marketplace/card-art/disney-inspire.png"
+    "source_image_url": "https://creditcards.chase.com/bcs/api/images/file/public-card-marketplace/card-art/disney-inspire.png"
   },
   {
     "url": "https://creditcards.chase.com/rewards-credit-cards/disney/premier",
@@ -4555,13 +4527,13 @@
     "card_name": "DoorDash Rewards Mastercard",
     "issuer": "Chase",
     "annual_fee": 0,
-    "apr_range": "18.49%–27.99% variable APR.",
+    "apr_range": "18.49%–27.99% Variable",
     "apr_intro": "None",
-    "apr_regular": "18.49%–27.99% variable APR.",
+    "apr_regular": "18.49%–27.99% Variable",
     "rewards_summary": "Earn 4% cash back on DoorDash and Caviar orders, 3% cash back on dining, 2% cash back on grocery stores, and 1% on all other purchases.",
     "signup_bonus": "Free DashPass for a year",
     "recommended_credit_score": null,
-    "foreign_transaction_fee": "None",
+    "foreign_transaction_fee": null,
     "tags": [
       "dining",
       "cashback",
@@ -4596,7 +4568,7 @@
       }
     ],
     "id": "30e4b887-99cf-4a1d-b15e-ce57af22c74c",
-    "source_image_url": "https://creditcards.chase.com/bcs/api/images/file/public-card-marketplace/card-art/doordash.png"
+    "source_image_url": "https://creditcards.chase.com/content/dam/jpmc-marketplace/card-art/doordash_card.png"
   },
   {
     "url": "https://creditcards.chase.com/travel-credit-cards/avios/iberia",
@@ -4604,11 +4576,11 @@
     "card_name": "Iberia Visa Signature® Credit Card",
     "issuer": "Chase",
     "annual_fee": 95,
-    "apr_range": "19.49%–27.99% variable APR.",
+    "apr_range": "19.49%–27.99% Variable",
     "apr_intro": null,
-    "apr_regular": "19.49%–27.99% variable APR.",
-    "rewards_summary": "Cardmembers earn 3 Avios for every $1 spent on Iberia, British Airways, and Aer Lingus flight purchases, and 2 Avios for every $1 spent on stays booked directly with the hotel. Earn 1 Avios for every $1 spent on all other purchases.",
-    "signup_bonus": "Earn 75,000 Avios after you spend $5,000 on purchases within the first 3 months of account opening.",
+    "apr_regular": "19.49%–27.99% Variable",
+    "rewards_summary": "Cardmembers earn 3 Avios for every $1 spent on Iberia, British Airways, and Aer Lingus flight purchases, 2 Avios for every $1 spent on stays booked directly with the hotel, and 1 Avios for every $1 spent on all other purchases.",
+    "signup_bonus": "Earn 75,000 Bonus Avios after you spend $5,000 on purchases within the first 3 months of account opening.",
     "recommended_credit_score": null,
     "foreign_transaction_fee": "None",
     "tags": [
@@ -4637,7 +4609,7 @@
       }
     ],
     "id": "1c8826e1-f22e-4281-b9d2-8a457fe2dda5",
-    "source_image_url": "https://creditcards.chase.com/bcs/api/images/file/public-card-marketplace/card-art/iberia.png"
+    "source_image_url": "https://creditcards.chase.com/content/dam/jpmc-marketplace/card-art/iberia_card.png"
   },
   {
     "url": "https://creditcards.chase.com/travel-credit-cards/ihg-rewards-club/one-rewards",
@@ -4701,7 +4673,7 @@
     "source_image_url": "https://creditcards.chase.com/content/dam/jpmc-marketplace/card-art/ihg-one-rewardscard.png"
   },
   {
-    "url": "https://creditcards.chase.com/travel-credit-cards/ihg-rewards-club/premier",
+    "url": "https://creditcards.chase.com/travel-credit-cards/ihg-rewards-club",
     "provider": "chase",
     "card_name": "IHG One Rewards Premier Credit Card",
     "issuer": "Chase",
@@ -4786,13 +4758,13 @@
     "card_name": "Instacart Mastercard",
     "issuer": "Chase",
     "annual_fee": 0,
-    "apr_range": "18.49%–27.99% variable APR.",
+    "apr_range": "18.49%–29.99% Variable",
     "apr_intro": "None",
-    "apr_regular": "18.49%–27.99% variable APR.",
-    "rewards_summary": "Earn 5% cash back on qualifying Instacart purchases and Chase Travel purchases, 2% at restaurants and gas stations, and 1% on all other purchases.",
+    "apr_regular": "18.49%-29.99% Variable",
+    "rewards_summary": "Earn 5% cash back on qualifying Instacart purchases on your first $6,000 spent annually, 5% cash back on Chase Travel purchases, and 2% cash back at restaurants and gas stations.",
     "signup_bonus": "$50 Instacart credit automatically upon approval",
     "recommended_credit_score": null,
-    "foreign_transaction_fee": "None",
+    "foreign_transaction_fee": null,
     "tags": [
       "travel",
       "dining",
@@ -4810,7 +4782,7 @@
         "rate": 5.0,
         "unit": "percent",
         "cap": "$6,000 spent annually",
-        "quote": "5% cash back on qualifying Instacart purchases on your first $6,000 spent annually"
+        "quote": "Earn 5% cash back on qualifying Instacart purchases on your first $6,000 spent annually"
       },
       {
         "category": "travel",
@@ -4824,7 +4796,7 @@
         "rate": 2.0,
         "unit": "percent",
         "cap": null,
-        "quote": "2% Cash Back at restaurants, including orders on Instacart powered by Uber Eats, gas stations, and on select streaming services."
+        "quote": "2% Cash Back at restaurants, gas stations, and on select streaming services"
       },
       {
         "category": "other",
@@ -4835,7 +4807,7 @@
       }
     ],
     "id": "b6a91df3-1e59-4f41-86a9-37130704af30",
-    "source_image_url": "https://creditcards.chase.com/bcs/api/images/file/public-card-marketplace/card-art/instacart.png"
+    "source_image_url": "https://creditcards.chase.com/content/dam/jpmc-marketplace/card-art/instacart_card.png"
   },
   {
     "url": "https://creditcards.chase.com/travel-credit-cards/marriott-bonvoy/bold",
@@ -5281,11 +5253,11 @@
     "card_name": "United Explorer Card",
     "issuer": "Chase",
     "annual_fee": 150,
-    "apr_range": "19.99%–28.49% Variable",
-    "apr_intro": "None",
-    "apr_regular": "19.99%–28.49% Variable",
+    "apr_range": "19.99%–28.49% variable APR.",
+    "apr_intro": "$0 intro annual fee for the first year",
+    "apr_regular": "19.99%–28.49% variable APR.",
     "rewards_summary": "Earn 9x total miles on eligible United flights and 3x miles on all other eligible United purchases.",
-    "signup_bonus": "Earn up to 60,000 bonus miles after qualifying activities.",
+    "signup_bonus": "Earn up to 70,000 bonus miles after you spend $3,000 on purchases in the first 3 months your account is open.",
     "recommended_credit_score": "Good/Excellent",
     "foreign_transaction_fee": "None",
     "tags": [
@@ -5320,7 +5292,7 @@
       }
     ],
     "id": "34043884-db4a-4905-a85e-fcbb20b939c0",
-    "source_image_url": "https://creditcards.chase.com/content/dam/jpmc-marketplace/card-art/united_explorer_new_card.png"
+    "source_image_url": "https://creditcards.chase.com/bcs/api/images/file/public-card-marketplace/united_explorer_new_card.png"
   },
   {
     "url": "https://creditcards.chase.com/travel-credit-cards/united/united-gateway",
@@ -5328,11 +5300,11 @@
     "card_name": "United Gateway Card",
     "issuer": "Chase",
     "annual_fee": 0,
-    "apr_range": "0% intro APR for 12 months from account opening on purchases. After the intro period, a variable APR of 19.99%–28.49%",
+    "apr_range": "0% intro APR for 12 months from account opening on purchases. After the intro period, a variable APR of 19.99%-28.49%",
     "apr_intro": "0% intro APR for 12 months from account opening on purchases.",
-    "apr_regular": "19.99%–28.49%",
-    "rewards_summary": "Earn 5x total miles on eligible United flights and 2x miles on all other eligible United purchases, with no annual fee.",
-    "signup_bonus": "Earn up to 50,000 bonus miles after qualifying activities.",
+    "apr_regular": "19.99%-28.49%",
+    "rewards_summary": "Earn 5x total miles on eligible United flights and 2x miles on all other eligible United purchases.",
+    "signup_bonus": "Earn up to 40,000 bonus miles after qualifying activities.",
     "recommended_credit_score": null,
     "foreign_transaction_fee": "None",
     "tags": [
@@ -5353,22 +5325,22 @@
         "quote": "5x total miles on eligible United flights"
       },
       {
-        "category": "other",
-        "rate": 2.0,
-        "unit": "miles",
-        "cap": null,
-        "quote": "2x miles on local transit and commuting including ride share services, taxicabs, train tickets, tolls, and mass transit."
-      },
-      {
         "category": "gas",
         "rate": 2.0,
         "unit": "miles",
         "cap": null,
         "quote": "2x miles at gas stations"
+      },
+      {
+        "category": "other",
+        "rate": 2.0,
+        "unit": "miles",
+        "cap": null,
+        "quote": "2x miles on local transit and commuting including ride share services, taxicabs, train tickets, tolls, and mass transit."
       }
     ],
     "id": "c234a0f5-8865-47aa-9f99-6a46743d3a55",
-    "source_image_url": "https://creditcards.chase.com/bcs/api/images/file/public-card-marketplace/united-gateway-new-ribbon-card.png"
+    "source_image_url": "https://creditcards.chase.com/content/dam/jpmc-marketplace/card-art//united_gateway_new_ribbon_card.png"
   },
   {
     "url": "https://creditcards.chase.com/travel-credit-cards/united/united-quest",
