@@ -559,8 +559,8 @@ export default function CardCarousel({
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
-              <span className="min-w-[4.5rem] text-center text-sm font-semibold tabular-nums text-[var(--cl-ink)]" aria-live="polite">
-                {groupPos + 1} of {groupSize}
+              <span className="min-w-[4.5rem] whitespace-nowrap px-1 text-center text-sm font-semibold tabular-nums text-[var(--cl-ink)]" aria-live="polite">
+                {groupPos + 1} of {!ranked ? groupSize : inMore ? `${groupSize} more` : `top ${groupSize}`}
               </span>
               <button
                 onClick={nextCard}
