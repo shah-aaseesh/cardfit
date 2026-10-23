@@ -27,6 +27,16 @@ _groq_client = None
 _openai_client = None
 _xai_client = None
 
+# Running tally for the pipeline's provider-health check. classify.py and
+# extract.py swallow LLM errors so one bad page can't sink a run — which
+# also means a dead key or exhausted quota would otherwise look like "the
+# issuer has no cards". pipeline.py reads and resets this per provider.
+stats = {"calls": 0, "failures": 0, "last_error": None}
+
+
+def reset_stats() -> None:
+    stats.update(calls=0, failures=0, last_error=None)
+
 
 def _get_gemini_client():
     global _gemini_client
@@ -125,6 +135,7 @@ def complete_json(prompt: str, model: str | None = None, max_tokens: int = 500) 
     degrade gracefully (see classify.py / extract.py)."""
     model = model or settings.classify_model
     provider = settings.llm_provider
+    stats["calls"] += 1
 
     last_error = None
     for attempt in range(settings.llm_max_retries):
@@ -163,4 +174,6 @@ def complete_json(prompt: str, model: str | None = None, max_tokens: int = 500) 
             logger.error(f"{provider} call failed: {e}")
             break
 
+    stats["failures"] += 1
+    stats["last_error"] = str(last_error)[:300]
     raise RuntimeError(f"LLM call failed after {settings.llm_max_retries} attempts: {last_error}")

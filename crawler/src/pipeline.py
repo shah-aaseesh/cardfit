@@ -25,6 +25,7 @@ from src.fetch import extract_card_image
 from src.validate import validate_batch
 from src.storage import load_latest, save_run, save_rejections
 from src.notify import send_alert
+from src import llm_client
 
 logging.basicConfig(
     level=logging.INFO,
@@ -36,6 +37,15 @@ logging.basicConfig(
 )
 logger = logging.getLogger("pipeline")
 
+# A run where this share of LLM calls failed is a provider outage (bad key,
+# no credits, model retired), not a few flaky pages. Its output is a
+# fraction of the issuer's cards, so it must not be stored as the new state.
+LLM_FAILURE_LIMIT = 0.2
+
+
+def llm_outage(calls: int, failures: int) -> bool:
+    return failures >= 2 and failures / calls >= LLM_FAILURE_LIMIT
+
 
 def run_provider(provider: dict) -> dict:
     name = provider["name"]
@@ -45,6 +55,7 @@ def run_provider(provider: dict) -> dict:
     # This is what makes re-runs nearly free (see src/cache.py). Saved in
     # the finally block so partial progress survives a mid-run crash.
     cache = load_cache(name)
+    llm_client.reset_stats()
 
     try:
         # Stage 2: discovery
@@ -109,6 +120,14 @@ def run_provider(provider: dict) -> dict:
         summary["accepted"] = len(accepted)
         summary["rejected"] = len(rejected)
 
+        stats = llm_client.stats
+        if stats["calls"] and llm_outage(stats["calls"], stats["failures"]):
+            summary["error"] = (
+                f"LLM provider failing: {stats['failures']} of {stats['calls']} calls failed "
+                f"(last: {stats['last_error']}) — run not stored"
+            )
+            return summary
+
         # Stage 6: storage
         save_run(name, accepted, raw_html_by_url)
         save_rejections(name, rejected)
@@ -171,6 +190,10 @@ def main():
 
     summaries = run_all(provider_filter=args.provider)
     report(summaries)
+    # Non-zero exit turns the Actions job red, which is what makes GitHub
+    # email you; a summary line in a log nobody reads is not an alert.
+    if not summaries or any(s["error"] for s in summaries):
+        sys.exit(1)
 
 
 if __name__ == "__main__":

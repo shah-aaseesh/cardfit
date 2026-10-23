@@ -30,6 +30,9 @@ logger = logging.getLogger("storage")
 
 _supabase_client = None
 
+# What the website currently shows (written by scripts/export_snapshot.py).
+SNAPSHOT_PATH = DATA_DIR.parent.parent / "web" / "src" / "cards.snapshot.json"
+
 
 def _get_supabase_client():
     """Lazily creates (and caches) the Supabase client. Returns None if
@@ -100,9 +103,10 @@ def provider_dir(provider_name: str) -> Path:
 def load_latest(provider_name: str) -> dict[str, dict]:
     """Returns {url: record} for the last published state, or {} if none exists.
 
-    Prefers Supabase (the source of truth once configured) and falls back
-    to the local latest.json so a single provider can still be test-run
-    offline without a Supabase project.
+    Prefers Supabase (the source of truth once configured), then the local
+    latest.json, then the published site snapshot. The last one matters in
+    CI: every Actions runner starts without yesterday's latest.json, so
+    without it the day-over-day swing checks in validate.py never ran.
     """
     client = _get_supabase_client()
     if client is not None:
@@ -117,10 +121,16 @@ def load_latest(provider_name: str) -> dict[str, dict]:
             return {r["url"]: r for r in resp.data}
 
     path = provider_dir(provider_name) / "latest.json"
-    if not path.exists():
+    if path.exists():
+        with open(path, encoding="utf-8") as f:
+            records = json.load(f)
+    elif SNAPSHOT_PATH.exists():
+        records = [
+            r for r in json.loads(SNAPSHOT_PATH.read_text(encoding="utf-8"))
+            if r.get("provider") == provider_name
+        ]
+    else:
         return {}
-    with open(path, encoding="utf-8") as f:
-        records = json.load(f)
     return {r["url"]: r for r in records}
 
 

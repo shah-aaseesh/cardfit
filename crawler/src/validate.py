@@ -12,6 +12,7 @@ from dataclasses import dataclass
 
 from src.config import settings
 from src.extract import CardData
+from src.storage import card_key
 
 logger = logging.getLogger("validate")
 
@@ -90,7 +91,12 @@ def validate_card(new: CardData, previous: dict | None) -> ValidationResult:
         if prev_apr_high and apr_high and abs(apr_high - prev_apr_high) > 8:
             flags.append(f"apr high-end changed {prev_apr_high}% -> {apr_high}% (>8pt swing)")
 
-        if previous.get("card_name") and new.card_name and previous["card_name"] != new.card_name:
+        # Compared without ®/"Credit Card" noise: those differences are
+        # cosmetic, and this flag holds the issuer back for review.
+        if (
+            previous.get("card_name") and new.card_name
+            and card_key(previous) != card_key({"card_name": new.card_name, "url": new.url})
+        ):
             flags.append(f"card_name changed '{previous['card_name']}' -> '{new.card_name}' — possible URL reuse")
 
     if flags:

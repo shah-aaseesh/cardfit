@@ -16,12 +16,20 @@ reached the site. This script does, safely:
     Supabase publish path, and SNAPSHOT_AS_OF in web/src/lib/snapshot.ts is
     set to this month.
 
+  - Suspicious issuers are held back: a sharp drop in card count (a
+    half-broken crawl looks exactly like "the issuer retired its cards") or
+    a day-over-day swing flagged by validate.py. They keep their current
+    rows; --report writes why, and --include-flagged publishes them anyway
+    (the daily workflow does that on a branch and opens a PR for review).
+
 Then run scripts/cache_card_art.py to self-host any new card art.
 
 Usage (from crawler/):
     python scripts/export_snapshot.py            # all providers with data
     python scripts/export_snapshot.py --dry-run  # report only
     python scripts/export_snapshot.py --provider wells_fargo  # just one issuer
+    python scripts/export_snapshot.py --report review.md      # also write held-back reasons
+    python scripts/export_snapshot.py --include-flagged       # publish held-back issuers too
 """
 import json
 import re
@@ -59,6 +67,48 @@ def loose_key(row: dict) -> str:
     """card_key without issuer/network words, so a renamed product still
     matches ("Wells Fargo Active Cash" vs "Active Cash® Credit Card")."""
     return re.sub(r"\s+", " ", _LOOSE_NOISE.sub(" ", card_key(row))).strip()
+
+
+# Hold an issuer back when its crawl returns under this share of the cards
+# it has now (and at least MIN_DROP fewer, so 3 -> 2 doesn't trip it).
+COUNT_DROP_LIMIT = 0.7
+MIN_DROP = 2
+
+# validate.py flags that mean "a published value moved a lot overnight".
+# Other flags (low confidence, unquoted fields) are routine and don't block.
+SWING_FLAGS = ("annual_fee changed", "apr high-end changed", "card_name changed")
+
+
+def review(existing: list[dict], crawled: dict[str, list[dict]]) -> dict[str, list[str]]:
+    """{provider: [reasons]} for crawled issuers that need a human look."""
+    held: dict[str, list[str]] = {}
+    for provider, records in crawled.items():
+        reasons = []
+        old = sum(1 for r in existing if r["provider"] == provider)
+        new = len(records)
+        if old - new >= MIN_DROP and new < old * COUNT_DROP_LIMIT:
+            reasons.append(f"card count fell {old} -> {new}")
+        for record in records:
+            for flag in record.get("validation_flags") or []:
+                if flag.startswith(SWING_FLAGS):
+                    reasons.append(f"{record.get('card_name') or record['url']}: {flag}")
+        if reasons:
+            held[provider] = reasons
+    return held
+
+
+def review_markdown(held: dict[str, list[str]]) -> str:
+    lines = [
+        "The daily crawl held these issuers back from the live site. Everything "
+        "else was published. Merge this PR if the changes are real (an issuer "
+        "really retired cards or changed a fee); close it if the crawl was wrong.",
+        "",
+    ]
+    for provider, reasons in held.items():
+        lines.append(f"### {provider}")
+        lines += [f"- {r}" for r in reasons]
+        lines.append("")
+    return "\n".join(lines)
 
 
 def build_snapshot(existing: list[dict], crawled: dict[str, list[dict]]) -> tuple[list[dict], dict]:
@@ -120,6 +170,23 @@ def main() -> int:
         print(f"No crawl output under {DATA_DIR} — run `python -m src.pipeline` first.")
         return 1
     existing = json.loads(SNAPSHOT.read_text(encoding="utf-8"))
+
+    held = review(existing, crawled)
+    for provider, reasons in held.items():
+        print(f"needs review: {provider} — " + "; ".join(reasons))
+    if "--report" in sys.argv:
+        report = Path(sys.argv[sys.argv.index("--report") + 1])
+        if held:
+            report.write_text(review_markdown(held), encoding="utf-8")
+        else:
+            report.unlink(missing_ok=True)
+    if held and "--include-flagged" not in sys.argv:
+        crawled = {k: v for k, v in crawled.items() if k not in held}
+        print(f"held back (keeping current cards): {', '.join(held)}")
+        if not crawled:
+            print("Nothing safe to publish.")
+            return 0
+
     rows, stats = build_snapshot(existing, crawled)
     print(f"providers crawled: {', '.join(crawled)}")
     print(f"{len(existing)} -> {len(rows)} cards  {stats}")

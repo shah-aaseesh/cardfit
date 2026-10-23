@@ -208,6 +208,42 @@ def test_export_snapshot_merge_keeps_ids_and_uncrawled_providers():
     print("OK: snapshot export keeps ids, art and uncrawled providers")
 
 
+def test_validate_ignores_cosmetic_name_changes():
+    previous = {"url": "x", "card_name": "Chase Sapphire Preferred"}
+    same = CardData(url="x", provider="chase", card_name="Chase Sapphire Preferred® Credit Card", extraction_confidence=0.9)
+    other = CardData(url="x", provider="chase", card_name="Chase Freedom Flex", extraction_confidence=0.9)
+    assert not [f for f in validate_card(same, previous).flags if "card_name" in f], "® / suffix is not a rename"
+    assert [f for f in validate_card(other, previous).flags if "card_name" in f], "a different product is"
+    print("OK: card_name swing check ignores marketing marks")
+
+
+def test_llm_outage_threshold():
+    from src.pipeline import llm_outage
+    assert not llm_outage(50, 1), "one flaky call is not an outage"
+    assert not llm_outage(50, 5), "10% failures is noise"
+    assert llm_outage(50, 12), "a quarter failing is an outage"
+    assert llm_outage(3, 3), "a dead key fails everything"
+    print("OK: LLM outage threshold")
+
+
+def test_export_review_holds_drops_and_swings():
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
+    from export_snapshot import review
+    existing = [{"provider": "chase", "url": f"c{i}"} for i in range(10)] +                [{"provider": "citi", "url": f"t{i}"} for i in range(3)] +                [{"provider": "amex", "url": f"a{i}"} for i in range(5)]
+    crawled = {
+        "chase": [{"url": f"c{i}"} for i in range(4)],  # 10 -> 4: broken crawl
+        "citi": [{"url": f"t{i}"} for i in range(2)],   # 3 -> 2: too small to call
+        "amex": [{"url": "a0", "card_name": "Gold", "validation_flags": [
+            "annual_fee changed 250 -> 695 (>50% swing)", "low extraction confidence (0.40)"]}]
+            + [{"url": f"a{i}"} for i in range(1, 5)],
+    }
+    held = review(existing, crawled)
+    assert set(held) == {"chase", "amex"}, held
+    assert held["chase"] == ["card count fell 10 -> 4"], held["chase"]
+    assert held["amex"] == ["Gold: annual_fee changed 250 -> 695 (>50% swing)"], "routine flags don't block"
+    print("OK: export holds back count drops and price swings")
+
+
 def run_all():
     tests = [v for k, v in globals().items() if k.startswith("test_") and callable(v)]
     failed = []

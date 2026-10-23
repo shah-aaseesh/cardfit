@@ -12,9 +12,21 @@ name: Daily Credit Card Crawl
 #            art, and commits the change — which redeploys the site if the
 #            repo is connected to Vercel.
 #
+# Safeguards:
+#   - A crawl job fails (red X, GitHub emails you) when discovery finds
+#     nothing or the LLM provider is erroring; that issuer's run isn't
+#     stored, so publish keeps its current cards.
+#   - An issuer whose card count drops sharply, or whose fee/APR/name swings
+#     overnight, is held off the live site. Its new data goes to a
+#     "crawl-review/<date>" branch with a PR explaining why — merge or close.
+#   - The bot rebases onto main before pushing, so it never clobbers a
+#     commit you made while the crawl was running.
+#
 # Setup: add repo secret OPENAI_API_KEY (Settings -> Secrets and variables ->
-# Actions). Optional: SUPABASE_URL + SUPABASE_SERVICE_KEY to also publish to
-# Supabase, SLACK_WEBHOOK_URL for failure alerts.
+# Actions), and tick "Allow GitHub Actions to create and approve pull
+# requests" (Settings -> Actions -> General) for the review PRs. Optional:
+# SUPABASE_URL + SUPABASE_SERVICE_KEY to also publish to Supabase,
+# SLACK_WEBHOOK_URL for failure alerts.
 
 on:
   schedule:
@@ -28,7 +40,8 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: write  # the publish job commits the refreshed snapshot
+  contents: write       # the publish job commits the refreshed snapshot
+  pull-requests: write  # ...and opens a PR for held-back issuers
 
 jobs:
   crawl:
@@ -136,9 +149,10 @@ jobs:
             fi
           done
 
+      # Holds back suspicious issuers; writes crawl-review.md if any were.
       - name: Export snapshot and card art
         run: |
-          python scripts/export_snapshot.py
+          python scripts/export_snapshot.py --report ../crawl-review.md
           python scripts/cache_card_art.py
 
       - name: Commit refreshed card data
@@ -149,7 +163,32 @@ jobs:
           git add web/src/cards.snapshot.json web/src/lib/snapshot.ts web/public/card-art
           if git diff --cached --quiet; then
             echo "No card changes today."
-          else
-            git commit -m "Card data refresh $(date -u +%Y-%m-%d)"
-            git push
+            exit 0
           fi
+          git commit -m "Card data refresh $(date -u +%Y-%m-%d)"
+          # The crawl takes up to 45 minutes; main may have moved since checkout.
+          for attempt in 1 2 3; do
+            if git pull --rebase origin main && git push origin HEAD:main; then
+              exit 0
+            fi
+            git rebase --abort 2>/dev/null || true
+            sleep 10
+          done
+          echo "::error::Could not rebase the card refresh onto main (conflict with a newer commit?)"
+          exit 1
+
+      - name: Open review PR for held-back issuers
+        if: hashFiles('crawl-review.md') != ''
+        working-directory: .
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cat crawl-review.md >> "$GITHUB_STEP_SUMMARY"
+          branch="crawl-review/$(date -u +%Y-%m-%d)"
+          git switch -c "$branch"
+          (cd crawler && python scripts/export_snapshot.py --include-flagged && python scripts/cache_card_art.py)
+          git add web/src/cards.snapshot.json web/src/lib/snapshot.ts web/public/card-art
+          git commit -m "Card data needing review $(date -u +%Y-%m-%d)"
+          git push --force origin "$branch"
+          # A re-run the same day updates the existing PR instead.
+          gh pr create --base main --head "$branch" --title "Crawl review: $(date -u +%Y-%m-%d)" --body-file crawl-review.md || gh pr edit "$branch" --body-file crawl-review.md
