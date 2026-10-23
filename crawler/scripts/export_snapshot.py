@@ -45,7 +45,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from src.config import DATA_DIR  # noqa: E402
-from src.storage import card_key  # noqa: E402
+from src.storage import card_key, loose_key  # noqa: E402
 from src.tagging import enrich  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -59,19 +59,6 @@ FIELDS = (
     "foreign_transaction_fee", "tags", "best_for", "top_perk", "image_url", "reward_rates",
     "credits",
 )
-
-
-_LOOSE_NOISE = re.compile(
-    r"\b(wells fargo|chase|citi|capital one|american express|amex|bank of america|"
-    r"u\.?s\.? bank|discover|barclays|synchrony|visa|mastercard|signature|world elite|"
-    r"infinite|business|the)\b"
-)
-
-
-def loose_key(row: dict) -> str:
-    """card_key without issuer/network words, so a renamed product still
-    matches ("Wells Fargo Active Cash" vs "Active Cash® Credit Card")."""
-    return re.sub(r"\s+", " ", _LOOSE_NOISE.sub(" ", card_key(row))).strip()
 
 
 # Hold an issuer back when its crawl returns under this share of the cards

@@ -61,6 +61,19 @@ def card_key(record: dict) -> str:
     return re.sub(r"[^a-z0-9+]+", " ", _NAME_NOISE.sub(" ", name).lower()).strip()
 
 
+_LOOSE_NOISE = re.compile(
+    r"\b(wells fargo|chase|citi|capital one|american express|amex|bank of america|"
+    r"u\.?s\.? bank|discover|barclays|synchrony|visa|mastercard|signature|world elite|"
+    r"infinite|business|the|by)\b"
+)
+
+
+def loose_key(row: dict) -> str:
+    """card_key without issuer/network words, so a renamed product still
+    matches ("Wells Fargo Active Cash" vs "Active Cash® Credit Card")."""
+    return re.sub(r"\s+", " ", _LOOSE_NOISE.sub(" ", card_key(row))).strip()
+
+
 def dedupe_records(provider_name: str, records: list[dict]) -> list[dict]:
     """Issuers often publish the same card at multiple URLs (a brand landing
     page plus the canonical product page — e.g. Chase's /sapphire and

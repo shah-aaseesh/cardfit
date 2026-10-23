@@ -326,6 +326,18 @@ def test_rotating_and_promo_rates_are_dropped():
     print("OK: rotating and intro-period rates dropped; a quarterly-capped fixed rate kept")
 
 
+def test_cosmetic_renames_do_not_flag():
+    cases = [("Slate® Credit Card", "Chase Slate Credit Card", False),
+             ("Costco Anywhere Visa® Card", "Costco Anywhere Visa® Card by Citi", False),
+             ("Reflect® Card", "Reflect Visa® Credit Card", False),
+             ("Chase Sapphire Preferred", "Chase Sapphire Reserve", True)]
+    for old, new, flagged in cases:
+        card = CardData(url="x", provider="p", card_name=new, extraction_confidence=0.9)
+        got = any("card_name" in f for f in validate_card(card, {"url": "x", "card_name": old}).flags)
+        assert got == flagged, (old, new, got)
+    print("OK: issuer/network words in a name are cosmetic; a real rename still flags")
+
+
 def run_all():
     tests = [v for k, v in globals().items() if k.startswith("test_") and callable(v)]
     failed = []

@@ -12,7 +12,7 @@ from dataclasses import dataclass
 
 from src.config import settings
 from src.extract import CardData
-from src.storage import card_key
+from src.storage import loose_key
 
 logger = logging.getLogger("validate")
 
@@ -91,11 +91,12 @@ def validate_card(new: CardData, previous: dict | None) -> ValidationResult:
         if prev_apr_high and apr_high and abs(apr_high - prev_apr_high) > 8:
             flags.append(f"apr high-end changed {prev_apr_high}% -> {apr_high}% (>8pt swing)")
 
-        # Compared without ®/"Credit Card" noise: those differences are
-        # cosmetic, and this flag holds the issuer back for review.
+        # Compared without ®, "Credit Card", issuer and network words: "Slate"
+        # vs "Chase Slate" or "Costco Anywhere Visa Card by Citi" are cosmetic,
+        # and this flag holds the whole issuer back for review.
         if (
             previous.get("card_name") and new.card_name
-            and card_key(previous) != card_key({"card_name": new.card_name, "url": new.url})
+            and loose_key(previous) != loose_key({"card_name": new.card_name, "url": new.url})
         ):
             flags.append(f"card_name changed '{previous['card_name']}' -> '{new.card_name}' — possible URL reuse")
 
