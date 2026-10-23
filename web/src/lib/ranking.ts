@@ -20,7 +20,7 @@
 //   balance transfer fee %, exact spend requirement.
 
 import { FILTER_BY_ID } from './filters';
-import { getPerks, PerkCategory } from './perks';
+import { CardPerks, getPerks, PerkCategory } from './perks';
 import { pointValue } from './pointValues';
 import { valueCredits } from './perkValues';
 import { CreditCard } from '../types';
@@ -40,8 +40,13 @@ export type ProductLevel = 'starter' | 'core' | 'premium';
 export type PublicSegment = 'cash_back' | 'travel_points' | 'student' | 'balance_transfer' | 'business';
 export type SoftCategory = 'gas' | 'dining' | 'groceries' | 'travel' | 'streaming' | 'drugstores' | 'balance' | 'intro_apr' | 'simplicity' | 'premium';
 
+/** A spend cap in ranking units: `after` is already cash-equivalent %. */
+export interface RankingCap { limit: number; group: string | null; after: number }
+
 export interface RankingCard {
   source: CreditCard;
+  /** Spend caps per category (see SpendCap in lib/perks.ts). */
+  caps: Partial<Record<SpendCategory, RankingCap>>;
   id: string;
   name: string;
   issuer: string;
@@ -219,20 +224,47 @@ export function categoryRate(card: RankingCard, cat: SpendCategory): number {
   return r || card.baseRate;
 }
 
+/** Dollars of rewards a year per spend category, honouring spend caps:
+ *  "3% on up to $6,000, then 1%" earns 3% on the first $6,000 of the
+ *  year's spend only. A "combined" cap is shared, highest rate first. */
+export function categoryRewards(card: RankingCard, spend: MonthlySpend = {}): Record<SpendCategory, number> {
+  const s = { ...TYPICAL_SPEND, ...spend };
+  const left = new Map<string, number>();
+  const out = {} as Record<SpendCategory, number>;
+  const order = [...SPEND_CATEGORIES].sort((a, b) => categoryRate(card, b) - categoryRate(card, a));
+  for (const c of order) {
+    const yearly = (s[c] || 0) * 12;
+    const rate = categoryRate(card, c);
+    const cap = card.caps[c];
+    if (!cap) {
+      out[c] = yearly * rate / 100;
+      continue;
+    }
+    const key = cap.group ?? c;
+    const room = left.get(key) ?? cap.limit;
+    const capped = Math.min(yearly, room);
+    left.set(key, room - capped);
+    out[c] = (capped * rate + (yearly - capped) * cap.after) / 100;
+  }
+  return out;
+}
+
 /** Dollars of rewards a year on the given monthly spend. */
 export function annualRewards(card: RankingCard, spend: MonthlySpend = {}): number {
-  const s = { ...TYPICAL_SPEND, ...spend };
-  return SPEND_CATEGORIES.reduce((sum, c) => sum + (s[c] || 0) * 12 * categoryRate(card, c) / 100, 0);
+  const r = categoryRewards(card, spend);
+  return SPEND_CATEGORIES.reduce((sum, c) => sum + r[c], 0);
 }
 
 /** Extra rewards a year over the best card the user already holds in each
- *  category — what adding this card actually changes. */
+ *  category — what adding this card actually changes. Compared in dollars
+ *  per category, so caps count on both sides. */
 export function incrementalRewards(card: RankingCard, owned: RankingCard[], spend: MonthlySpend = {}): number {
   if (!owned.length) return annualRewards(card, spend);
-  const s = { ...TYPICAL_SPEND, ...spend };
+  const mine = categoryRewards(card, spend);
+  const theirs = owned.map((o) => categoryRewards(o, spend));
   return SPEND_CATEGORIES.reduce((sum, c) => {
-    const best = Math.max(0, ...owned.map((o) => categoryRate(o, c)));
-    return sum + Math.max(0, categoryRate(card, c) - best) * (s[c] || 0) * 12 / 100;
+    const best = Math.max(0, ...theirs.map((t) => t[c]));
+    return sum + Math.max(0, mine[c] - best);
   }, 0);
 }
 
@@ -398,6 +430,18 @@ function rate(perks: ReturnType<typeof getPerks>, cat: PerkCategory): number {
   return perks.rates[cat] ?? 0;
 }
 
+/** perks.ts caps (per perk category, raw rates) -> ranking caps (per spend
+ *  category, cash-equivalent rates). "other" caps the everyday spend. */
+function rankingCaps(caps: CardPerks['caps'], valued: (n: number) => number, base: number): RankingCard['caps'] {
+  const out: RankingCard['caps'] = {};
+  for (const [cat, cap] of Object.entries(caps || {})) {
+    if (!cap) continue;
+    const spendCat = (cat === 'other' ? 'general' : cat) as SpendCategory;
+    out[spendCat] = { limit: cap.limit, group: cap.group, after: cap.after != null ? valued(cap.after) : base };
+  }
+  return out;
+}
+
 export function deriveRankingCard(card: CreditCard): RankingCard {
   const fee = parseAnnualFee(card);
   const perks = getPerks(card);
@@ -441,6 +485,7 @@ export function deriveRankingCard(card: CreditCard): RankingCard {
     purchaseIntroAprMonths: /purchase/i.test(aprText) ? parseIntroMonths(aprText) : undefined,
     regularAprMin: aprs.length ? Math.min(...aprs) : undefined,
     regularAprMax: aprs.length ? Math.max(...aprs) : undefined,
+    caps: rankingCaps(perks.caps, valued, valued(perks.rates.other ?? 1)),
     welcomeBonusValue: bonusValue(card, cpp),
     annualCreditsValue: valueCredits(card.credits, cpp).total,
     perksValue: 0,

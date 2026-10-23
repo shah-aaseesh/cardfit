@@ -162,6 +162,18 @@ MAX_CREDIT_DOLLARS = 1000
 MAX_ANNIVERSARY_POINTS = 100_000
 _UNITS = ("percent", "points", "miles")
 MAX_PLAUSIBLE_RATE = 20  # 14x hotel co-brands are the real-world ceiling
+# Rates that are not always on, judged from the cap text and quote: rotating
+# or activate-each-quarter categories, a category you pick, intro periods and
+# dated promotions. The prompt asks the model to skip these, but it doesn't
+# always (Discover's rotating 5% came through as 5% on everything). Mirrors
+# NOT_ALWAYS_ON in web/src/lib/perks.ts. A bare "each quarter" is NOT here:
+# "4% on the first $2,000 each quarter" is a fixed category with a cap.
+NOT_ALWAYS_ON = re.compile(
+    r"rotat|quarterly maximum|activate|different (?:places|categories)|of your choice|you choose|"
+    r"choice categor|first \d+ days|(?:for|in) the first \d+ (?:days|months)|"
+    r"through (?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]* \d|spend(?:ing)? requirement",
+    re.I,
+)
 
 
 def _norm(text: str) -> str:
@@ -198,6 +210,9 @@ def _clean_reward_rates(raw, page_norm: str) -> tuple[list[dict], int]:
             dropped += 1
             continue
         if not _quote_in_page(item.get("quote"), page_norm):
+            dropped += 1
+            continue
+        if NOT_ALWAYS_ON.search(f"{item.get('cap') or ''} {item.get('quote') or ''}"):
             dropped += 1
             continue
         entry = {"category": cat, "rate": rate, "unit": unit, "cap": item.get("cap") or None, "quote": str(item["quote"])[:240]}

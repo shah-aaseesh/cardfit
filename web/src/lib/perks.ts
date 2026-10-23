@@ -22,6 +22,46 @@ export interface CardPerks {
   /** Best earn rate seen per category (percent or points-multiple —
    *  1x point is scored on par with 1% cash back). */
   rates: Partial<Record<PerkCategory, number>>;
+  /** Spend caps on those rates, from the crawler's cap text. */
+  caps?: Partial<Record<PerkCategory, SpendCap>>;
+}
+
+/** "3% on up to $6,000 a year, then 1%": the rate applies to the first
+ *  `limit` dollars of yearly spend, then `after` (or the card's base rate). */
+export interface SpendCap {
+  /** Yearly spend the rate applies to (quarterly caps × 4). */
+  limit: number;
+  /** Categories sharing one "combined" cap carry the same key. */
+  group: string | null;
+  /** The stated rate past the cap; null = the card's base rate. */
+  after: number | null;
+}
+
+// Rates that aren't always on, judged from a structured rate's cap text and
+// quote: rotating or activate-each-quarter categories, a category you pick,
+// intro periods and dated promotions. They never credit a category (the
+// card's base rate applies instead). Unlike ROTATING_TIER this does not
+// match a bare "each quarter": "4% on the first $2,000 each quarter" is a
+// fixed category with a quarterly cap.
+const NOT_ALWAYS_ON = /rotat|quarterly maximum|activate|different (?:places|categories)|of your choice|you choose|choice categor|first \d+ days|(?:for|in) the first \d+ (?:days|months)|through (?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]* \d|spend(?:ing)? requirement/i;
+
+/** Parses a structured rate's cap text; null when it states no dollar cap. */
+export function parseCap(text: string | null | undefined, rate: number): SpendCap | null {
+  if (!text) return null;
+  const m = text.match(/\$\s?([\d,]+(?:\.\d+)?)\s*(k|m)?\b/i);
+  if (!m) return null;
+  let amount = Number(m[1].replace(/,/g, '')) * (/k/i.test(m[2] || '') ? 1e3 : /m/i.test(m[2] || '') ? 1e6 : 1);
+  if (!(amount > 0)) return null;
+  // "total annual cash back is limited to $300" caps the reward, not spend.
+  if (/cash back is limited|limited to \$[\d,]+(?:\.\d+)?\s*(?:in\s+)?cash back/i.test(text)) amount = amount / (rate / 100);
+  if (/quarter/i.test(text)) amount *= 4;
+  else if (/month/i.test(text)) amount *= 12;
+  const then = text.match(/then\s+(\d+(?:\.\d+)?)\s*(?:%|x\b)/i) || text.match(/(\d+(?:\.\d+)?)\s*x?\s*(?:points?|miles?)\s+thereafter/i);
+  return {
+    limit: amount,
+    group: /combined/i.test(text) ? text.toLowerCase().replace(/[^a-z0-9$]+/g, ' ').trim() : null,
+    after: then ? Number(then[1]) : null,
+  };
 }
 
 // Rate tokens, tried in order. A tier's first match wins, so headline rates
@@ -69,6 +109,7 @@ function perksFromRates(card: CreditCard): (CardPerks & { mentioned: Set<PerkCat
   const structured = card.facts.rewardRates;
   if (!structured?.length) return null;
   const rates: CardPerks['rates'] = {};
+  const caps: NonNullable<CardPerks['caps']> = {};
   // Every category the extractor named, kept or rejected — prose may only
   // fill categories outside this set, never re-add a rejected rate.
   const mentioned = new Set<PerkCategory>();
@@ -78,12 +119,18 @@ function perksFromRates(card: CreditCard): (CardPerks & { mentioned: Set<PerkCat
     if (r.unit === 'percent') cashSignals++;
     else pointSignals++;
     if ((CATEGORIES as string[]).includes(r.category)) mentioned.add(r.category as PerkCategory);
+    if (NOT_ALWAYS_ON.test(`${r.cap || ''} ${r.quote || ''}`)) continue;
     if ((CATEGORIES as string[]).includes(r.category) && structuredRateCounts(card, r.category as PerkCategory, r.quote || '')) {
       const cat = r.category as PerkCategory;
-      rates[cat] = Math.max(rates[cat] ?? 0, r.rate);
+      if (r.rate >= (rates[cat] ?? 0)) {
+        rates[cat] = r.rate;
+        const cap = parseCap(r.cap, r.rate);
+        if (cap) caps[cat] = cap;
+        else delete caps[cat];
+      }
     }
   }
-  return { currency: cashSignals >= pointSignals ? 'cashback' : 'points', rates, mentioned };
+  return { currency: cashSignals >= pointSignals ? 'cashback' : 'points', rates, caps, mentioned };
 }
 
 const HOTEL_BRANDS = /hilton|marriott|bonvoy|hyatt|\bihg\b|wyndham|choice privileges/i;
@@ -147,7 +194,7 @@ function parsePerks(card: CreditCard): CardPerks {
   const filled = Object.fromEntries(
     Object.entries(fromProse.rates).filter(([cat]) => !fromRates.mentioned.has(cat as PerkCategory)),
   ) as CardPerks['rates'];
-  return { currency: fromRates.currency, rates: { ...filled, ...fromRates.rates } };
+  return { currency: fromRates.currency, rates: { ...filled, ...fromRates.rates }, caps: fromRates.caps };
 }
 
 function parseProse(card: CreditCard): CardPerks {

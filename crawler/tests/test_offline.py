@@ -309,6 +309,23 @@ def test_credit_kind_corrections():
     print("OK: credit kinds corrected by name")
 
 
+def test_rotating_and_promo_rates_are_dropped():
+    page = _norm("Earn 5% cash back on everyday purchases at different places each quarter up to the quarterly maximum when you activate. "
+                 "Earn 4% on dining on the first $2,000 each quarter. Earn 5% for the first 30 days at our stores.")
+    raw = [
+        {"category": "other", "rate": 5, "unit": "percent", "cap": "up to the quarterly maximum when you activate",
+         "quote": "5% cash back on everyday purchases at different places each quarter"},
+        {"category": "dining", "rate": 4, "unit": "percent", "cap": "first $2,000 each quarter",
+         "quote": "4% on dining on the first $2,000 each quarter"},
+        {"category": "other", "rate": 5, "unit": "percent", "cap": "first 30 days",
+         "quote": "5% for the first 30 days at our stores"},
+    ]
+    rates, dropped = _clean_reward_rates(raw, page)
+    assert [r["category"] for r in rates] == ["dining"], rates
+    assert dropped == 2, dropped
+    print("OK: rotating and intro-period rates dropped; a quarterly-capped fixed rate kept")
+
+
 def run_all():
     tests = [v for k, v in globals().items() if k.startswith("test_") and callable(v)]
     failed = []

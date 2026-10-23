@@ -140,4 +140,35 @@ console.log(`Point valuation OK: ${aspire.name} travel=${aspire.travelRate}% bon
 const sample = nextCard.recommendations[0];
 console.log('Sample explanation:', sample.explanation.join(' | '));
 console.log('Sample debug:', JSON.stringify(sample.debug, null, 2));
+// Spending caps: "3% on up to $6,000 a year, then 1%" earns 3% on the first
+// $6,000 only. $1,000/month of groceries = $12,000/yr -> $180 + $60 = $240.
+const capped = mapRowToCard({
+  ...(rawRows as CardRow[])[0],
+  id: 'cap-test', card_name: 'Cap Test Card', annual_fee: 0, signup_bonus: 'None',
+  rewards_summary: '3% cash back at U.S. supermarkets on up to $6,000 per year, then 1%. 1% on other purchases.',
+  reward_rates: [
+    { category: 'groceries', rate: 3, unit: 'percent', cap: 'On up to $6,000 per year in eligible purchases (then 1%)', quote: '3% cash back at U.S. supermarkets on up to $6,000 per year' },
+    { category: 'other', rate: 1, unit: 'percent', cap: null, quote: '1% on other purchases' },
+  ],
+  credits: [],
+} as CardRow);
+const groceryOnly = { groceries: 1000, dining: 0, gas: 0, travel: 0, general: 0 };
+const cappedRewards = annualRewards(deriveRankingCard(capped), groceryOnly);
+assert(Math.round(cappedRewards) === 240, `cap: expected $240 on $12,000 groceries, got ${cappedRewards}`);
+
+// Rotating / activate-each-quarter rates are not always on: they fall back to
+// the base rate instead of counting 5% on everything.
+const rotating = mapRowToCard({
+  ...(rawRows as CardRow[])[0],
+  id: 'rotating-test', card_name: 'Rotating Test Card', annual_fee: 0, signup_bonus: 'None',
+  rewards_summary: '5% on everyday purchases at different places each quarter up to the quarterly maximum when you activate. 1% on all other purchases.',
+  reward_rates: [
+    { category: 'other', rate: 5, unit: 'percent', cap: 'up to the quarterly maximum when you activate', quote: '5% on everyday purchases at different places each quarter' },
+    { category: 'other', rate: 1, unit: 'percent', cap: null, quote: '1% on all other purchases' },
+  ],
+  credits: [],
+} as CardRow);
+const rotatingRewards = annualRewards(deriveRankingCard(rotating));
+assert(Math.round(rotatingRewards) === Math.round(2600 * 12 * 0.01), `rotating: expected 1% on typical spend, got ${rotatingRewards}`);
+
 console.log('Ranking verification complete.');
