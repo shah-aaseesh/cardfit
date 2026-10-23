@@ -5,7 +5,7 @@ import CardVisual from './CardVisual';
 import FinePrint from './FinePrint';
 import BubbleFilters from './BubbleFilters';
 import AISearchBar from './AISearchBar';
-import { buildDeck, chipSpendBasis, getTopCards } from '../lib/ranking';
+import { buildDeck, chipSpendBasis, getTopCards, RankMode } from '../lib/ranking';
 import { describeFilters } from '../lib/filters';
 import { fetchAdvisorNote, advisorEnabled } from '../lib/advisor';
 import { pushRecentlyViewed } from '../lib/recentlyViewed';
@@ -40,7 +40,7 @@ const TRUST_COLORS = ['bg-[var(--cl-lime)]', 'bg-[var(--cl-sky)]', 'bg-[var(--cl
 
 const RANK_STEPS = [
   { title: 'Your spending', body: 'Groceries, dining, gas, travel and everything else, in your own monthly dollars.' },
-  { title: 'Dollars after fees', body: 'Each card’s rewards on that spending, minus its annual fee, with any welcome bonus spread over two years.' },
+  { title: 'Dollars after fees', body: 'Each card’s rewards and credits on that spending, minus its annual fee: what it earns you every year. Want the sign-up deal instead? Switch to first-year value.' },
   { title: 'Fit for you', body: 'Harder-to-get cards count for less, and only rewards your current cards don’t already earn count.' },
 ];
 
@@ -81,6 +81,9 @@ export default function CardCarousel({
   const [topCount, setTopCount] = useState(0);
   const [byValue, setByValue] = useState(false);
   const [atEnd, setAtEnd] = useState(false);
+  // What ranked decks are ordered by: every-year value (default) or the
+  // first-year deal including the welcome bonus.
+  const [rankMode, setRankMode] = useState<RankMode>('ongoing');
   const [providerFilter, setProviderFilter] = useState('all');
   // The query submitted on the landing hero, carried into the results bar.
   const [lastQuery, setLastQuery] = useState('');
@@ -129,7 +132,7 @@ export default function CardCarousel({
     // everyCard, not allCards: buildDeck needs owned retired cards to value
     // the wallet, and keeps every retired card out of the deck itself.
     const pool = providerFilter === 'all' ? everyCard : everyCard.filter((c) => c.provider === providerFilter);
-    const result = buildDeck(pool, activeFilters, ownedCards, matchMode, matchAnswers);
+    const result = buildDeck(pool, activeFilters, ownedCards, matchMode, matchAnswers, rankMode);
     // No pinned "featured" card: the site promises nobody pays for placement.
     setCards(result.deck);
     setRanked(result.ranked);
@@ -140,7 +143,7 @@ export default function CardCarousel({
     setExplanations(Object.fromEntries((result.results || []).map((r) => [r.card.id, r.explanation])));
     setCurrentIndex(0);
     setGridOpen(false);
-  }, [everyCard, activeFilters, ownedCards, matchMode, matchAnswers, providerFilter]);
+  }, [everyCard, activeFilters, ownedCards, matchMode, matchAnswers, providerFilter, rankMode]);
 
   // The arrows move within the current group (top picks or more matches).
   const moreCount = ranked ? cards.length - topCount : 0;
@@ -509,6 +512,21 @@ export default function CardCarousel({
           </div>
         ) : (
         <>
+        {ranked && byValue && (
+          <div role="radiogroup" aria-label="Rank cards by" className="pop-sm flex items-center gap-1 rounded-full bg-white p-1 text-sm font-semibold">
+            {([['ongoing', 'Every year'], ['first_year', 'First-year deal']] as const).map(([m, text]) => (
+              <button
+                key={m}
+                role="radio"
+                aria-checked={rankMode === m}
+                onClick={() => setRankMode(m)}
+                className={`h-8 rounded-full px-4 transition-colors ${rankMode === m ? 'bg-[var(--cl-ink)] text-white' : 'text-[var(--cl-ink)] hover:bg-[var(--cl-panel)]'}`}
+              >
+                {text}
+              </button>
+            ))}
+          </div>
+        )}
         <div aria-live="polite" className="w-full max-w-4xl">{renderTitle()}</div>
 
         {/* Mirror-symmetric pair: the card (flat, a neat fan of the next two
@@ -546,7 +564,7 @@ export default function CardCarousel({
           </div>
 
           <div className="order-3 w-full max-w-[26rem] lg:order-2">
-            <ValueBlock card={activeCard} spend={valueSpend} basis={chipBasis} stacked owned={ownedForValue} hideNotes />
+            <ValueBlock card={activeCard} spend={valueSpend} basis={chipBasis} mode={ranked && byValue ? rankMode : 'ongoing'} stacked owned={ownedForValue} hideNotes />
           </div>
 
           {/* Controls: ‹ 1 of N ›  ·  Watchlist  ·  View all  ·  Visit — labelled, centred. */}
@@ -644,7 +662,9 @@ export default function CardCarousel({
               </section>
             ))}
             {ranked && byValue && (
-              <p className="text-center text-xs text-[var(--cl-muted)]">Ranked by estimated yearly value on {matchMode ? 'your' : 'typical'} spending, after fees.</p>
+              <p className="text-center text-xs text-[var(--cl-muted)]">{rankMode === 'first_year'
+                ? <>Ranked by estimated first-year value on {matchMode ? 'your' : 'typical'} spending: rewards and credits after fees, plus the welcome bonus.</>
+                : <>Ranked by estimated value every year on {matchMode ? 'your' : 'typical'} spending: rewards and credits after fees. Welcome bonuses not included.</>}</p>
             )}
           </div>
         )}

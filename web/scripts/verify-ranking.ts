@@ -61,11 +61,11 @@ for (const r of groceryCash) {
 // With no chips, the #1 card's score is exactly the headline value shown on it.
 const plain = getTopCards(cards, { filters: ['rewards'] });
 const shown = estimateValue(plain[0].card);
-assert(Math.round(plain[0].finalScore) === shown.average, `Rank value ${plain[0].finalScore} != shown ${shown.average}.`);
+assert(Math.round(plain[0].finalScore) === shown.headline, `Rank value ${plain[0].finalScore} != shown ${shown.headline}.`);
 for (let i = 1; i < plain.length; i++) {
-  assert(estimateValue(plain[i - 1].card).average >= estimateValue(plain[i].card).average, 'Shown values must not increase down the list.');
+  assert(estimateValue(plain[i - 1].card).headline >= estimateValue(plain[i].card).headline, 'Shown values must not increase down the list.');
 }
-console.log(`Public value ranking OK: ${groceryCash.length} no-fee cash-back cards, top=${groceryCash[0].card.name} ($${Math.round(groceryCash[0].finalScore)}/yr); rewards #1=${plain[0].card.name} ($${shown.average}/yr shown).`);
+console.log(`Public value ranking OK: ${groceryCash.length} no-fee cash-back cards, top=${groceryCash[0].card.name} ($${Math.round(groceryCash[0].finalScore)}/yr); rewards #1=${plain[0].card.name} ($${shown.headline}/yr shown).`);
 
 const firstCardUser: UserProfile = {
   hasCreditCards: false,
@@ -140,6 +140,17 @@ console.log(`Point valuation OK: ${aspire.name} travel=${aspire.travelRate}% bon
 const sample = nextCard.recommendations[0];
 console.log('Sample explanation:', sample.explanation.join(' | '));
 console.log('Sample debug:', JSON.stringify(sample.debug, null, 2));
+// First-year mode ranks on, and shows, rewards + credits - fee + the full
+// bonus; the default ranks on the same without the bonus.
+const firstYearTop = getTopCards(cards, { filters: ['rewards'], rankMode: 'first_year' }, 10);
+for (const r of firstYearTop) {
+  const v = estimateValue(r.card, undefined, [], 'first_year');
+  assert(Math.round(r.finalScore) === v.headline && v.headline === v.firstYear, `first-year: ${r.card.name} ranked ${r.finalScore}, shows ${v.headline}`);
+}
+for (const r of getTopCards(cards, { filters: ['rewards'] }, 10)) {
+  assert(Math.round(r.finalScore) === estimateValue(r.card).everyYear, `ongoing: ${r.card.name} rank != every-year value`);
+}
+
 // Spending caps: "3% on up to $6,000 a year, then 1%" earns 3% on the first
 // $6,000 only. $1,000/month of groceries = $12,000/yr -> $180 + $60 = $240.
 const capped = mapRowToCard({

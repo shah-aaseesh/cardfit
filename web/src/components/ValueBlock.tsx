@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Info } from 'lucide-react';
 import { CreditCard } from '../types';
 import { estimateValue, MonthlySpend, TYPICAL_SPEND } from '../lib/insights';
+import { RankMode } from '../lib/ranking';
 import Sparkle from './Sparkle';
 
 // The headline of every card: what it's worth to *you* in dollars per year.
@@ -25,15 +26,19 @@ interface ValueBlockProps {
   /** Describes `spend` when it's a filter's weighting rather than the
    *  user's own answers (see chipSpendBasis in lib/ranking.ts). */
   basis?: { label: string; note: string };
+  /** Which value is the headline: every year (default) or year one. */
+  mode?: RankMode;
 }
 
-export default function ValueBlock({ card, spend, owned = [], hideNotes = false, basis }: ValueBlockProps) {
-  const v = useMemo(() => estimateValue(card, spend, owned), [card, spend, owned]);
+export default function ValueBlock({ card, spend, owned = [], hideNotes = false, basis, mode = 'ongoing' }: ValueBlockProps) {
+  const v = useMemo(() => estimateValue(card, spend, owned, mode), [card, spend, owned, mode]);
+  const firstYear = mode === 'first_year';
 
+  const what = v.incremental ? 'Extra value over your cards' : firstYear ? 'First-year value' : 'Estimated value every year';
   const label = v.incremental
-    ? 'Extra value over your cards'
-    : basis ? `Estimated value on ${basis.label}`
-    : `Estimated value ${v.personalized ? 'for you' : 'on typical spending'}`;
+    ? `${what}${firstYear ? ', year one' : ''}`
+    : basis ? `${what} on ${basis.label}`
+    : `${what} ${v.personalized ? 'for you' : 'on typical spending'}`;
 
   return (
     <div className="w-full">
@@ -45,22 +50,24 @@ export default function ValueBlock({ card, spend, owned = [], hideNotes = false,
         <p className="pr-14 text-[12px] font-bold uppercase tracking-[0.14em] text-[var(--cl-ink)]/70">{label}</p>
         <p className="mt-2 flex items-baseline gap-2">
           <span className="font-editorial text-6xl leading-none md:text-7xl">
-            {v.average < 0 ? '−' : ''}{usd(v.average)}
+            {v.headline < 0 ? '−' : ''}{usd(v.headline)}
           </span>
-          <span className="text-base font-semibold text-[var(--cl-ink)]/70">/ year</span>
+          <span className="text-base font-semibold text-[var(--cl-ink)]/70">{firstYear ? 'in year one' : '/ year'}</span>
         </p>
         <p className="mt-2 text-sm text-[var(--cl-ink)]/80">
           {!v.annualFeeKnown
             ? "Before the annual fee — we couldn't confirm it, so check the issuer's site."
-            : v.bonus > 0
-              ? <>Averaged over 2 years: <b>{usd(v.firstYear)}</b> in year one, then <b>{v.everyYear < 0 ? '−' : ''}{usd(v.everyYear)}</b>/yr</>
-              : 'Every year, after the annual fee'}
+            : v.bonus === 0
+              ? 'Every year, after the annual fee. No welcome bonus.'
+              : firstYear
+                ? <>Includes the {usd(v.bonus)} welcome bonus. After year one: <b>{v.everyYear < 0 ? '−' : ''}{usd(v.everyYear)}</b>/yr</>
+                : <>Every year, after the annual fee. Year one adds a {usd(v.bonus)} welcome bonus: <b>{usd(v.firstYear)}</b></>}
         </p>
 
         {/* The workings, as an equation: rewards + bonus − fee. */}
         <div className="mt-5 flex flex-wrap items-center gap-2 text-sm">
           <Term sign="+" amount={usd(v.rewards)} label={v.incremental ? 'extra rewards' : 'rewards'} />
-          <Term sign="+" amount={usd(v.bonus / 2)} label={v.bonus > 0 ? `bonus (½ of ${usd(v.bonus)})` : 'bonus'} muted={v.bonus === 0} />
+          {firstYear && <Term sign="+" amount={usd(v.bonus)} label="welcome bonus" muted={v.bonus === 0} />}
           {v.creditItems.length > 0 && <Term sign="+" amount={usd(v.credits)} label="credits & perks" muted={v.credits === 0} />}
           {v.annualFeeKnown
             ? <Term sign="−" amount={usd(v.annualFee)} label="annual fee" cost={v.annualFee > 0} muted={v.annualFee === 0} />

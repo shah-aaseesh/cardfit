@@ -7,7 +7,7 @@
 
 import { CreditCard } from '../types';
 import { valueCredits, ValuedCredit } from './perkValues';
-import { deriveRankingCard, RankingCard, parseAnnualFee, incrementalRewards, rankValue, TYPICAL_SPEND, MonthlySpend } from './ranking';
+import { deriveRankingCard, RankingCard, parseAnnualFee, incrementalRewards, rankValue, RankMode, TYPICAL_SPEND, MonthlySpend } from './ranking';
 
 // The typical spend and spend type live with the ranking (one source of
 // truth for "value"); re-exported for UI callers.
@@ -57,8 +57,9 @@ export interface ValueEstimate {
   annualFee: number;
   /** False when the crawler could not read the fee (counted as $0 above). */
   annualFeeKnown: boolean;
-  /** The ranking number: rewards + credits − fee + bonus ÷ 2 (two-year average). */
-  average: number;
+  /** The ranking number for `mode`: everyYear ("ongoing") or firstYear. */
+  headline: number;
+  mode: RankMode;
   /** rewards + credits + bonus − fee */
   firstYear: number;
   /** rewards + credits − fee: what it's worth once the bonus is gone. */
@@ -72,7 +73,7 @@ export interface ValueEstimate {
 /** Estimated yearly value of a card on the user's spend (or a typical one),
  *  optionally as the extra it adds over cards the user already holds.
  *  Points/miles use the conservative values in lib/pointValues.ts. */
-export function estimateValue(card: CreditCard, spend?: MonthlySpend, owned: CreditCard[] = []): ValueEstimate {
+export function estimateValue(card: CreditCard, spend?: MonthlySpend, owned: CreditCard[] = [], mode: RankMode = 'ongoing'): ValueEstimate {
   const rc = deriveRankingCard(card);
   const ownedRc = owned.filter((o) => o.id !== card.id).map(deriveRankingCard);
   const rewards = Math.round(incrementalRewards(rc, ownedRc, spend));
@@ -87,7 +88,8 @@ export function estimateValue(card: CreditCard, spend?: MonthlySpend, owned: Cre
     creditItems: creditsValue.items,
     annualFee,
     annualFeeKnown: rc.annualFeeKnown,
-    average: Math.round(rankValue(rc, rewards)),
+    headline: Math.round(rankValue(rc, rewards, mode)),
+    mode,
     firstYear: rewards + credits + bonus - annualFee,
     everyYear: rewards + credits - annualFee,
     personalized: Boolean(spend && Object.keys(spend).length),

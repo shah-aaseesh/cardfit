@@ -380,7 +380,7 @@ function winners(card: CreditCard, other?: CreditCard) {
   const num = (x: string) => (/^[\d.,]+$/.test(x) ? parseFloat(x.replace(/,/g, '')) : NaN);
   const lower = (x: number, y: number) => !Number.isNaN(x) && !Number.isNaN(y) && x < y;
   return {
-    value: va.annualFeeKnown && vb.annualFeeKnown && va.average > vb.average,
+    value: va.annualFeeKnown && vb.annualFeeKnown && va.headline > vb.headline,
     fee: lower(num(fa), num(fb)),
     apr: lower(num(aa), num(ab)),
   };
@@ -389,8 +389,8 @@ function winners(card: CreditCard, other?: CreditCard) {
 function Verdict({ a, b, onSwap, onShuffle }: { a: CreditCard; b: CreditCard; onSwap: () => void; onShuffle: () => void }) {
   const va = estimateValue(a), vb = estimateValue(b);
   const comparable = va.annualFeeKnown && vb.annualFeeKnown;
-  const [win, lose, vw, vl] = va.average >= vb.average ? [a, b, va, vb] : [b, a, vb, va];
-  const diff = vw.average - vl.average;
+  const [win, lose, vw, vl] = va.headline >= vb.headline ? [a, b, va, vb] : [b, a, vb, va];
+  const diff = vw.headline - vl.headline;
   return (
     <div className="pop relative mb-6 overflow-hidden rounded-[1.75rem] bg-[var(--cl-brand)] px-6 py-6 text-white md:px-8">
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-20 [background-image:radial-gradient(white_1px,transparent_1.2px)] [background-size:20px_20px]" />
@@ -404,14 +404,14 @@ function Verdict({ a, b, onSwap, onShuffle }: { a: CreditCard; b: CreditCard; on
             {!comparable ? (
               <p className="mt-1 font-editorial text-2xl leading-tight md:text-3xl">Too close to call — one card's annual fee isn't listed.</p>
             ) : Math.round(diff) === 0 ? (
-              <p className="mt-1 font-editorial text-2xl leading-tight md:text-3xl">A dead heat at about {money(vw.average)} a year each.</p>
+              <p className="mt-1 font-editorial text-2xl leading-tight md:text-3xl">A dead heat at about {money(vw.headline)} a year each.</p>
             ) : (
               <p className="mt-1 font-editorial text-2xl leading-tight md:text-3xl">
                 {win.name} is worth about <span className="rounded-lg bg-[var(--cl-sun)] px-1.5 text-[var(--cl-ink)]">{money(diff)} more</span> a year.
               </p>
             )}
             <p className="mt-2 text-sm text-white">
-              On typical spending, after fees, with welcome bonuses spread over two years{comparable && Math.round(diff) !== 0 ? ` (${money(vw.average)} vs ${money(vl.average)} for ${lose.name})` : ''}.
+              Every year on typical spending, after fees; welcome bonuses not included{comparable && Math.round(diff) !== 0 ? ` (${money(vw.headline)} vs ${money(vl.headline)} for ${lose.name})` : ''}.
             </p>
           </div>
         </div>
@@ -444,11 +444,11 @@ function CompareValue({ card, best }: { card: CreditCard; best: boolean }) {
     <div className="pop-sm mt-6 rounded-2xl bg-[var(--cl-sun)] px-5 py-4 text-[var(--cl-ink)]">
       <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--cl-ink)]/70">Est. value on typical spending{best && <BetterTag />}</p>
       <p className="mt-1 flex items-baseline gap-1.5">
-        <span className="font-editorial text-4xl leading-none">{money(v.average)}</span>
+        <span className="font-editorial text-4xl leading-none">{money(v.headline)}</span>
         <span className="text-sm text-[var(--cl-ink)]/70">/ year</span>
       </p>
       <p className="mt-1.5 text-xs text-[var(--cl-ink)]/70">
-        {v.annualFeeKnown ? `${money(v.rewards)} rewards · ${v.bonus ? `${money(v.bonus / 2)} bonus (½) · ` : ''}${v.annualFee ? `−${money(v.annualFee)} fee` : 'no annual fee'}` : 'Annual fee not listed — check the issuer'}
+        {v.annualFeeKnown ? `${money(v.rewards)} rewards · ${v.credits ? `${money(v.credits)} credits · ` : ''}${v.annualFee ? `−${money(v.annualFee)} fee` : 'no annual fee'}${v.bonus ? ` · +${money(v.bonus)} bonus in year one` : ''}` : 'Annual fee not listed — check the issuer'}
       </p>
     </div>
   );

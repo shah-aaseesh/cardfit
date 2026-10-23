@@ -54,7 +54,7 @@ export default function HeroPreview({ cards, topRank }: { cards: CreditCard[]; t
       >
         <p className="text-[11px] font-bold uppercase tracking-wider text-[var(--cl-ink)]/70">#{topRank} for rewards</p>
         <p className="mt-0.5 font-editorial text-3xl leading-none text-[var(--cl-ink)]">
-          {usd(v.average)}<span className="ml-1 text-sm font-semibold tracking-normal text-[var(--cl-ink)]/70">/ year</span>
+          {usd(v.headline)}<span className="ml-1 text-sm font-semibold tracking-normal text-[var(--cl-ink)]/70">/ year</span>
         </p>
         <p className="mt-1 max-w-[13rem] truncate text-xs text-[var(--cl-ink)]">{top.name}</p>
       </motion.div>

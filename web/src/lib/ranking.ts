@@ -122,6 +122,7 @@ export interface PublicRankingContext {
   creditBand?: CreditBand;
   softCategories?: SoftCategory[];
   filters?: string[];
+  rankMode?: RankMode;
 }
 
 export interface ExistingCardInput {
@@ -268,15 +269,17 @@ export function incrementalRewards(card: RankingCard, owned: RankingCard[], spen
   }, 0);
 }
 
-/**
- * The single number cards are ranked by and the headline shown for them:
- * average value per year over the first two years —
- *   rewards − annual fee + welcome bonus ÷ 2.
- * Spreading the one-time bonus over two years keeps a big bonus from
- * outranking a card that pays more every year after.
- */
-export function rankValue(card: RankingCard, rewards: number): number {
-  return rewards - card.annualFee + card.welcomeBonusValue / 2 + card.annualCreditsValue;
+/** What cards are ranked by. "ongoing" (the default) is what a card earns
+ *  you every year; "first_year" adds the full welcome bonus. The old
+ *  two-year average (bonus ÷ 2) mixed the two: on spending chips like Dining
+ *  it filled the top 10 with hotel and airline cards that won on bonuses. */
+export type RankMode = 'ongoing' | 'first_year';
+
+/** The number cards are ranked by and the headline shown for them:
+ *  rewards + credits − annual fee, plus the welcome bonus in first-year mode. */
+export function rankValue(card: RankingCard, rewards: number, mode: RankMode = 'ongoing'): number {
+  const ongoing = rewards + card.annualCreditsValue - card.annualFee;
+  return mode === 'first_year' ? ongoing + card.welcomeBonusValue : ongoing;
 }
 
 const usd = (n: number) => `${n < 0 ? '−' : ''}$${Math.abs(Math.round(n)).toLocaleString()}`;
@@ -694,9 +697,11 @@ function rankByValue(cards: CreditCard[], context: PublicRankingContext, softCat
     .filter((card) => card.annualFeeKnown && publicEligible(card, context).ok)
     .map((card) => {
       const rewards = annualRewards(card, spend);
-      const value = rankValue(card, rewards);
+      const value = rankValue(card, rewards, context.rankMode);
       const explanation = [
-        `Worth about ${usd(value)} a year on ${softCategories.length ? 'spending weighted to your picks' : 'typical spending'} — rewards minus the ${card.annualFee ? usd(card.annualFee) : '$0'} fee, with the welcome bonus spread over two years.`,
+        context.rankMode === 'first_year'
+          ? `Worth about ${usd(value)} in year one on ${softCategories.length ? 'spending weighted to your picks' : 'typical spending'} — rewards and credits minus the ${card.annualFee ? usd(card.annualFee) : '$0'} fee, plus the welcome bonus.`
+          : `Worth about ${usd(value)} every year on ${softCategories.length ? 'spending weighted to your picks' : 'typical spending'} — rewards and credits minus the ${card.annualFee ? usd(card.annualFee) : '$0'} fee.`,
         `Requires ${card.creditBand.replace('_', ' ')} credit profile or better.`,
       ];
       return {
@@ -964,7 +969,7 @@ function userSpend(user: UserProfile): MonthlySpend {
   ) as MonthlySpend;
 }
 
-export function recommendCards(cards: CreditCard[], user: UserProfile, limit = 5): PersonalizedRecommendationResult {
+export function recommendCards(cards: CreditCard[], user: UserProfile, limit = 5, mode: RankMode = 'ongoing'): PersonalizedRecommendationResult {
   const rankingCards = cards.map(deriveRankingCard);
   const ownedIds = new Set(user.existingCards.map((c) => c.id));
   const ownedCards = rankingCards.filter((card) => ownedIds.has(card.id));
@@ -987,7 +992,7 @@ export function recommendCards(cards: CreditCard[], user: UserProfile, limit = 5
     // ≈$270 at "unlikely"), and a first card that builds credit gets a nudge.
     const spend = userSpend(user);
     const rewards = incrementalRewards(card, ownedCards, spend);
-    const value = rankValue(card, rewards);
+    const value = rankValue(card, rewards, mode);
     const approvalPenalty = (100 - eligibility.approval) * 3;
     const creditBuildingBonus = !user.hasCreditCards && user.goals.buildCredit && card.availableToNoCredit ? 75 : 0;
     const score = value - approvalPenalty + creditBuildingBonus;
@@ -1095,6 +1100,7 @@ export function buildDeck(
   ownedIds: string[],
   matchMode: boolean,
   answers?: Record<string, unknown>,
+  mode: RankMode = 'ongoing',
 ): DeckResult {
   const owned = new Set(ownedIds);
   // Retired cards can't be applied for, so they never enter a deck — but
@@ -1107,7 +1113,7 @@ export function buildDeck(
 
   if (matchMode) {
     const candidates = all.filter((card) => !card.retired || owned.has(card.id));
-    const result = recommendCards(candidates, matchResultToUser(filters, ownedIds, answers), Infinity);
+    const result = recommendCards(candidates, matchResultToUser(filters, ownedIds, answers), Infinity, mode);
     result.recommendations = result.recommendations.filter((r) => !r.card.retired);
     return {
       deck: result.recommendations.map((r) => r.card),
@@ -1120,7 +1126,7 @@ export function buildDeck(
     };
   }
 
-  const results = getTopCards(pool, { filters }, Infinity);
+  const results = getTopCards(pool, { filters, rankMode: mode }, Infinity);
   const segment = filtersToContext(filters).segment;
   return {
     deck: results.map((r) => r.card),
