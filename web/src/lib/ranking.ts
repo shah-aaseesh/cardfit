@@ -416,7 +416,11 @@ export const TRANSFER_BALANCE = 5000;
 export function transferSavings(card: RankingCard): number {
   const months = card.balanceTransferIntroAprMonths ?? card.introAprMonths ?? 0;
   if (!months) return 0;
-  const apr = card.regularAprMax != null && card.regularAprMin != null ? (card.regularAprMin + card.regularAprMax) / 2 : 24;
+  // The ongoing APR only: regularAprMin/Max are parsed from intro + regular
+  // text together, so the intro "0%" dragged the midpoint down (Reflect's
+  // 17.74%-28.49% read as 0%-28.49%).
+  const regular = parseAprNumbers(card.source.facts.aprRegular || '').filter((n) => n > 0);
+  const apr = regular.length ? (Math.min(...regular) + Math.max(...regular)) / 2 : 24;
   const avgBalance = TRANSFER_BALANCE * (months + 1) / (2 * months);
   const interestAvoided = avgBalance * (apr / 100) * (months / 12);
   const fee = TRANSFER_BALANCE * (card.balanceTransferFeePct ?? 5) / 100;
