@@ -240,6 +240,11 @@ def extract_card_image(html: str, page_url: str) -> str | None:
                 score += 2
             if "card" in src_l:
                 score += 1
+            # Capital One keeps flat art under /WCM/card/products/ with
+            # opaque names (pb_ca_cb_rgb.png); without this its 1200x630
+            # og:image banner won and was then dropped as non-card-shaped.
+            if "card" in src_l and "/products/" in src_l:
+                score += 3
             # "..._Front_RGB.png": issuers' name for a flat card-face asset.
             if re.search(r"[_-]front[_.-]", src_l):
                 score += 2

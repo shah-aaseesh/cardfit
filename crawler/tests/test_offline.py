@@ -262,6 +262,16 @@ def test_catalog_art_pairs_tiles_with_their_card():
     print("OK: listing-page art maps each tile to its own card")
 
 
+def test_product_card_art_beats_social_banner():
+    from src.fetch import extract_card_image
+    html = """<html><head><meta property="og:image" content="https://ecm.example.com/WCM/card/pages/open-graph/pb.png"></head>
+    <body><img src="/assets/shell/card/images/shimmer2.png">
+    <img src="https://ecm.example.com/WCM/card/products/pb_ca_cb_rgb.png"></body></html>"""
+    got = extract_card_image(html, "https://www.example.com/credit-cards/pb/")
+    assert got == "https://ecm.example.com/WCM/card/products/pb_ca_cb_rgb.png", got
+    print("OK: flat /products/ card art beats the og:image banner")
+
+
 def run_all():
     tests = [v for k, v in globals().items() if k.startswith("test_") and callable(v)]
     failed = []
