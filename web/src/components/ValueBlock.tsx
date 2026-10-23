@@ -61,6 +61,7 @@ export default function ValueBlock({ card, spend, owned = [], hideNotes = false,
         <div className="mt-5 flex flex-wrap items-center gap-2 text-sm">
           <Term sign="+" amount={usd(v.rewards)} label={v.incremental ? 'extra rewards' : 'rewards'} />
           <Term sign="+" amount={usd(v.bonus / 2)} label={v.bonus > 0 ? `bonus (½ of ${usd(v.bonus)})` : 'bonus'} muted={v.bonus === 0} />
+          {v.creditItems.length > 0 && <Term sign="+" amount={usd(v.credits)} label="credits & perks" muted={v.credits === 0} />}
           {v.annualFeeKnown
             ? <Term sign="−" amount={usd(v.annualFee)} label="annual fee" cost={v.annualFee > 0} muted={v.annualFee === 0} />
             : <Term sign="−" amount="?" label="fee not listed" cost />}
@@ -88,6 +89,22 @@ export function ValueNotes({ card, spend, owned = [], basis }: { card: CreditCar
           {v.incremental ? ', counting only what beats your current cards' : ''}. Points valued conservatively; confirm terms with the issuer.
         </span>
       </p>
+      {v.creditItems.length > 0 && (
+        <p className="max-w-xl">
+          Credits & perks, at estimated real use:{' '}
+          {v.creditItems.map((i, k) => (
+            <span key={k}>
+              {k > 0 && ' · '}
+              {i.credit.name}{' '}
+              {i.counted === 0
+                ? '(not counted)'
+                : i.faceValue != null && Math.round(i.faceValue) !== Math.round(i.counted)
+                  ? `${usd(i.faceValue)} → ${usd(i.counted)}`
+                  : usd(i.counted)}
+            </span>
+          ))}
+        </p>
+      )}
       <p>Carry a balance? At 20%+ APR, interest usually costs more than any card earns.</p>
     </div>
   );

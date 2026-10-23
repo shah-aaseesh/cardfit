@@ -1,4 +1,4 @@
-import { CreditCard, RewardRate } from '../types';
+import { CardCredit, CreditCard, RewardRate } from '../types';
 
 // Row shape returned by Supabase's `cards` table (see
 // credit-card-crawler/supabase/schema.sql). Crawled data has no concept of
@@ -24,6 +24,7 @@ export interface CardRow {
   top_perk: string | null;
   image_url: string | null;
   retired?: boolean | null;
+  credits?: CardCredit[] | null;
 }
 
 // Physical card gradients cards are assigned from, keyed by a hash of the
@@ -84,6 +85,7 @@ export function mapRowToCard(row: CardRow): CreditCard {
     imageUrl: row.image_url || undefined,
     applyUrl: row.url || undefined,
     retired: row.retired || undefined,
+    credits: row.credits?.length ? row.credits : undefined,
     facts: {
       annualFee: formatAnnualFee(row.annual_fee),
       rewards: row.rewards_summary || 'See issuer site for rewards details',

@@ -14,13 +14,15 @@
 //   converted with lib/pointValues.ts, so "14x Hilton" (≈0.5c/pt) scores as
 //   ≈7%, not 14%. Structured crawler rates (facts.rewardRates) are preferred
 //   over parsing prose when present.
-// - Stubbed as 0/undefined because source data is absent: annualCreditsValue,
+// - annualCreditsValue comes from crawled credits (lib/perkValues.ts).
+// - Stubbed as 0/undefined because source data is absent:
 //   perksValue, userExperienceScore, employee-card features, expense tools,
 //   balance transfer fee %, exact spend requirement.
 
 import { FILTER_BY_ID } from './filters';
 import { getPerks, PerkCategory } from './perks';
 import { pointValue } from './pointValues';
+import { valueCredits } from './perkValues';
 import { CreditCard } from '../types';
 
 export type Audience = 'personal' | 'student' | 'business';
@@ -242,7 +244,7 @@ export function incrementalRewards(card: RankingCard, owned: RankingCard[], spen
  * outranking a card that pays more every year after.
  */
 export function rankValue(card: RankingCard, rewards: number): number {
-  return rewards - card.annualFee + card.welcomeBonusValue / 2;
+  return rewards - card.annualFee + card.welcomeBonusValue / 2 + card.annualCreditsValue;
 }
 
 const usd = (n: number) => `${n < 0 ? '−' : ''}$${Math.abs(Math.round(n)).toLocaleString()}`;
@@ -440,7 +442,7 @@ export function deriveRankingCard(card: CreditCard): RankingCard {
     regularAprMin: aprs.length ? Math.min(...aprs) : undefined,
     regularAprMax: aprs.length ? Math.max(...aprs) : undefined,
     welcomeBonusValue: bonusValue(card, cpp),
-    annualCreditsValue: 0,
+    annualCreditsValue: valueCredits(card.credits, cpp).total,
     perksValue: 0,
     redemptionFlexibilityScore: isTravel ? 75 : isCash ? 90 : 50,
     simplicityScore: clamp((fee === 0 ? 20 : 0) + (isCash ? 45 : 25) + (card.facts.rewards.length < 180 ? 25 : 15) + (audience === 'student' ? 10 : 0)),

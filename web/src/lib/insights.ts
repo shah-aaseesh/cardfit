@@ -6,6 +6,7 @@
 // cash-back / points math stays on one scale.
 
 import { CreditCard } from '../types';
+import { valueCredits, ValuedCredit } from './perkValues';
 import { deriveRankingCard, RankingCard, parseAnnualFee, incrementalRewards, rankValue, TYPICAL_SPEND, MonthlySpend } from './ranking';
 
 // The typical spend and spend type live with the ranking (one source of
@@ -49,14 +50,18 @@ export interface ValueEstimate {
   rewards: number;
   /** Welcome bonus value (one-time). */
   bonus: number;
+  /** Ongoing credits & perks at estimated real use, per year. */
+  credits: number;
+  /** How each credit was counted, for the breakdown under the number. */
+  creditItems: ValuedCredit[];
   annualFee: number;
   /** False when the crawler could not read the fee (counted as $0 above). */
   annualFeeKnown: boolean;
-  /** The ranking number: rewards − fee + bonus ÷ 2 (two-year average). */
+  /** The ranking number: rewards + credits − fee + bonus ÷ 2 (two-year average). */
   average: number;
-  /** rewards + bonus − fee */
+  /** rewards + credits + bonus − fee */
   firstYear: number;
-  /** rewards − fee: what it's worth once the bonus is gone. */
+  /** rewards + credits − fee: what it's worth once the bonus is gone. */
   everyYear: number;
   /** True when computed from the user's own spending answers. */
   personalized: boolean;
@@ -73,14 +78,18 @@ export function estimateValue(card: CreditCard, spend?: MonthlySpend, owned: Cre
   const rewards = Math.round(incrementalRewards(rc, ownedRc, spend));
   const bonus = Math.round(rc.welcomeBonusValue);
   const annualFee = rc.annualFee;
+  const creditsValue = valueCredits(card.credits, rc.pointValueCents);
+  const credits = creditsValue.total;
   return {
     rewards,
     bonus,
+    credits,
+    creditItems: creditsValue.items,
     annualFee,
     annualFeeKnown: rc.annualFeeKnown,
     average: Math.round(rankValue(rc, rewards)),
-    firstYear: rewards + bonus - annualFee,
-    everyYear: rewards - annualFee,
+    firstYear: rewards + credits + bonus - annualFee,
+    everyYear: rewards + credits - annualFee,
     personalized: Boolean(spend && Object.keys(spend).length),
     incremental: ownedRc.length > 0,
   };

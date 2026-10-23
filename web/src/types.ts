@@ -30,6 +30,20 @@ export interface CardFacts {
   topPerk: string;
 }
 
+export type CreditKind =
+  | 'travel_broad' | 'brand_travel' | 'merchant' | 'trusted_traveler'
+  | 'free_night' | 'anniversary_points' | 'lounge' | 'checked_bag' | 'other';
+
+/** An ongoing credit or perk, as the crawler extracted it (page-backed). */
+export interface CardCredit {
+  name: string;
+  /** Dollars per period (points for anniversary_points); null if unstated. */
+  amount: number | null;
+  per: 'month' | 'quarter' | 'half_year' | 'year' | '4_years';
+  kind: CreditKind;
+  quote?: string;
+}
+
 export interface CreditCard {
   id: string;
   name: string;
@@ -48,6 +62,8 @@ export interface CreditCard {
    *  so people who still hold it can add it as one of their cards; never
    *  recommended or browsed. */
   retired?: boolean;
+  /** Ongoing credits and perks; valued in lib/perkValues.ts. */
+  credits?: CardCredit[];
   facts: CardFacts;
   tags: string[];
 }
