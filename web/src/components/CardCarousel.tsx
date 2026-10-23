@@ -5,7 +5,7 @@ import CardVisual from './CardVisual';
 import FinePrint from './FinePrint';
 import BubbleFilters from './BubbleFilters';
 import AISearchBar from './AISearchBar';
-import { buildDeck, getTopCards } from '../lib/ranking';
+import { buildDeck, chipSpendBasis, getTopCards } from '../lib/ranking';
 import { describeFilters } from '../lib/filters';
 import { fetchAdvisorNote, advisorEnabled } from '../lib/advisor';
 import { pushRecentlyViewed } from '../lib/recentlyViewed';
@@ -99,6 +99,13 @@ export default function CardCarousel({
     if (!raw || typeof raw !== 'object') return undefined;
     return raw as MonthlySpend;
   }, [matchAnswers]);
+  // Outside the quiz, spending chips (Travel, Dining…) rank on weighted
+  // spending; the value shown must be that same figure, labelled as such.
+  const chipBasis = useMemo(
+    () => (matchMode ? undefined : chipSpendBasis(activeFilters)),
+    [matchMode, activeFilters],
+  );
+  const valueSpend = chipBasis?.spend ?? userSpend;
   // In quiz mode cards are ranked by what they add over the user's wallet,
   // so the value block measures the same thing.
   const ownedForValue = useMemo(
@@ -539,7 +546,7 @@ export default function CardCarousel({
           </div>
 
           <div className="order-3 w-full max-w-[26rem] lg:order-2">
-            <ValueBlock card={activeCard} spend={userSpend} stacked owned={ownedForValue} hideNotes />
+            <ValueBlock card={activeCard} spend={valueSpend} basis={chipBasis} stacked owned={ownedForValue} hideNotes />
           </div>
 
           {/* Controls: ‹ 1 of N ›  ·  Watchlist  ·  View all  ·  Visit — labelled, centred. */}
@@ -644,7 +651,7 @@ export default function CardCarousel({
 
         {!atEnd && (
           <>
-            <ValueNotes card={activeCard} spend={userSpend} owned={ownedForValue} />
+            <ValueNotes card={activeCard} spend={valueSpend} basis={chipBasis} owned={ownedForValue} />
             {/* Everything else, sticker style. */}
             <FinePrint card={activeCard} whyBullets={activeWhy} />
           </>

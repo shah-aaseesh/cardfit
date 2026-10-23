@@ -22,13 +22,17 @@ interface ValueBlockProps {
   owned?: CreditCard[];
   /** Render the fine print elsewhere (e.g. centred under a symmetric layout). */
   hideNotes?: boolean;
+  /** Describes `spend` when it's a filter's weighting rather than the
+   *  user's own answers (see chipSpendBasis in lib/ranking.ts). */
+  basis?: { label: string; note: string };
 }
 
-export default function ValueBlock({ card, spend, owned = [], hideNotes = false }: ValueBlockProps) {
+export default function ValueBlock({ card, spend, owned = [], hideNotes = false, basis }: ValueBlockProps) {
   const v = useMemo(() => estimateValue(card, spend, owned), [card, spend, owned]);
 
   const label = v.incremental
     ? 'Extra value over your cards'
+    : basis ? `Estimated value on ${basis.label}`
     : `Estimated value ${v.personalized ? 'for you' : 'on typical spending'}`;
 
   return (
@@ -37,7 +41,8 @@ export default function ValueBlock({ card, spend, owned = [], hideNotes = false 
         <Sparkle className="absolute right-6 top-5 h-8 w-8 text-[var(--cl-ink)]" />
         <Sparkle className="absolute right-16 top-14 h-4 w-4 text-[var(--cl-ink)]" />
 
-        <p className="text-[12px] font-bold uppercase tracking-[0.14em] text-[var(--cl-ink)]/70">{label}</p>
+        {/* pr clears the sparkles in the top-right corner when the label wraps. */}
+        <p className="pr-14 text-[12px] font-bold uppercase tracking-[0.14em] text-[var(--cl-ink)]/70">{label}</p>
         <p className="mt-2 flex items-baseline gap-2">
           <span className="font-editorial text-6xl leading-none md:text-7xl">
             {v.average < 0 ? '−' : ''}{usd(v.average)}
@@ -62,13 +67,13 @@ export default function ValueBlock({ card, spend, owned = [], hideNotes = false 
         </div>
       </div>
 
-      {!hideNotes && <ValueNotes card={card} spend={spend} owned={owned} />}
+      {!hideNotes && <ValueNotes card={card} spend={spend} owned={owned} basis={basis} />}
     </div>
   );
 }
 
 /** The estimate's basis and the carry-a-balance caution — quiet fine print. */
-export function ValueNotes({ card, spend, owned = [] }: { card: CreditCard; spend?: MonthlySpend; owned?: CreditCard[] }) {
+export function ValueNotes({ card, spend, owned = [], basis }: { card: CreditCard; spend?: MonthlySpend; owned?: CreditCard[]; basis?: { label: string; note: string } }) {
   const v = useMemo(() => estimateValue(card, spend, owned), [card, spend, owned]);
   const monthlyTotal = Object.values(v.personalized ? { ...TYPICAL_SPEND, ...spend } : TYPICAL_SPEND)
     .reduce((a, b) => a + (b || 0), 0);
@@ -77,7 +82,9 @@ export function ValueNotes({ card, spend, owned = [] }: { card: CreditCard; spen
       <p className="flex items-start gap-1.5">
         <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
         <span>
-          Based on {v.personalized ? 'your' : 'a typical'} ~${monthlyTotal.toLocaleString()}/month of spending
+          {basis
+            ? <>Based on ~${monthlyTotal.toLocaleString()}/month of spending, {basis.note}</>
+            : <>Based on {v.personalized ? 'your' : 'a typical'} ~${monthlyTotal.toLocaleString()}/month of spending</>}
           {v.incremental ? ', counting only what beats your current cards' : ''}. Points valued conservatively; confirm terms with the issuer.
         </span>
       </p>

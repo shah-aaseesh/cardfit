@@ -607,6 +607,36 @@ function spendForChips(softCategories: SoftCategory[], business: boolean): Month
   return spend;
 }
 
+export interface SpendBasis {
+  spend: MonthlySpend;
+  /** Completes "Estimated value on ___", e.g. "travel-heavy spending". */
+  label: string;
+  /** Completes "Based on ~$X/month of spending, ___". */
+  note: string;
+}
+
+/** The spending a chip-filtered ranking is computed on, so the value shown on
+ *  each card is the figure it was ranked by. Undefined when the chips don't
+ *  change spending (the typical profile applies) or the ranking isn't in
+ *  dollars (balance-transfer and student searches). */
+export function chipSpendBasis(filters: string[]): SpendBasis | undefined {
+  const context = filtersToContext(filters);
+  if (context.segment === 'balance_transfer' || context.segment === 'student') return undefined;
+  const weighted = (context.softCategories || []).filter(
+    (c) => c === 'dining' || c === 'groceries' || c === 'gas' || c === 'travel',
+  );
+  const business = context.segment === 'business';
+  if (!weighted.length && !business) return undefined;
+  const names = weighted.join(' & ');
+  return {
+    spend: spendForChips(weighted, business),
+    label: weighted.length
+      ? `${weighted.map((c) => (c === 'groceries' ? 'grocery' : c)).join('- & ')}-heavy ${business ? 'business ' : ''}spending`
+      : 'typical business spending',
+    note: weighted.length ? `with ${names} counted double` : 'a typical business mix',
+  };
+}
+
 function rankByValue(cards: CreditCard[], context: PublicRankingContext, softCategories: SoftCategory[], limit: number): RankedCardResult[] {
   const spend = spendForChips(softCategories, context.segment === 'business');
   return cards
