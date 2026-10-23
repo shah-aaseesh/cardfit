@@ -397,10 +397,12 @@ function parseAprNumbers(text: string | undefined): number[] {
 }
 
 /** The fee on a transfer made now: the first percentage stated (issuers
- *  list the intro-period fee first: "3% for 4 months, then 5%"). "None" = 0. */
+ *  list the intro-period fee first: "3% for 4 months, then 5%"). A bare
+ *  "None" is treated as unknown, not free: the first crawl returned it for
+ *  20 cards, where a zero transfer fee is almost unheard of at these issuers,
+ *  and a misread $0 fee would push a card up the balance-transfer ranking. */
 function parseTransferFeePct(text: string | undefined): number | undefined {
   if (!text) return undefined;
-  if (/^\s*(none|no fee|\$0)\b/i.test(text)) return 0;
   const m = text.match(/(\d+(?:\.\d+)?)\s*%/);
   return m ? Number(m[1]) : undefined;
 }
