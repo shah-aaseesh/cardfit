@@ -24,7 +24,10 @@ logger = logging.getLogger("extract")
 # Bump when the extraction prompt/output shape changes: cached records from
 # an older version are re-extracted once even if the page is unchanged.
 # v2 added top_perk, reward_rates and evidence quotes.
-EXTRACT_VERSION = 2
+# v3 added credits (ongoing statement credits and perks) and reads 16k chars
+# of page text instead of 6k: premium cards list their credits further down.
+EXTRACT_VERSION = 3
+EXTRACT_TEXT_CHARS = 16000
 
 REQUIRED_FIELDS = [
     "card_name",
@@ -70,6 +73,13 @@ class CardData:
     # Only entries whose quote is actually on the page survive (see
     # _clean_reward_rates), so the ranker never scores a hallucinated rate.
     reward_rates: list[dict] = field(default_factory=list)
+    # Ongoing credits and perks, for the site's "credits & perks" value. Each:
+    #   {"name": "Annual travel credit", "amount": 300.0 | None,
+    #    "per": one of CREDIT_PERIODS, "kind": one of CREDIT_KINDS,
+    #    "quote": verbatim page text}
+    # Page-backed only (see _clean_credits), like reward_rates. The site, not
+    # the crawler, decides what each kind is worth (web/src/lib/perkValues.ts).
+    credits: list[dict] = field(default_factory=list)
     # Fields the model stated but couldn't back with a quote found on the
     # page — kept, but flagged by validate.py for review.
     unverified_fields: list[str] = field(default_factory=list)
@@ -97,6 +107,7 @@ Fields required (use null if not clearly stated on the page — do NOT guess or 
 - foreign_transaction_fee: e.g. "None", "3%". "None" only if the page says there is no foreign transaction fee; null if it isn't mentioned.
 - top_perk: the single most valuable ONGOING benefit that is NOT the welcome/signup bonus and NOT a plain earn rate (e.g. "Airport lounge access", "$300 annual travel credit", "Free checked bag"), or null if none is stated.
 - reward_rates: list of every always-on earn rate, one entry per category, each {{"category": one of {categories}, "rate": number, "unit": "percent" | "points" | "miles", "cap": short spend-cap text or null, "quote": the exact sentence fragment from the page}}. Use "other" for "all other purchases". Skip rotating/quarterly or choose-your-own categories and the welcome bonus. [] if none are stated.
+- credits: list of every ONGOING credit or perk the cardholder gets each period. NOT the welcome bonus or one-time offers, NOT earn rates, NOT insurance or protection coverage limits (cell phone protection, purchase protection, extended warranty, rental car or trip insurance), NOT customer reviews. Each {{"name": short name, "amount": dollar value per period as a number or null if the page gives none, "per": one of {periods}, "kind": one of {kinds}, "quote": the exact sentence fragment from the page}}. kind meanings: travel_broad = credit usable on almost any travel purchase; brand_travel = credit only at one hotel/airline brand or through a travel portal (resort, hotel collection, airline fee, portal booking credits); merchant = credit or free subscription at specific non-travel merchants or services (Uber, DoorDash/DashPass, streaming, Apple, Walmart+, Saks, Peloton); trusted_traveler = Global Entry/TSA PreCheck/CLEAR/NEXUS application fee credit; free_night = free hotel night certificate; anniversary_points = bonus points/miles awarded every year (amount = number of points); lounge = airport lounge access; checked_bag = free checked bags; other = anything else. [] if none.
 - evidence: {{"annual_fee": exact page text stating the fee, "signup_bonus": exact page text of the bonus}} — copy verbatim from the page; null for any you can't quote.
 
 Page content:
@@ -105,7 +116,7 @@ Page content:
 ---
 
 Respond with ONLY a JSON object matching exactly these keys, no other text:
-{{"card_name": ..., "issuer": ..., "annual_fee": ..., "apr_range": ..., "apr_intro": ..., "apr_regular": ..., "rewards_summary": ..., "signup_bonus": ..., "recommended_credit_score": ..., "foreign_transaction_fee": ..., "top_perk": ..., "reward_rates": [...], "evidence": {{...}}, "confidence": <0.0-1.0, your own confidence in this extraction>}}
+{{"card_name": ..., "issuer": ..., "annual_fee": ..., "apr_range": ..., "apr_intro": ..., "apr_regular": ..., "rewards_summary": ..., "signup_bonus": ..., "recommended_credit_score": ..., "foreign_transaction_fee": ..., "top_perk": ..., "reward_rates": [...], "credits": [...], "evidence": {{...}}, "confidence": <0.0-1.0, your own confidence in this extraction>}}
 """
 
 
@@ -143,6 +154,12 @@ def extract_apr_only(url: str, text: str) -> dict:
 
 
 REWARD_CATEGORIES = ("other", "dining", "groceries", "gas", "travel", "streaming", "drugstores")
+CREDIT_KINDS = ("travel_broad", "brand_travel", "merchant", "trusted_traveler", "free_night", "anniversary_points", "lounge", "checked_bag", "other")
+CREDIT_PERIODS = ("month", "quarter", "half_year", "year", "4_years")
+# Largest plausible single credit per period in dollars (Platinum-tier hotel
+# and travel credits top out around $600/yr); anniversary points are counts.
+MAX_CREDIT_DOLLARS = 1000
+MAX_ANNIVERSARY_POINTS = 100_000
 _UNITS = ("percent", "points", "miles")
 MAX_PLAUSIBLE_RATE = 20  # 14x hotel co-brands are the real-world ceiling
 
@@ -189,12 +206,70 @@ def _clean_reward_rates(raw, page_norm: str) -> tuple[list[dict], int]:
     return list(best.values()), dropped
 
 
+_TRUSTED_TRAVELER = re.compile(r"global entry|tsa|precheck|pre-check|nexus", re.I)
+_AIRLINE = re.compile(r"airline|flight|airfare|incidental", re.I)
+
+
+def _fix_credit_kind(name: str, kind: str) -> str:
+    """Name-based corrections for kinds the model mixes up (seen with
+    gpt-4o-mini): an airline fee credit filed as trusted_traveler, a flight
+    credit as merchant, and CLEAR (a yearly subscription, not a 4-yearly
+    application fee) as trusted_traveler."""
+    if _TRUSTED_TRAVELER.search(name):
+        return "trusted_traveler"
+    if kind == "trusted_traveler":
+        return "brand_travel" if _AIRLINE.search(name) else "merchant"
+    if kind == "merchant" and _AIRLINE.search(name):
+        return "brand_travel"
+    return kind
+
+
+def _clean_credits(raw, page_norm: str) -> tuple[list[dict], int]:
+    """Keeps well-formed, page-backed credits; returns (credits, dropped).
+    One entry per name, so a credit restated in two places counts once."""
+    if not isinstance(raw, list):
+        return [], 0
+    kept: dict[str, dict] = {}
+    dropped = 0
+    for item in raw:
+        if not isinstance(item, dict):
+            dropped += 1
+            continue
+        name = str(item.get("name") or "").strip()
+        kind = _fix_credit_kind(name, str(item.get("kind") or "").lower())
+        per = str(item.get("per") or "").lower().replace(" ", "_").replace("-", "_")
+        per = {"4_year": "4_years", "four_years": "4_years", "annual": "year", "yearly": "year", "monthly": "month"}.get(per, per)
+        amount = item.get("amount")
+        if amount is not None:
+            try:
+                amount = float(str(amount).replace("$", "").replace(",", ""))
+            except ValueError:
+                amount = None
+        limit = MAX_ANNIVERSARY_POINTS if kind == "anniversary_points" else MAX_CREDIT_DOLLARS
+        if not name or kind not in CREDIT_KINDS or per not in CREDIT_PERIODS:
+            dropped += 1
+            continue
+        if amount is not None and not (0 < amount <= limit):
+            dropped += 1
+            continue
+        if not _quote_in_page(item.get("quote"), page_norm):
+            dropped += 1
+            continue
+        key = _norm(name)
+        if key not in kept:
+            kept[key] = {"name": name[:80], "amount": amount, "per": per, "kind": kind, "quote": str(item["quote"])[:240]}
+    return list(kept.values()), dropped
+
+
 def llm_extract(url: str, text: str, provider_name: str) -> CardData:
     try:
         parsed = complete_json(
-            EXTRACT_PROMPT.format(url=url, text=text[:6000], categories=", ".join(REWARD_CATEGORIES)),
+            EXTRACT_PROMPT.format(
+                url=url, text=text[:EXTRACT_TEXT_CHARS], categories=", ".join(REWARD_CATEGORIES),
+                periods=", ".join(CREDIT_PERIODS), kinds=", ".join(CREDIT_KINDS),
+            ),
             model=settings.extract_model,
-            max_tokens=1000,
+            max_tokens=1600,
         )
         confidence = float(parsed.pop("confidence", 0.5))
         fields = {k: parsed.get(k) for k in REQUIRED_FIELDS}
@@ -203,6 +278,9 @@ def llm_extract(url: str, text: str, provider_name: str) -> CardData:
         reward_rates, dropped = _clean_reward_rates(parsed.get("reward_rates"), page_norm)
         if dropped:
             logger.info(f"[{url}] dropped {dropped} reward_rates entries (malformed or not found on page)")
+        credits, dropped = _clean_credits(parsed.get("credits"), page_norm)
+        if dropped:
+            logger.info(f"[{url}] dropped {dropped} credits entries (malformed or not found on page)")
 
         # The facts the UI and ranker lean on hardest must be quotable. A
         # stated value with no matching quote is kept but marked for review.
@@ -233,6 +311,7 @@ def llm_extract(url: str, text: str, provider_name: str) -> CardData:
             extraction_confidence=confidence,
             top_perk=top_perk,
             reward_rates=reward_rates,
+            credits=credits,
             unverified_fields=unverified,
             **fields,
         )

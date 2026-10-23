@@ -57,6 +57,7 @@ FIELDS = (
     "url", "provider", "card_name", "issuer", "annual_fee", "apr_range", "apr_intro",
     "apr_regular", "rewards_summary", "signup_bonus", "recommended_credit_score",
     "foreign_transaction_fee", "tags", "best_for", "top_perk", "image_url", "reward_rates",
+    "credits",
 )
 
 
@@ -133,6 +134,7 @@ def build_snapshot(existing: list[dict], crawled: dict[str, list[dict]]) -> tupl
             row = {k: record.get(k) for k in FIELDS}
             enrich(row)
             row["reward_rates"] = row.get("reward_rates") or []
+            row["credits"] = row.get("credits") or []
             candidates = [
                 by_url.get(row["url"]),
                 by_name.get((provider, card_key(row))),

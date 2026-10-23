@@ -17,7 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from src.config import settings
 from src.discovery import coarse_filter, canonical_url
 from src.validate import validate_card, _parse_apr_high
-from src.extract import CardData, _parse_dollar, _clean_reward_rates, _norm
+from src.extract import CardData, _parse_dollar, _clean_reward_rates, _clean_credits, _fix_credit_kind, _norm
 from src.fetch import _is_bad_asset, _is_card_sized
 from src.storage import _slug, dedupe_records
 from src.tagging import infer_top_perk
@@ -277,6 +277,36 @@ def test_product_card_art_beats_social_banner():
     got = extract_card_image(html, "https://www.example.com/credit-cards/pb/")
     assert got == "https://ecm.example.com/WCM/card/products/pb_ca_cb_rgb.png", got
     print("OK: flat /products/ card art beats the og:image banner")
+
+
+def test_credits_require_page_quote_and_sane_values():
+    page = _norm("Get up to $300 in statement credits each year for travel purchases. "
+                 "Enjoy complimentary access to 1,300+ airport lounges worldwide.")
+    raw = [
+        {"name": "Travel credit", "amount": "$300", "per": "annual", "kind": "travel_broad",
+         "quote": "up to $300 in statement credits each year for travel purchases"},
+        {"name": "Lounge access", "amount": None, "per": "year", "kind": "lounge",
+         "quote": "complimentary access to 1,300+ airport lounges"},
+        {"name": "Made-up credit", "amount": 500, "per": "year", "kind": "merchant",
+         "quote": "a $500 shopping credit every single year"},          # not on page
+        {"name": "Huge credit", "amount": 5000, "per": "year", "kind": "travel_broad",
+         "quote": "up to $300 in statement credits each year for travel purchases"},  # implausible
+        {"name": "Odd period", "amount": 50, "per": "fortnight", "kind": "merchant", "quote": "x" * 20},
+    ]
+    credits, dropped = _clean_credits(raw, page)
+    assert [c["name"] for c in credits] == ["Travel credit", "Lounge access"], credits
+    assert credits[0]["amount"] == 300.0 and credits[0]["per"] == "year", credits[0]
+    assert dropped == 3, dropped
+    print("OK: credits need a page quote, a known kind/period and a plausible amount")
+
+
+def test_credit_kind_corrections():
+    assert _fix_credit_kind("Airline Fee Credit", "trusted_traveler") == "brand_travel"
+    assert _fix_credit_kind("CLEAR+ Credit", "trusted_traveler") == "merchant"
+    assert _fix_credit_kind("$200 Flight Credit", "merchant") == "brand_travel"
+    assert _fix_credit_kind("Global Entry or TSA PreCheck credit", "merchant") == "trusted_traveler"
+    assert _fix_credit_kind("Uber Cash", "merchant") == "merchant"
+    print("OK: credit kinds corrected by name")
 
 
 def run_all():
