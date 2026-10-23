@@ -21,7 +21,7 @@ from src.config import settings, LOG_DIR
 from src.discovery import discover_urls
 from src.classify import classify_batch
 from src.extract import extract_card_data, CardData, EXTRACT_VERSION
-from src.fetch import extract_card_image
+from src.fetch import catalog_card_images, extract_card_image, fetch_page
 from src.validate import validate_batch
 from src.storage import load_latest, save_run, save_rejections
 from src.notify import send_alert
@@ -113,6 +113,18 @@ def run_provider(provider: dict) -> dict:
             raw_html_by_url[result.url] = result.raw_html
         if reused:
             logger.info(f"[{name}] reused {reused} cached extractions (page content unchanged)")
+
+        # Issuers whose product pages only show an angled card photo still
+        # show the flat front on their listing page (see providers.yaml).
+        missing_art = [c for c in extracted if not c.image_url]
+        if provider.get("catalog_art") and missing_art:
+            hub = provider["fallback_hub"]
+            hub = hub[0] if isinstance(hub, list) else hub
+            hub_html, _ = fetch_page(hub, render=provider.get("render_js", False))
+            art = catalog_card_images(hub_html or "", hub)
+            for card in missing_art:
+                card.image_url = art.get(card.url)
+            logger.info(f"[{name}] listing-page art filled {sum(1 for c in missing_art if c.image_url)} of {len(missing_art)} cards without art")
 
         # Stage 5: validation against yesterday's published state
         previous = load_latest(name)

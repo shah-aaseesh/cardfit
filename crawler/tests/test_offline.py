@@ -244,6 +244,24 @@ def test_export_review_holds_drops_and_swings():
     print("OK: export holds back count drops and price swings")
 
 
+def test_catalog_art_pairs_tiles_with_their_card():
+    from src.fetch import catalog_card_images
+    hub = "https://cards.example.com/cards/"
+    html = """
+    <div class="grid">
+      <div class="tile"><img src="/dam/card-lifestyle/JB_Hero_665x260.png">
+        <div><img src="/dam/card-front/JB_card_Flat_230x157.png"></div>
+        <a href="/cards/jetblue/">JetBlue</a></div>
+      <div class="tile"><img src="/dam/card-front/WY_card_Flat_230x157.png"><a href="/cards/wyndham/?cid=x#top">Wyndham</a></div>
+      <div class="tile"><img src="/dam/logos/brand.svg"><a href="/cards/other/">Other</a></div>
+    </div>"""
+    art = catalog_card_images(html, hub)
+    assert art.get("https://cards.example.com/cards/jetblue/", "").endswith("JB_card_Flat_230x157.png"), art
+    assert "https://cards.example.com/cards/other/" not in art, "logos are not card art"
+    assert len(art) == 2, art
+    print("OK: listing-page art maps each tile to its own card")
+
+
 def run_all():
     tests = [v for k, v in globals().items() if k.startswith("test_") and callable(v)]
     failed = []

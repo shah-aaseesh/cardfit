@@ -264,6 +264,54 @@ def extract_card_image(html: str, page_url: str) -> str | None:
     return None
 
 
+def catalog_card_images(html: str, hub_url: str) -> dict[str, str]:
+    """{canonical product URL: flat card art} from an issuer's card listing.
+
+    Fallback for issuers whose product pages only show an angled card photo
+    (Barclays: 19 of 26 cards) while their listing tiles show the flat
+    front. Each <img> is paired with the one product link in its nearest
+    enclosing tile; a container linking several cards is a section, not a
+    tile, and is skipped. Listing art is small (Barclays: 230x157), so the
+    page's own art always wins — this only fills gaps."""
+    from src.discovery import canonical_url
+
+    soup = BeautifulSoup(html, "html.parser")
+    best: dict[str, tuple[int, str]] = {}
+    for img in soup.find_all("img"):
+        for src in _candidate_img_urls(img):
+            src_l = src.lower()
+            if _is_bad_asset(src) or "lifestyle" in src_l or "hero" in src_l:
+                continue
+            dims = _filename_dims(src)
+            if dims and not any(1.3 <= max(int(w), int(h)) / min(int(w), int(h)) <= 1.8 for w, h in dims):
+                continue  # banner/lifestyle shape; size is not checked here
+            score = 0
+            if re.search(r"card[-_]?(front|art)|[_-]flat[_.-]", src_l):
+                score += 3
+            if "card" in urlsplit(src_l).path.rsplit("/", 1)[-1]:
+                score += 1
+            if not score:
+                continue
+            node, links = img, set()
+            for _ in range(4):
+                node = node.parent
+                if node is None:
+                    break
+                links = {
+                    canonical_url(urljoin(hub_url, a["href"]))
+                    for a in node.find_all("a", href=True)
+                    if not a["href"].startswith(("#", "javascript:", "mailto:", "tel:"))
+                }
+                if links:
+                    break
+            if len(links) != 1:
+                continue
+            link = links.pop()
+            if score > best.get(link, (0, ""))[0]:
+                best[link] = (score, urljoin(hub_url, src))
+    return {link: src for link, (_, src) in best.items()}
+
+
 def count_h1_and_ctas(html: str) -> tuple[int, int]:
     soup = BeautifulSoup(html, "html.parser")
     h1_count = len(soup.find_all("h1"))

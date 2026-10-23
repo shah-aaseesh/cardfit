@@ -177,6 +177,9 @@ providers:
     # The homepage only features one card; /banking/cards/ is the full
     # catalog (27 co-brand cards). Product pages live at /banking/cards/<name>/.
     fallback_hub: https://cards.barclaycardus.com/banking/cards/
+    # Product pages show only an angled card photo; the catalog tiles have
+    # the flat fronts (230x157), used when a page has no flat art.
+    catalog_art: true
     url_include: ["/banking/cards/"]
     url_exclude: ["/compare", "/banking/cards/$", "/help-center", "/about-us"]
     render_js: true
