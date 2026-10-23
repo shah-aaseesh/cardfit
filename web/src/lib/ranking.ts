@@ -163,11 +163,17 @@ export interface DeckResult {
   complement: boolean;
   results: RankedCardResult[];
   aboveAnnualFeeLimit?: RankedCardResult[];
+  /** Ranked decks: the first topCount cards are the ranked top picks; the
+   *  rest are further matches in the same order, shown without a rank. */
+  topCount: number;
+  /** Ordered by estimated yearly dollars (not the debt/credit-building
+   *  scores used for balance-transfer and student searches). */
+  byValue: boolean;
 }
 
-// Recommendation lists (filter chips, the quiz) stop at 10: past that the
-// matches are weak and the list stops being advice. Browsing (no chips) has
-// no cap, so every card from an issuer can be reached.
+// Recommendation lists (filter chips, the quiz) rank a top 10: past that
+// the matches are weak and a rank stops being advice. Further matches stay
+// reachable as unranked "more matching cards"; browsing has no cap at all.
 const RANKED_MAX = 10;
 const PUBLIC_MIN_HARD_SCORE = 20;
 const PUBLIC_CANDIDATE_POOL = 40;
@@ -1018,12 +1024,12 @@ export function buildDeck(
   const pool = all.filter((card) => !owned.has(card.id) && !card.retired);
   const wantRanked = matchMode || filters.length > 0;
   if (!wantRanked) {
-    return { deck: shuffle(pool), ranked: false, complement: false, results: [] };
+    return { deck: shuffle(pool), ranked: false, complement: false, results: [], topCount: 0, byValue: false };
   }
 
   if (matchMode) {
     const candidates = all.filter((card) => !card.retired || owned.has(card.id));
-    const result = recommendCards(candidates, matchResultToUser(filters, ownedIds, answers), RANKED_MAX);
+    const result = recommendCards(candidates, matchResultToUser(filters, ownedIds, answers), Infinity);
     result.recommendations = result.recommendations.filter((r) => !r.card.retired);
     return {
       deck: result.recommendations.map((r) => r.card),
@@ -1031,14 +1037,19 @@ export function buildDeck(
       complement: ownedIds.length > 0,
       results: result.recommendations,
       aboveAnnualFeeLimit: result.aboveAnnualFeeLimit,
+      topCount: Math.min(RANKED_MAX, result.recommendations.length),
+      byValue: true,
     };
   }
 
-  const results = getTopCards(pool, { filters });
+  const results = getTopCards(pool, { filters }, Infinity);
+  const segment = filtersToContext(filters).segment;
   return {
     deck: results.map((r) => r.card),
     ranked: true,
     complement: ownedIds.length > 0,
     results,
+    topCount: Math.min(RANKED_MAX, results.length),
+    byValue: segment !== 'balance_transfer' && segment !== 'student',
   };
 }

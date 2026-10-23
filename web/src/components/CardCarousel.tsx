@@ -68,7 +68,6 @@ export default function CardCarousel({
   const { cards: allCards, allCards: everyCard } = useCards();
   const [cards, setCards] = useState<CreditCard[]>(allCards);
   const [ranked, setRanked] = useState(false);
-  const [complement, setComplement] = useState(false);
   const [aboveLimit, setAboveLimit] = useState<CreditCard[]>([]);
   // Per-card "why this fits you" bullets from the recommender (match mode).
   const [explanations, setExplanations] = useState<Record<string, string[]>>({});
@@ -76,6 +75,12 @@ export default function CardCarousel({
   // "View all": the whole deck as a grid, since clicking through 39 Chase
   // cards one at a time is no way to find a specific one.
   const [gridOpen, setGridOpen] = useState(false);
+  // Ranked decks: cards[0, topCount) are the ranked top picks, the rest are
+  // unranked further matches. atEnd is the "that's the top N" step shown
+  // after the last top pick, before the further matches.
+  const [topCount, setTopCount] = useState(0);
+  const [byValue, setByValue] = useState(false);
+  const [atEnd, setAtEnd] = useState(false);
   const [providerFilter, setProviderFilter] = useState('all');
   // The query submitted on the landing hero, carried into the results bar.
   const [lastQuery, setLastQuery] = useState('');
@@ -121,20 +126,44 @@ export default function CardCarousel({
     // No pinned "featured" card: the site promises nobody pays for placement.
     setCards(result.deck);
     setRanked(result.ranked);
-    setComplement(result.complement);
+    setTopCount(result.topCount);
+    setByValue(result.byValue);
+    setAtEnd(false);
     setAboveLimit(result.aboveAnnualFeeLimit?.map((r) => r.card) || []);
     setExplanations(Object.fromEntries((result.results || []).map((r) => [r.card.id, r.explanation])));
     setCurrentIndex(0);
     setGridOpen(false);
   }, [everyCard, activeFilters, ownedCards, matchMode, matchAnswers, providerFilter]);
 
+  // The arrows move within the current group (top picks or more matches).
+  const moreCount = ranked ? cards.length - topCount : 0;
+  const inMore = ranked && currentIndex >= topCount;
+  const groupStart = inMore ? topCount : 0;
+  const groupSize = ranked ? (inMore ? moreCount : topCount) : cards.length;
+  const groupPos = currentIndex - groupStart;
+
   const nextCard = useCallback(() => {
-    setCurrentIndex((prev) => (prev + 1) % cards.length);
-  }, [cards.length]);
+    if (atEnd) {
+      setAtEnd(false);
+      setCurrentIndex(topCount);
+    } else if (ranked && !inMore && moreCount > 0 && groupPos === groupSize - 1) {
+      setAtEnd(true);
+    } else {
+      setCurrentIndex(groupStart + ((groupPos + 1) % groupSize));
+    }
+  }, [atEnd, ranked, inMore, moreCount, topCount, groupStart, groupPos, groupSize]);
 
   const prevCard = useCallback(() => {
-    setCurrentIndex((prev) => (prev - 1 + cards.length) % cards.length);
-  }, [cards.length]);
+    if (atEnd) {
+      setAtEnd(false);
+    } else if (inMore && groupPos === 0) {
+      // Back out of the further matches the way you came in.
+      setCurrentIndex(topCount - 1);
+      setAtEnd(true);
+    } else {
+      setCurrentIndex(groupStart + ((groupPos - 1 + groupSize) % groupSize));
+    }
+  }, [atEnd, inMore, topCount, groupStart, groupPos, groupSize]);
 
   // Arrow keys browse the deck, except while typing in a field.
   useEffect(() => {
@@ -154,9 +183,11 @@ export default function CardCarousel({
 
   const activeCard = cards[currentIndex];
   const filterDetail = describeFilters(activeFilters);
-  const rankLabel = filterDetail
-    ? `best choice for ${filterDetail}`
-    : complement ? 'best choice for you' : 'best match';
+  // "Top 10 for travel" — always the real count, and what it's ranked for.
+  const topLabel = matchMode
+    ? `Your top ${topCount}`
+    : filterDetail ? `Top ${topCount} for ${filterDetail}` : `Top ${topCount}`;
+  const moreLabel = matchMode ? 'Other cards that fit your answers' : 'More matching cards';
   // Results appear only after an explicit submit (Enter / arrow) or a Find Me
   // a Card match. Landing filters can be staged without navigating away.
   const showResults = matchMode || started;
@@ -225,10 +256,15 @@ export default function CardCarousel({
       >
         <p className="font-display text-[12px] font-bold uppercase tracking-[0.14em] text-[var(--cl-muted)] mb-2">{activeCard.issuer}</p>
         <h1 className="font-editorial text-[clamp(1.9rem,3vw,3rem)] leading-[1.05] text-[var(--cl-ink)] text-balance">{activeCard.name}</h1>
-        {ranked && (
+        {ranked && !inMore && (
           <p className="mt-3 pop-sm inline-flex -rotate-1 items-center gap-1.5 rounded-full bg-[var(--cl-lime)] px-3 py-1.5 text-xs font-bold text-[var(--cl-ink)]">
             <Trophy className="h-3.5 w-3.5" aria-hidden="true" />
-            <span className="font-bold">#{currentIndex + 1}</span> {rankLabel}
+            {topLabel} · <span className="font-bold">#{currentIndex + 1}</span>
+          </p>
+        )}
+        {inMore && (
+          <p className="mt-3 pop-sm inline-flex items-center rounded-full bg-white px-3 py-1.5 text-xs font-bold text-[var(--cl-ink)]">
+            {moreLabel}
           </p>
         )}
         {advisorLoading ? (
@@ -439,6 +475,29 @@ export default function CardCarousel({
           it fits every desktop height. The whole section is vertically centered
           and grows to scroll only on very short screens (never clips). */}
       <div className="w-full flex flex-col items-center gap-8 px-4 md:px-[clamp(1.25rem,3vw,3.5rem)]">
+        {atEnd ? (
+          <div className="pop mt-4 flex w-full max-w-xl flex-col items-center gap-4 rounded-[2rem] bg-[var(--cl-sun)] px-6 py-10 text-center">
+            <p className="font-editorial text-3xl leading-tight text-[var(--cl-ink)] text-balance">That&rsquo;s the {topLabel.replace(/^Your top/, 'your top').replace(/^Top/, 'top')}</p>
+            <p className="max-w-sm text-sm text-[var(--cl-ink)]/80">
+              {moreCount} more {moreCount === 1 ? 'card matches' : 'cards match'}, in the same order but without a rank.
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <button
+                onClick={() => { setAtEnd(false); setCurrentIndex(0); }}
+                className="pop-sm pop-lift h-11 px-5 rounded-full bg-white text-sm font-semibold text-[var(--cl-ink)] flex items-center gap-1.5"
+              >
+                <ChevronLeft className="w-4 h-4" /> Back to #1
+              </button>
+              <button
+                onClick={nextCard}
+                className="pop-sm pop-lift h-11 px-5 rounded-full bg-[var(--cl-pill)] text-[var(--cl-pill-ink)] text-sm font-bold flex items-center gap-1.5"
+              >
+                See {moreCount} more <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        ) : (
+        <>
         <div aria-live="polite" className="w-full max-w-4xl">{renderTitle()}</div>
 
         {/* Mirror-symmetric pair: the card (flat, a neat fan of the next two
@@ -448,7 +507,7 @@ export default function CardCarousel({
           <div className="order-1 w-full max-w-[26rem] px-6 py-4 sm:px-8">
             <div className="relative aspect-[1.586/1] w-full">
               {[2, 1].map((k) => {
-                const back = cards.length > k ? cards[(currentIndex + k) % cards.length] : undefined;
+                const back = groupSize > k ? cards[groupStart + ((groupPos + k) % groupSize)] : undefined;
                 if (!back) return null;
                 return (
                   <div
@@ -490,7 +549,7 @@ export default function CardCarousel({
                 <ChevronLeft className="w-5 h-5" />
               </button>
               <span className="min-w-[4.5rem] text-center text-sm font-semibold tabular-nums text-[var(--cl-ink)]" aria-live="polite">
-                {currentIndex + 1} of {cards.length}
+                {groupPos + 1} of {groupSize}
               </span>
               <button
                 onClick={nextCard}
@@ -530,35 +589,62 @@ export default function CardCarousel({
             )}
           </div>
         </div>
-
-        {gridOpen && (
-          <ul className="grid w-full max-w-5xl grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-            {cards.map((card, i) => (
-              <li key={card.id}>
-                <button
-                  onClick={() => {
-                    setCurrentIndex(i);
-                    setGridOpen(false);
-                    window.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' });
-                  }}
-                  aria-current={i === currentIndex}
-                  className={`pop-sm pop-lift flex h-full w-full flex-col gap-2 rounded-2xl p-3 text-left ${i === currentIndex ? 'bg-[var(--cl-lime)]' : 'bg-white'}`}
-                >
-                  <div className="aspect-[1.586/1] w-full"><CardVisual card={card} variant="thumb" /></div>
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--cl-muted)]">
-                    {ranked ? `#${i + 1} · ` : ''}{card.issuer}
-                  </span>
-                  <span className="text-sm font-semibold leading-snug text-[var(--cl-ink)]">{card.name}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
+        </>
         )}
 
-        <ValueNotes card={activeCard} spend={userSpend} owned={ownedForValue} />
+        {gridOpen && (
+          <div className="flex w-full max-w-5xl flex-col gap-6">
+            {(ranked
+              ? [
+                  { title: topLabel, start: 0, items: cards.slice(0, topCount) },
+                  { title: `${moreLabel} (${moreCount})`, start: topCount, items: cards.slice(topCount) },
+                ]
+              : [{ title: '', start: 0, items: cards }]
+            ).filter((g) => g.items.length > 0).map((g) => (
+              <section key={g.start}>
+                {g.title && <h3 className="mb-3 font-display text-lg font-bold text-[var(--cl-ink)]">{g.title}</h3>}
+                <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+                  {g.items.map((card, k) => {
+                    const i = g.start + k;
+                    const isTop = ranked && i < topCount;
+                    return (
+                      <li key={card.id}>
+                        <button
+                          onClick={() => {
+                            setCurrentIndex(i);
+                            setAtEnd(false);
+                            setGridOpen(false);
+                            window.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' });
+                          }}
+                          aria-current={i === currentIndex && !atEnd}
+                          className={`pop-sm pop-lift flex h-full w-full flex-col gap-2 rounded-2xl p-3 text-left ${i === currentIndex && !atEnd ? 'bg-[var(--cl-lime)]' : 'bg-white'}`}
+                        >
+                          {/* Absolute fill: the no-art face otherwise grows past the card shape. */}
+                          <div className="relative aspect-[1.586/1] w-full"><div className="absolute inset-0"><CardVisual card={card} variant="thumb" /></div></div>
+                          <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--cl-muted)]">
+                            {isTop ? `#${i + 1} · ` : ''}{card.issuer}
+                          </span>
+                          <span className="text-sm font-semibold leading-snug text-[var(--cl-ink)]">{card.name}</span>
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </section>
+            ))}
+            {ranked && byValue && (
+              <p className="text-center text-xs text-[var(--cl-muted)]">Ranked by estimated yearly value on {matchMode ? 'your' : 'typical'} spending, after fees.</p>
+            )}
+          </div>
+        )}
 
-        {/* Everything else, sticker style. */}
-        <FinePrint card={activeCard} whyBullets={activeWhy} />
+        {!atEnd && (
+          <>
+            <ValueNotes card={activeCard} spend={userSpend} owned={ownedForValue} />
+            {/* Everything else, sticker style. */}
+            <FinePrint card={activeCard} whyBullets={activeWhy} />
+          </>
+        )}
       </div>
 
       {/* PARKED FOR THE FUTURE: the "cards above your selected annual fee
