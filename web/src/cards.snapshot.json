@@ -5,13 +5,13 @@
     "card_name": "American Express Business Gold Card",
     "issuer": "American Express",
     "annual_fee": 375,
-    "apr_range": null,
+    "apr_range": "17.99% - 28.74% Variable",
     "apr_intro": null,
-    "apr_regular": null,
-    "rewards_summary": "Earn 4X Membership Rewards points on the top 2 categories where your business spends the most each billing cycle, and 3X points on flights and pre-paid hotels booked on AmexTravel.com.",
-    "signup_bonus": "200,000 Membership Rewards Points after you spend $15,000 in purchases on your new Card within the first 3 months of Card Membership.",
+    "apr_regular": "17.99% - 28.74% Variable",
+    "rewards_summary": "Earn 4X points on your top 2 eligible categories each month, 3X points on flights and pre-paid hotels booked on AmexTravel.com, and 1X points on all other eligible purchases.",
+    "signup_bonus": "200,000 Membership Rewards® Points after you spend $15,000 in purchases on your new Card within the first 3 months of Card Membership.",
     "recommended_credit_score": null,
-    "foreign_transaction_fee": null,
+    "foreign_transaction_fee": "None",
     "tags": [
       "travel",
       "business",
@@ -20,15 +20,15 @@
       "premium"
     ],
     "best_for": "Casual Travelers",
-    "top_perk": null,
+    "top_perk": "$240 Flexible Business Credit",
     "image_url": "/card-art/1df45802-fe1d-443e-87bd-8b33419ab93e.webp",
     "reward_rates": [
       {
         "category": "other",
         "rate": 4.0,
         "unit": "points",
-        "cap": "$150,000 in combined purchases each calendar year",
-        "quote": "4X POINTS On Your Top 2 Eligible Categories Each Month"
+        "cap": "$150,000",
+        "quote": "4X points are earned on the first $150,000 in combined purchases each calendar year."
       },
       {
         "category": "travel",
@@ -36,6 +36,29 @@
         "unit": "points",
         "cap": null,
         "quote": "3X POINTS On Flights & Pre-Paid Hotels Booked on AmexTravel.com."
+      }
+    ],
+    "credits": [
+      {
+        "name": "Flexible Business Credit",
+        "amount": 240.0,
+        "per": "year",
+        "kind": "merchant",
+        "quote": "Earn up to $20 in statement credits each month after you use the Card for eligible U.S. purchases at Grubhub, Office Supply Stores, and shipments at UPS.com."
+      },
+      {
+        "name": "ChatGPT Business Credit",
+        "amount": 300.0,
+        "per": "year",
+        "kind": "merchant",
+        "quote": "Get up to $300 back in statement credits per calendar year on U.S. purchases of ChatGPT Business subscriptions on the Business Gold Card."
+      },
+      {
+        "name": "Squarespace Credit",
+        "amount": 150.0,
+        "per": "year",
+        "kind": "merchant",
+        "quote": "Enroll and get up to $150 back each calendar year on U.S. purchases with Squarespace on the Business Gold Card."
       }
     ],
     "id": "1df45802-fe1d-443e-87bd-8b33419ab93e",
@@ -49,22 +72,20 @@
     "annual_fee": 325,
     "apr_range": "19.74% to 28.74% variable APR on eligible charges.",
     "apr_intro": null,
-    "apr_regular": "19.74% to 28.74% variable",
-    "rewards_summary": "Earn 4X points at restaurants and U.S. supermarkets, 5X points on prepaid hotels booked through AmexTravel.com, and 3X points on flights booked through AmexTravel.com or directly with airlines.",
+    "apr_regular": "19.74% to 28.74% variable APR on eligible charges.",
+    "rewards_summary": "Earn Membership Rewards® points on dining, groceries, travel and other eligible purchases.",
     "signup_bonus": "100,000 Membership Rewards® points after you spend $8,000 in purchases on your new Card within the first 6 months of Card Membership.",
-    "recommended_credit_score": null,
-    "foreign_transaction_fee": null,
+    "recommended_credit_score": "Good/Excellent",
+    "foreign_transaction_fee": "None",
     "tags": [
       "travel",
       "dining",
-      "flights",
       "groceries",
-      "hotels",
       "premium",
       "personal"
     ],
     "best_for": "Casual Travelers",
-    "top_perk": "$500+ in annual value with various credits including dining and travel.",
+    "top_perk": "$120 Dining Credit",
     "image_url": "/card-art/16627635-995b-4806-867f-feac9e97af10.webp",
     "reward_rates": [
       {
@@ -96,6 +117,36 @@
         "quote": "Earn 1X Membership Rewards® points on all other eligible purchases."
       }
     ],
+    "credits": [
+      {
+        "name": "Dining Credit",
+        "amount": 120.0,
+        "per": "year",
+        "kind": "merchant",
+        "quote": "$120 Dining Credit Earn up to a total of $10 in statement credits monthly when you pay with the Gold Card at Grubhub (including Seamless), Buffalo Wild Wings, Five Guys, The Cheesecake Factory, and Wonder."
+      },
+      {
+        "name": "Uber Cash",
+        "amount": 120.0,
+        "per": "year",
+        "kind": "merchant",
+        "quote": "$120 Uber Cash Get $10 in Uber Cash each month when you add your Gold Card to your Uber account."
+      },
+      {
+        "name": "Resy Credit",
+        "amount": 100.0,
+        "per": "year",
+        "kind": "merchant",
+        "quote": "$100 Resy Credit Get up to $100 in statement credits each calendar year at over 10,000 qualifying U.S. Resy restaurants."
+      },
+      {
+        "name": "Dunkin' Credit",
+        "amount": 84.0,
+        "per": "year",
+        "kind": "merchant",
+        "quote": "$84 Dunkin' Credit Earn up to $7 in monthly statement credits after you pay with the American Express® Gold Card at U.S. Dunkin' locations."
+      }
+    ],
     "id": "16627635-995b-4806-867f-feac9e97af10",
     "source_image_url": "https://icm.aexp-static.com/acquisition/card-art/NUS000000174_480x304_straight_withname.png"
   },
@@ -123,12 +174,13 @@
     "reward_rates": [
       {
         "category": "other",
-        "rate": 2.0,
+        "rate": 1.0,
         "unit": "points",
         "cap": "$50,000",
-        "quote": "2X POINTS On Eligible Purchases on the first $50,000 of eligible purchases per calendar year"
+        "quote": "Earn 2X points on the first $50,000 in eligible purchases per calendar year and 1X points thereafter, with no category restrictions."
       }
     ],
+    "credits": [],
     "id": "751121b8-381a-4594-abdc-7b651f9e3c80",
     "source_image_url": "https://icm.aexp-static.com/Internet/Acquisition/US_en/AppContent/OneSite/open/category/cardarts/blue-business-plus.png"
   },
@@ -139,12 +191,12 @@
     "issuer": "American Express",
     "annual_fee": 0,
     "apr_range": "0% intro APR on purchases and balance transfers for 15 months from the date of account opening, then a variable APR, 19.74% to 28.74%.",
-    "apr_intro": "0% intro APR on purchases and balance transfers for 15 months from the date of account opening",
+    "apr_intro": "0% intro APR on purchases and balance transfers for 15 months from the date of account opening.",
     "apr_regular": "19.74% to 28.74%",
-    "rewards_summary": "Card Members can earn 3% cash back on eligible purchases at U.S. supermarkets, U.S. online retail purchases, and U.S. gas stations on up to $6,000 per year in purchases (then 1%). They earn 1% cash back on other eligible purchases.",
-    "signup_bonus": "$200 Cash Back after you spend $2,000 in purchases on your new Card within the first 6 months of Card Membership.",
-    "recommended_credit_score": "Good/Excellent",
-    "foreign_transaction_fee": "None",
+    "rewards_summary": "Card Members can earn 3% cash back at U.S. supermarkets, U.S. online retail purchases, and U.S. gas stations on up to $6,000 per year in purchases (then 1%).",
+    "signup_bonus": "AS HIGH AS $200 Cash Back after you spend $2,000 in purchases on your new Card within the first 6 months of Card Membership.",
+    "recommended_credit_score": null,
+    "foreign_transaction_fee": "2.7%",
     "tags": [
       "gas",
       "cashback",
@@ -161,21 +213,21 @@
         "category": "groceries",
         "rate": 3.0,
         "unit": "percent",
-        "cap": "On up to $6,000 per year",
+        "cap": "On up to $6,000 per year in eligible purchases (then 1%)",
         "quote": "3% Cash Back at U.S. Supermarkets"
       },
       {
         "category": "streaming",
         "rate": 3.0,
         "unit": "percent",
-        "cap": "On up to $6,000 per year",
+        "cap": "On up to $6,000 per year in eligible purchases (then 1%)",
         "quote": "3% Cash Back on U.S. Online Retail Purchases"
       },
       {
         "category": "gas",
         "rate": 3.0,
         "unit": "percent",
-        "cap": "On up to $6,000 per year",
+        "cap": "On up to $6,000 per year in eligible purchases (then 1%)",
         "quote": "3% Cash Back at U.S. Gas Stations"
       },
       {
@@ -183,9 +235,10 @@
         "rate": 1.0,
         "unit": "percent",
         "cap": null,
-        "quote": "1% Cash Back on Other Eligible Purchases"
+        "quote": "1% Cash Back on Other Purchases"
       }
     ],
+    "credits": [],
     "id": "0eef71c0-15b8-4b70-b3a3-0c13ef1b1f4c",
     "source_image_url": "https://icm.aexp-static.com/acquisition/card-art/NUS000000305_480x304_straight_withname.png"
   },
@@ -198,19 +251,18 @@
     "apr_range": "0% intro APR on purchases and balance transfers for 12 months from the date of account opening, then a variable APR, 19.74% to 28.74%.",
     "apr_intro": "0% intro APR on purchases and balance transfers for 12 months from the date of account opening.",
     "apr_regular": "19.74% to 28.74%",
-    "rewards_summary": "Card Members can earn 6% cash back on eligible purchases at U.S. supermarkets, 6% on select U.S. streaming subscriptions, 3% on transit and gas, and 1% on other eligible purchases.",
+    "rewards_summary": "Card Members can earn 6% cash back on eligible purchases at U.S. supermarkets, on up to $6,000 per year in purchases, and 6% cash back on select U.S. streaming subscriptions.",
     "signup_bonus": "$300 Cash Back after you spend $3,000 in purchases on your new Card within the first 6 months of Card Membership.",
-    "recommended_credit_score": "Good/Excellent",
-    "foreign_transaction_fee": "None",
+    "recommended_credit_score": null,
+    "foreign_transaction_fee": "2.7%",
     "tags": [
-      "gas",
       "cashback",
       "groceries",
       "premium",
       "low-apr",
       "personal"
     ],
-    "best_for": "Commuters",
+    "best_for": "Maximizing Cash Back",
     "top_perk": "$120 Disney Streaming Credit",
     "image_url": "/card-art/1709fc67-1d23-442c-8992-c2a2441cb9be.webp",
     "reward_rates": [
@@ -218,7 +270,7 @@
         "category": "groceries",
         "rate": 6.0,
         "unit": "percent",
-        "cap": "On up to $6,000 per year",
+        "cap": "on up to $6,000 per year",
         "quote": "6% Cash Back at U.S. Supermarkets"
       },
       {
@@ -243,6 +295,15 @@
         "quote": "1% Cash Back on Other Eligible Purchases"
       }
     ],
+    "credits": [
+      {
+        "name": "Disney Streaming Credit",
+        "amount": 120.0,
+        "per": "year",
+        "kind": "merchant",
+        "quote": "Get up to a $10 monthly statement credit after using your enrolled Blue Cash Preferred® Card for a subscription purchase"
+      }
+    ],
     "id": "1709fc67-1d23-442c-8992-c2a2441cb9be",
     "source_image_url": "https://icm.aexp-static.com/acquisition/card-art/NUS000000264_480x304_straight_withname.png"
   },
@@ -255,7 +316,7 @@
     "apr_range": "17.99% - 28.74% Variable",
     "apr_intro": null,
     "apr_regular": "17.99% - 28.74% Variable",
-    "rewards_summary": "Earn 2X points on flights and prepaid hotels booked on AmexTravel.com or the Amex Travel App, and 1X points on other eligible purchases.",
+    "rewards_summary": "Earn 2X Membership Rewards points on flights and prepaid hotels booked on AmexTravel.com or the Amex Travel App, and 1X points on other eligible purchases.",
     "signup_bonus": "Earn 15,000 Membership Rewards points after you spend $3,000 on eligible purchases on the Card within your first 3 months of Card Membership.",
     "recommended_credit_score": null,
     "foreign_transaction_fee": null,
@@ -285,6 +346,7 @@
         "quote": "1X POINTS On Other Eligible Purchases made using your Business Green Rewards Card."
       }
     ],
+    "credits": [],
     "id": "817d7d84-c236-4701-800e-655e96744ba0",
     "source_image_url": "https://icm.aexp-static.com/Internet/Acquisition/US_en/AppContent/OneSite/open/category/cardarts/business-green-rewards.png"
   },
@@ -297,18 +359,59 @@
     "apr_range": null,
     "apr_intro": null,
     "apr_regular": null,
-    "rewards_summary": "Earn Membership Rewards points on purchases, with potential for significant rewards through various benefits.",
+    "rewards_summary": "Earn 5X Membership Rewards points on flights and prepaid hotels booked on AmexTravel.com, and enjoy various travel-related credits and benefits.",
     "signup_bonus": "300,000 Membership Rewards Points after you spend $20,000 in purchases on your new Card within the first 3 months of Card Membership.",
-    "recommended_credit_score": null,
-    "foreign_transaction_fee": null,
+    "recommended_credit_score": "Excellent",
+    "foreign_transaction_fee": "None",
     "tags": [
+      "travel",
       "business",
+      "flights",
+      "hotels",
       "premium"
     ],
-    "best_for": "Business Owners",
+    "best_for": "Casual Travelers",
     "top_perk": "$600 Hotel Credit",
     "image_url": "/card-art/f6eeb4e7-408d-491b-817e-bd0e0a194bec.webp",
-    "reward_rates": [],
+    "reward_rates": [
+      {
+        "category": "other",
+        "rate": 5.0,
+        "unit": "points",
+        "cap": null,
+        "quote": "Earn 5X Membership Rewards® points on flights and prepaid hotels booked on AmexTravel.com."
+      }
+    ],
+    "credits": [
+      {
+        "name": "Hotel Credit",
+        "amount": 600.0,
+        "per": "year",
+        "kind": "merchant",
+        "quote": "Get up to $300 in statement credits semi-annually for up to a total of $600 each calendar year on prepaid Fine Hotels + Resorts® or The Hotel Collection bookings."
+      },
+      {
+        "name": "Airline Fee Credit",
+        "amount": 200.0,
+        "per": "year",
+        "kind": "brand_travel",
+        "quote": "Select one qualifying airline and then receive up to $200 in statement credits per calendar year when incidental fees are charged by the airline to your Business Platinum Card account."
+      },
+      {
+        "name": "Hilton Credit",
+        "amount": 200.0,
+        "per": "year",
+        "kind": "merchant",
+        "quote": "Enroll your Business Platinum Card® through American Express and get up to $200 in statement credits per calendar year (up to $50 per quarter) for eligible purchases made directly with a property in the Hilton portfolio."
+      },
+      {
+        "name": "CLEAR® Plus Credit",
+        "amount": 219.0,
+        "per": "year",
+        "kind": "merchant",
+        "quote": "Statement credits up to $219 per calendar year for an auto-renewing CLEAR® Plus Membership, excluding taxes and fees."
+      }
+    ],
     "id": "f6eeb4e7-408d-491b-817e-bd0e0a194bec",
     "source_image_url": "https://icm.aexp-static.com/Internet/Acquisition/US_en/AppContent/OneSite/open/category/cardarts/business-platinum.png"
   },
@@ -356,6 +459,7 @@
         "quote": "Earn 1X Miles on All Other Eligible Purchases"
       }
     ],
+    "credits": [],
     "id": "10b03dd9-5901-40e7-a040-dc3ebfe9c1b2",
     "source_image_url": "https://icm.aexp-static.com/acquisition/card-art/NUS000000267_480x304_straight_withname.png"
   },
@@ -368,10 +472,10 @@
     "apr_range": "19.74% to 28.74% variable APR on purchases.",
     "apr_intro": null,
     "apr_regular": "19.74% to 28.74% variable APR on purchases.",
-    "rewards_summary": "Earn 2X Miles at restaurants, U.S. supermarkets, and on Delta purchases, and 1X Miles on all other eligible purchases.",
+    "rewards_summary": "Earn 2X miles on Delta purchases, at restaurants, and at U.S. supermarkets, and 1X miles on all other eligible purchases.",
     "signup_bonus": "$250 Statement Credit and as high as 80,000 Bonus Miles after you spend $3,000 in purchases on your new Card within the first 6 months of Card Membership.",
     "recommended_credit_score": null,
-    "foreign_transaction_fee": null,
+    "foreign_transaction_fee": "None",
     "tags": [
       "dining",
       "cashback",
@@ -380,7 +484,7 @@
       "personal"
     ],
     "best_for": "Foodies",
-    "top_perk": "First Bag Free and NEW Second Bag Free on Delta flights worldwide.",
+    "top_perk": "First Bag Free and NEW Second Bag Free",
     "image_url": "/card-art/18cd4b4e-783e-407e-b225-132b736c2491.webp",
     "reward_rates": [
       {
@@ -402,7 +506,7 @@
         "rate": 2.0,
         "unit": "miles",
         "cap": null,
-        "quote": "Earn 2 miles for every dollar spent on eligible purchases made directly with Delta."
+        "quote": "Earn 2X Miles on Delta Purchases"
       },
       {
         "category": "other",
@@ -410,6 +514,29 @@
         "unit": "miles",
         "cap": null,
         "quote": "Earn 1 Mile per dollar spent on all other eligible purchases."
+      }
+    ],
+    "credits": [
+      {
+        "name": "$200 Delta Flight Credit",
+        "amount": 200.0,
+        "per": "year",
+        "kind": "brand_travel",
+        "quote": "Get a head start on your next adventure, compliments of your Card. After you spend $10,000 in eligible purchases on your Card in a calendar year, you can receive a $200 Delta Flight Credit to use toward future travel."
+      },
+      {
+        "name": "$100 Delta Stays Credit",
+        "amount": 100.0,
+        "per": "year",
+        "kind": "merchant",
+        "quote": "Get up to $100 back per year as a statement credit after using your Delta SkyMiles® Gold American Express Card to book prepaid hotels or vacation rentals through Delta Stays on delta.com."
+      },
+      {
+        "name": "$120 Rideshare Credit",
+        "amount": 120.0,
+        "per": "year",
+        "kind": "merchant",
+        "quote": "Get rewarded to and from the airport. After your first Card renewal, earn up to $10 in statement credits each month when using your Delta SkyMiles® Gold American Express Card on U.S. rideshare purchases with select providers."
       }
     ],
     "id": "18cd4b4e-783e-407e-b225-132b736c2491",
@@ -427,7 +554,7 @@
     "rewards_summary": "Earn 3X Miles on Delta purchases and at hotels, 2X Miles on dining and groceries, and 1X Mile on other purchases.",
     "signup_bonus": "Earn a $300 Statement Credit and up to 90,000 Bonus Miles after you spend $4,000 in purchases on your new Card within the first 6 months of Card Membership.",
     "recommended_credit_score": null,
-    "foreign_transaction_fee": null,
+    "foreign_transaction_fee": "None",
     "tags": [
       "dining",
       "cashback",
@@ -437,7 +564,7 @@
       "personal"
     ],
     "best_for": "Foodies",
-    "top_perk": "Companion Certificate on a Delta Main round-trip flight within the U.S. each year after renewal of your Card.",
+    "top_perk": "First Bag Free and NEW Second Bag Free on Delta flights worldwide.",
     "image_url": "/card-art/79ef03a3-ab58-45f2-99aa-ed5641235155.webp",
     "reward_rates": [
       {
@@ -446,13 +573,29 @@
         "unit": "miles",
         "cap": null,
         "quote": "Earn 3X Miles on Delta Purchases Made directly with Delta."
+      }
+    ],
+    "credits": [
+      {
+        "name": "Rideshare Credit",
+        "amount": 120.0,
+        "per": "year",
+        "kind": "merchant",
+        "quote": "With your $120 Rideshare Credit, earn up to $10 back in statement credits each month after you use your Delta SkyMiles® Platinum American Express Card to pay for U.S. rideshare purchases."
       },
       {
-        "category": "other",
-        "rate": 1.0,
-        "unit": "miles",
-        "cap": null,
-        "quote": "Earn 1X Miles on All Other Eligible Purchases."
+        "name": "Resy Credit",
+        "amount": 120.0,
+        "per": "year",
+        "kind": "merchant",
+        "quote": "Get up to $10 in statement credits each month at over 10,000 qualifying U.S. Resy restaurants after you pay with your enrolled Delta SkyMiles® Platinum American Express Card for eligible purchases."
+      },
+      {
+        "name": "Delta Stays Credit",
+        "amount": 150.0,
+        "per": "year",
+        "kind": "brand_travel",
+        "quote": "Elevate your travel experience with an annual statement credit of up to $150 after using your Delta SkyMiles® Platinum American Express Card to book prepaid hotels or vacation rentals through Delta Stays."
       }
     ],
     "id": "79ef03a3-ab58-45f2-99aa-ed5641235155",
@@ -466,11 +609,11 @@
     "annual_fee": 650,
     "apr_range": "19.74% to 28.74% variable APR on purchases.",
     "apr_intro": null,
-    "apr_regular": "19.74% to 28.74% variable",
+    "apr_regular": "19.74% to 28.74% variable APR on purchases.",
     "rewards_summary": "Earn 3X Miles on Delta Purchases and 1X Miles on All Other Eligible Purchases.",
     "signup_bonus": "Earn two round-trip Delta Comfort Flight Certificates valid for travel to the U.S. 48, Puerto Rico, or the U.S. Virgin Islands, along with 50,000 Bonus Miles after you spend $10,000 in purchases on your new Card in the first 6 months.",
     "recommended_credit_score": null,
-    "foreign_transaction_fee": null,
+    "foreign_transaction_fee": "None",
     "tags": [
       "travel",
       "flights",
@@ -496,6 +639,50 @@
         "quote": "Earn 1X Miles on All Other Eligible Purchases"
       }
     ],
+    "credits": [
+      {
+        "name": "$240 Resy Credit",
+        "amount": 240.0,
+        "per": "year",
+        "kind": "merchant",
+        "quote": "you can earn up to $20 per month in statement credits on eligible purchases at over 10,000 qualifying U.S. Resy restaurants."
+      },
+      {
+        "name": "$120 Rideshare Credit",
+        "amount": 120.0,
+        "per": "year",
+        "kind": "merchant",
+        "quote": "Earn up to $10 in statement credits each month after using your Delta SkyMiles® Reserve American Express Card on U.S. rideshare purchases."
+      },
+      {
+        "name": "$200 Delta Stays Credit",
+        "amount": 200.0,
+        "per": "year",
+        "kind": "brand_travel",
+        "quote": "annual statement credit of up to $200 after using your Delta SkyMiles® Reserve American Express Card to book prepaid hotels or vacation rentals through Delta Stays."
+      },
+      {
+        "name": "Companion Certificate",
+        "amount": null,
+        "per": "year",
+        "kind": "other",
+        "quote": "Enjoy a Companion Certificate on a Delta First, Delta Comfort, or Delta Main round-trip flight within the U.S."
+      },
+      {
+        "name": "Fee Credit for Global Entry or TSA PreCheck",
+        "amount": null,
+        "per": "4_years",
+        "kind": "trusted_traveler",
+        "quote": "Receive either a statement credit every 4 years after you apply for Global Entry ($120) or a statement credit after you apply for a five-year membership for TSA PreCheck."
+      },
+      {
+        "name": "Delta Sky Club® Access",
+        "amount": 15.0,
+        "per": "year",
+        "kind": "lounge",
+        "quote": "Delta SkyMiles® Reserve American Express Card Members enjoy 15 Visits each Medallion Year to the Delta Sky Club®."
+      }
+    ],
     "id": "0588fc76-7d9b-4c4c-acd2-7d4f959f7a2b",
     "source_image_url": "https://icm.aexp-static.com/acquisition/card-art/NUS000000270_480x304_straight_withname.png"
   },
@@ -505,13 +692,13 @@
     "card_name": "Graphite Business Cash Unlimited Card",
     "issuer": "American Express",
     "annual_fee": 295,
-    "apr_range": null,
+    "apr_range": "17.99% - 28.74% Variable",
     "apr_intro": null,
-    "apr_regular": null,
+    "apr_regular": "17.99% - 28.74% Variable",
     "rewards_summary": "Earn unlimited 2% cash back on all eligible purchases, and 5% cash back on flights and prepaid hotels booked through American Express Travel.",
-    "signup_bonus": "$2,000 Cash Back after you spend $50,000 in purchases on your new Card within the first 6 months of Card Membership.",
+    "signup_bonus": "$1,500 Cash Back after you spend $50,000 in purchases on your new Card within the first 6 months of Card Membership.",
     "recommended_credit_score": null,
-    "foreign_transaction_fee": null,
+    "foreign_transaction_fee": "None",
     "tags": [
       "travel",
       "business",
@@ -521,7 +708,7 @@
       "premium"
     ],
     "best_for": "Casual Travelers",
-    "top_perk": null,
+    "top_perk": "No Preset Spending Limit",
     "image_url": "/card-art/1201100b-11d3-4377-9e5f-75b5b785bb06.webp",
     "reward_rates": [
       {
@@ -529,9 +716,10 @@
         "rate": 5.0,
         "unit": "percent",
         "cap": null,
-        "quote": "5% CASH BACK On Flights and Prepaid Hotels Booked through American Express Travel"
+        "quote": "5% CASH BACK On Flights and Prepaid Hotels Booked through American Express Travel."
       }
     ],
+    "credits": [],
     "id": "1201100b-11d3-4377-9e5f-75b5b785bb06",
     "source_image_url": "https://icm.aexp-static.com/Internet/Acquisition/US_en/AppContent/OneSite/open/category/cardarts/graphite.png"
   },
@@ -543,11 +731,11 @@
     "annual_fee": 550,
     "apr_range": "19.74% to 28.74% variable APR on purchases.",
     "apr_intro": null,
-    "apr_regular": "19.74% to 28.74% variable",
+    "apr_regular": "19.74% to 28.74% variable APR on purchases.",
     "rewards_summary": "Card Members can earn 14x Points on purchases made directly with hotels and resorts within the Hilton Portfolio, 7x Points on select travel and dining, and 3x Points on other eligible purchases.",
     "signup_bonus": "Earn 200,000 Hilton Honors Bonus Points with the Hilton Honors American Express Aspire Card after you spend $6,000 in purchases on the Card within your first 6 months of Card Membership.",
     "recommended_credit_score": null,
-    "foreign_transaction_fee": null,
+    "foreign_transaction_fee": "None",
     "tags": [
       "travel",
       "dining",
@@ -581,6 +769,29 @@
         "quote": "3X Points on Other Eligible Purchases"
       }
     ],
+    "credits": [
+      {
+        "name": "$400 Hilton Resort Credit",
+        "amount": 400.0,
+        "per": "year",
+        "kind": "brand_travel",
+        "quote": "Enjoy up to $200 in statement credits semi-annually, for up to $400 back per year."
+      },
+      {
+        "name": "Free Night Reward",
+        "amount": null,
+        "per": "year",
+        "kind": "free_night",
+        "quote": "Enjoy an Annual Free Night Reward from Hilton Honors in your first year of Card Membership and every year upon Card renewal."
+      },
+      {
+        "name": "$200 Flight Credit",
+        "amount": 200.0,
+        "per": "year",
+        "kind": "brand_travel",
+        "quote": "Get up to $50 in statement credits each quarter, for a total of up to $200 back each year."
+      }
+    ],
     "id": "95c8a663-9b88-47eb-a44d-af8bdb690ab6",
     "source_image_url": "https://icm.aexp-static.com/acquisition/card-art/NUS000000329_480x304_straight_withname.png"
   },
@@ -593,12 +804,13 @@
     "apr_range": "19.74% - 28.74% Variable",
     "apr_intro": null,
     "apr_regular": "19.74% - 28.74% Variable",
-    "rewards_summary": "Earn 12X Hilton Honors Bonus Points at Hilton and 5X on other eligible purchases on the first $100K in eligible purchases per calendar year, 3X Points thereafter.",
+    "rewards_summary": "Earn 12X Hilton Honors Bonus Points on eligible purchases made directly with hotels and resorts within the Hilton portfolio, and 5X on other eligible purchases on the first $100K in eligible purchases per calendar year, 3X Points thereafter.",
     "signup_bonus": "Earn 150,000 Hilton Honors Bonus Points and a Free Night Reward after you spend $8,000 on eligible purchases on your Card within your first 6 months of Card Membership.",
     "recommended_credit_score": null,
-    "foreign_transaction_fee": null,
+    "foreign_transaction_fee": "None",
     "tags": [
       "business",
+      "hotels",
       "premium"
     ],
     "best_for": "Business Owners",
@@ -616,8 +828,17 @@
         "category": "other",
         "rate": 5.0,
         "unit": "points",
-        "cap": "$100K in eligible purchases per calendar year",
+        "cap": "first $100K in eligible purchases per calendar year, 3X Points thereafter",
         "quote": "5X HILTON HONORS BONUS POINTS On Other Eligible Purchases on the first $100K in eligible purchases per calendar year, 3X Points thereafter."
+      }
+    ],
+    "credits": [
+      {
+        "name": "Hilton Credit",
+        "amount": 240.0,
+        "per": "year",
+        "kind": "merchant",
+        "quote": "Get up to $60 in statement credits each quarter for purchases made directly with a property in the Hilton portfolio on your Hilton Honors American Express Business Card."
       }
     ],
     "id": "3281e63d-2cf2-4b36-97de-473c7888e1fe",
@@ -632,19 +853,20 @@
     "apr_range": "19.74% to 28.74% variable APR on purchases.",
     "apr_intro": null,
     "apr_regular": "19.74% to 28.74% variable APR on purchases.",
-    "rewards_summary": "Earn 7X Hilton Honors Bonus Points for eligible purchases made directly with hotels and resorts in the Hilton portfolio, and 5X Points on dining, groceries, and gas.",
+    "rewards_summary": "Card Members can earn 7X Points on purchases made directly with hotels and resorts within the Hilton portfolio, 5X Points at U.S. restaurants, supermarkets, and gas stations, and 3X Points on all other eligible purchases.",
     "signup_bonus": "Earn 70,000 Hilton Honors Bonus Points + A Free Night Reward after you spend $2,000 in purchases on the Hilton Honors American Express Card in the first 6 months of Card Membership.",
     "recommended_credit_score": null,
     "foreign_transaction_fee": "None",
     "tags": [
       "dining",
+      "gas",
       "groceries",
       "hotels",
       "no-fee",
       "personal"
     ],
     "best_for": "Foodies",
-    "top_perk": "Hilton Honors™ Silver Status",
+    "top_perk": "Complimentary Hilton Honors Silver Status",
     "image_url": "/card-art/5317bcfb-75da-42e7-a6bf-4df74a06fff5.webp",
     "reward_rates": [
       {
@@ -652,37 +874,38 @@
         "rate": 7.0,
         "unit": "points",
         "cap": null,
-        "quote": "7X Points On Hotels & Resorts For eligible purchases made directly with hotels and resorts in the Hilton portfolio."
+        "quote": "Earn 7X Hilton Honors Bonus Points for each dollar of eligible purchases charged on your Card directly with a hotel or resort within the Hilton portfolio."
       },
       {
         "category": "dining",
         "rate": 5.0,
         "unit": "points",
         "cap": null,
-        "quote": "5X Points On Dining At U.S. restaurants, including takeout and delivery."
+        "quote": "Earn 5X Hilton Honors Bonus Points for each dollar of eligible purchases on your Card at U.S. restaurants."
       },
       {
         "category": "groceries",
         "rate": 5.0,
         "unit": "points",
         "cap": null,
-        "quote": "5X Points On Groceries At U.S. Supermarkets."
+        "quote": "Earn 5X Hilton Honors Bonus Points for each dollar of eligible purchases on your Card at U.S. supermarkets."
       },
       {
         "category": "gas",
         "rate": 5.0,
         "unit": "points",
         "cap": null,
-        "quote": "5X Points On Gas At U.S. gas stations."
+        "quote": "Earn 5X Hilton Honors Bonus Points for each dollar of eligible purchases on your Card at U.S. gas stations."
       },
       {
         "category": "other",
         "rate": 3.0,
         "unit": "points",
         "cap": null,
-        "quote": "3X Points For Each Dollar Spent on other eligible purchases."
+        "quote": "Earn 3X Hilton Honors Bonus Points for all other eligible purchases on your Card."
       }
     ],
+    "credits": [],
     "id": "5317bcfb-75da-42e7-a6bf-4df74a06fff5",
     "source_image_url": "https://icm.aexp-static.com/acquisition/card-art/NUS000000327_480x304_straight_withname.png"
   },
@@ -693,12 +916,12 @@
     "issuer": "American Express",
     "annual_fee": 150,
     "apr_range": "19.74% to 28.74% variable APR on purchases.",
-    "apr_intro": null,
-    "apr_regular": "19.74% to 28.74% variable",
-    "rewards_summary": "Earn 12X points on hotels and resorts, 6X points on dining, groceries, and gas, and 3X points on other eligible purchases.",
+    "apr_intro": "None",
+    "apr_regular": "19.74% to 28.74% variable APR on purchases.",
+    "rewards_summary": "Card Members can earn 12X Points on purchases made directly with hotels and resorts within the Hilton portfolio, and 6X Points on purchases at U.S. restaurants, supermarkets, and gas stations.",
     "signup_bonus": "Earn 130,000 Hilton Honors Bonus Points + A Free Night Reward after you spend $3,000 in purchases on the Hilton Honors American Express Surpass® Card in the first 6 months of Card Membership.",
-    "recommended_credit_score": null,
-    "foreign_transaction_fee": null,
+    "recommended_credit_score": "Good/Excellent",
+    "foreign_transaction_fee": "None",
     "tags": [
       "dining",
       "gas",
@@ -716,35 +939,51 @@
         "rate": 12.0,
         "unit": "points",
         "cap": null,
-        "quote": "12X Points on Hotels & Resorts"
+        "quote": "Earn 12X Hilton Honors Bonus Points for each dollar of eligible purchases charged on your Card directly with a hotel or resort within the Hilton portfolio."
       },
       {
         "category": "dining",
         "rate": 6.0,
         "unit": "points",
         "cap": null,
-        "quote": "6X Points on Dining"
+        "quote": "Earn 6X Hilton Honors Bonus Points for each dollar of eligible purchases on your Card at U.S. restaurants."
       },
       {
         "category": "groceries",
         "rate": 6.0,
         "unit": "points",
         "cap": null,
-        "quote": "6X Points on Groceries"
+        "quote": "Earn 6X Hilton Honors Bonus Points for each dollar of eligible purchases on your Card at U.S. supermarkets."
       },
       {
         "category": "gas",
         "rate": 6.0,
         "unit": "points",
         "cap": null,
-        "quote": "6X Points on Gas"
+        "quote": "Earn 6X Hilton Honors Bonus Points for each dollar of eligible purchases on your Card at U.S. Gas Stations."
       },
       {
         "category": "other",
         "rate": 3.0,
         "unit": "points",
         "cap": null,
-        "quote": "3X Points for Each Dollar Spent on other eligible purchases."
+        "quote": "Earn 3X Hilton Honors Bonus Points for each dollar of all other eligible purchases on your Card."
+      }
+    ],
+    "credits": [
+      {
+        "name": "$200 Hilton Credit",
+        "amount": 200.0,
+        "per": "year",
+        "kind": "merchant",
+        "quote": "Get up to $50 in statement credits each quarter for purchases made directly with a property credit in the Hilton portfolio on your Hilton Honors American Express Surpass® Card."
+      },
+      {
+        "name": "Free Night Reward",
+        "amount": null,
+        "per": "year",
+        "kind": "free_night",
+        "quote": "Earn a Free Night Reward from Hilton Honors after you spend $15,000 on eligible purchases on your card in a calendar year."
       }
     ],
     "id": "b604b7d5-fb69-4c73-8025-7b9769de426a",
@@ -759,10 +998,10 @@
     "apr_range": "19.74% to 28.74% variable APR on purchases.",
     "apr_intro": null,
     "apr_regular": "19.74% to 28.74% variable APR on purchases.",
-    "rewards_summary": "Earn 6X points at hotels participating in Marriott Bonvoy, 4X points at restaurants and U.S. supermarkets, and 2X points on all other eligible purchases.",
+    "rewards_summary": "Card Members can earn 6X points on each dollar of eligible purchases at hotels participating in Marriott Bonvoy, 4X points at restaurants worldwide and U.S. Supermarkets, and 2X points on all other eligible purchases.",
     "signup_bonus": "Earn 85,000 Marriott Bonvoy® Bonus Points after you use your new Card to make $5,000 in purchases within the first 6 months of Card Membership.",
     "recommended_credit_score": null,
-    "foreign_transaction_fee": null,
+    "foreign_transaction_fee": "None",
     "tags": [
       "dining",
       "groceries",
@@ -771,7 +1010,7 @@
       "personal"
     ],
     "best_for": "Foodies",
-    "top_perk": "Complimentary Marriott Bonvoy® Gold Elite status",
+    "top_perk": "15 Elite Night Credits towards the next level of Marriott Bonvoy® Elite status.",
     "image_url": "/card-art/dbde5b85-b61a-483c-b06e-cf45953d3982.webp",
     "reward_rates": [
       {
@@ -779,14 +1018,14 @@
         "rate": 6.0,
         "unit": "points",
         "cap": null,
-        "quote": "6X points at hotels participating in Marriott Bonvoy."
+        "quote": "6X points on Hotels For eligible purchases at hotels participating in Marriott Bonvoy."
       },
       {
         "category": "dining",
         "rate": 4.0,
         "unit": "points",
-        "cap": "$15,000 in combined purchases at restaurants and U.S. supermarkets per calendar year, then 2X points",
-        "quote": "4X points at restaurants worldwide including takeout and delivery in the U.S. and U.S. Supermarkets (on up to $15,000 in combined purchases at restaurants and U.S. supermarkets per calendar year, then 2X points)."
+        "cap": "on up to $15,000 in combined purchases at restaurants and U.S. supermarkets per calendar year, then 2X points",
+        "quote": "4X Points at Restaurants and U.S. Supermarkets"
       },
       {
         "category": "other",
@@ -794,6 +1033,22 @@
         "unit": "points",
         "cap": null,
         "quote": "2X points on all other eligible purchases."
+      }
+    ],
+    "credits": [
+      {
+        "name": "Marriott Bonvoy® Gold Elite Status",
+        "amount": null,
+        "per": "year",
+        "kind": "other",
+        "quote": "With complimentary Marriott Bonvoy® Gold Elite status, earn up to 2.5X points from Marriott Bonvoy® on eligible hotel purchases with the 25% Bonus Points on stays benefit."
+      },
+      {
+        "name": "15 Elite Night Credits",
+        "amount": null,
+        "per": "year",
+        "kind": "other",
+        "quote": "Each calendar year with your Marriott Bonvoy Bevy® American Express® Card, you can receive 15 Elite Night Credits towards the next level of Marriott Bonvoy® Elite status."
       }
     ],
     "id": "dbde5b85-b61a-483c-b06e-cf45953d3982",
@@ -809,7 +1064,7 @@
     "apr_intro": null,
     "apr_regular": "19.74% to 28.74% variable APR on purchases.",
     "rewards_summary": "Earn 6X points at hotels participating in Marriott Bonvoy, 3X points at restaurants and on flights booked directly with airlines, and 2X points on all other eligible purchases.",
-    "signup_bonus": "Earn 100,000 Marriott Bonvoy® Bonus Points after you use your new Card to make $6,000 in purchases within the first 6 months of Card Membership.",
+    "signup_bonus": "Earn 100,000 Marriott Bonvoy Bonus Points after you use your new Card to make $6,000 in purchases within the first 6 months of Card Membership.",
     "recommended_credit_score": null,
     "foreign_transaction_fee": "None",
     "tags": [
@@ -828,21 +1083,51 @@
         "rate": 6.0,
         "unit": "points",
         "cap": null,
-        "quote": "6X Points On Hotels For eligible purchases at hotels participating in Marriott Bonvoy."
+        "quote": "6X points at hotels participating in Marriott Bonvoy."
       },
       {
         "category": "dining",
         "rate": 3.0,
         "unit": "points",
         "cap": null,
-        "quote": "3X Points At Restaurants At restaurants worldwide."
+        "quote": "3X points at restaurants worldwide."
       },
       {
         "category": "other",
         "rate": 2.0,
         "unit": "points",
         "cap": null,
-        "quote": "2X Points For Each Dollar Spent on other eligible purchases."
+        "quote": "2X points on all other eligible purchases."
+      }
+    ],
+    "credits": [
+      {
+        "name": "Brilliant Dining Credit",
+        "amount": 300.0,
+        "per": "year",
+        "kind": "merchant",
+        "quote": "Each calendar year, get up to $300 (up to $25 per month) in statement credits for eligible purchases made on the Marriott Bonvoy Brilliant® Card at restaurants worldwide."
+      },
+      {
+        "name": "Free Night Award",
+        "amount": null,
+        "per": "year",
+        "kind": "free_night",
+        "quote": "Receive 1 Free Night Award every year after your Card renewal month."
+      },
+      {
+        "name": "Global Entry or TSA PreCheck Fee Credit",
+        "amount": 120.0,
+        "per": "4_years",
+        "kind": "trusted_traveler",
+        "quote": "Receive either a $120 statement credit for Global Entry or a statement credit for up to $85 for TSA PreCheck."
+      },
+      {
+        "name": "25 Elite Night Credits",
+        "amount": 25.0,
+        "per": "year",
+        "kind": "other",
+        "quote": "Each calendar year, receive 25 Elite Night Credits towards the next level of Marriott Bonvoy Brilliant® American Express® Card Elite status."
       }
     ],
     "id": "50cfb46d-c5b6-40ad-a46d-1b4beb941840",
@@ -851,16 +1136,16 @@
   {
     "url": "https://www.americanexpress.com/us/credit-cards/business/business-credit-cards/amex-marriott-bonvoy-business-credit-card/",
     "provider": "amex",
-    "card_name": "Marriott Bonvoy Business Credit Card",
+    "card_name": "Marriott Bonvoy Business® Card",
     "issuer": "American Express",
     "annual_fee": 125,
     "apr_range": "19.74% - 28.74% Variable",
     "apr_intro": null,
     "apr_regular": "19.74% - 28.74% Variable",
-    "rewards_summary": "Earn Marriott Bonvoy points with 6X points for each dollar of eligible purchases at hotels participating in Marriott Bonvoy, 4X points at restaurants and U.S. gas stations, and 2X points on all other eligible purchases.",
-    "signup_bonus": "Earn 100,000 Marriott Bonvoy Bonus Points and 1 Free Night Award after you spend $8,000 in purchases on the Card within the first 6 months of Card Membership.",
+    "rewards_summary": "Earn Marriott Bonvoy points with 6X points for each dollar of eligible purchases at hotels participating in Marriott Bonvoy, 4X points at restaurants and U.S. gas stations, and 2X points on other purchases.",
+    "signup_bonus": "Earn 100,000 Marriott Bonvoy® Bonus Points and 1 Free Night Award after you spend $8,000 in purchases on the Card within the first 6 months of Card Membership.",
     "recommended_credit_score": null,
-    "foreign_transaction_fee": null,
+    "foreign_transaction_fee": "None",
     "tags": [
       "dining",
       "business",
@@ -869,7 +1154,7 @@
       "premium"
     ],
     "best_for": "Foodies",
-    "top_perk": null,
+    "top_perk": "Marriott Bonvoy® Gold Elite Status",
     "image_url": "/card-art/bcccc4a7-5af7-4ae8-9330-543d6bfb490d.webp",
     "reward_rates": [
       {
@@ -894,6 +1179,22 @@
         "quote": "2X points on all other eligible purchases."
       }
     ],
+    "credits": [
+      {
+        "name": "Free Night Award",
+        "amount": null,
+        "per": "year",
+        "kind": "free_night",
+        "quote": "Receive 1 Free Night Award every year after your Card renewal month."
+      },
+      {
+        "name": "Elite Night Credits",
+        "amount": 15.0,
+        "per": "year",
+        "kind": "other",
+        "quote": "Each calendar year, you can receive 15 Elite Night Credits towards the next level of Marriott Bonvoy® Elite status."
+      }
+    ],
     "id": "bcccc4a7-5af7-4ae8-9330-543d6bfb490d",
     "source_image_url": "https://icm.aexp-static.com/Internet/Acquisition/US_en/AppContent/OneSite/open/category/cardarts/amex-marriott-bonvoy-business.png"
   },
@@ -906,10 +1207,10 @@
     "apr_range": "19.74% to 28.74% variable APR on eligible charges.",
     "apr_intro": null,
     "apr_regular": "19.74% to 28.74% variable APR on eligible charges.",
-    "rewards_summary": "Earn 5X points on flights and hotels booked directly with airlines or through American Express Travel, and enjoy access to over 1,550 airport lounges worldwide.",
+    "rewards_summary": "Earn 5X points on flights and hotels booked directly with airlines or through American Express Travel, and enjoy access to over 1,550 airport lounges.",
     "signup_bonus": "AS HIGH AS 175,000 Membership Rewards® points after you spend $12,000 in purchases on your new Card within the first 6 months of Card Membership.",
-    "recommended_credit_score": null,
-    "foreign_transaction_fee": null,
+    "recommended_credit_score": "Excellent",
+    "foreign_transaction_fee": "None",
     "tags": [
       "travel",
       "flights",
@@ -919,15 +1220,52 @@
       "personal"
     ],
     "best_for": "Casual Travelers",
-    "top_perk": "Access to over 1,550 airport lounges worldwide",
+    "top_perk": "Access to over 1,550 airport lounges",
     "image_url": "/card-art/7acd7995-2ac7-4b9a-99a9-9373e678d0cf.webp",
     "reward_rates": [
       {
         "category": "travel",
         "rate": 5.0,
         "unit": "points",
-        "cap": "$500,000 on these purchases per calendar year.",
-        "quote": "5X Points on Flights Booked directly with airlines or through American Express Travel"
+        "cap": "on up to $500,000 on these purchases per calendar year.",
+        "quote": "5X Points on Flights Booked directly with airlines or through American Express Travel®."
+      },
+      {
+        "category": "other",
+        "rate": 5.0,
+        "unit": "points",
+        "cap": null,
+        "quote": "5X Points on Prepaid Hotels Booked on American Express Travel®."
+      }
+    ],
+    "credits": [
+      {
+        "name": "Hotel Credit",
+        "amount": 300.0,
+        "per": "year",
+        "kind": "merchant",
+        "quote": "Get up to $300 in statement credits semi-annually on prepaid Fine Hotels + Resorts® program or The Hotel Collection bookings."
+      },
+      {
+        "name": "Uber Cash",
+        "amount": 15.0,
+        "per": "month",
+        "kind": "merchant",
+        "quote": "$15 in Uber Cash each month, plus a bonus $20 in December."
+      },
+      {
+        "name": "Airline Fee Credit",
+        "amount": 200.0,
+        "per": "year",
+        "kind": "brand_travel",
+        "quote": "Earn up to $200 per calendar year in statement credits after incidental fees."
+      },
+      {
+        "name": "CLEAR+ Credit",
+        "amount": 219.0,
+        "per": "year",
+        "kind": "merchant",
+        "quote": "You can receive up to $219 in statement credits per calendar year after you sign up and pay for a CLEAR+ Membership."
       }
     ],
     "id": "7acd7995-2ac7-4b9a-99a9-9373e678d0cf",
@@ -941,7 +1279,7 @@
     "annual_fee": 89,
     "apr_range": "19.74% - 27.74% variable",
     "apr_intro": "None",
-    "apr_regular": "19.74% - 27.74% variable",
+    "apr_regular": "19.74% - 27.74%",
     "rewards_summary": "Earn 3 Miles for every $1 spent on eligible Air France, KLM Royal Dutch Airlines and SkyTeam member airline purchases and dining purchases. Plus, earn 1.5 Miles for every $1 spent on all other purchases.",
     "signup_bonus": "50,000 Bonus Miles + 100 Experience Points (XP) after you make $2,000 or more in purchases within the first 90 days of your account opening",
     "recommended_credit_score": null,
@@ -953,7 +1291,7 @@
       "personal"
     ],
     "best_for": "Foodies",
-    "top_perk": "Anniversary Miles: 5,000 Miles every year on your account anniversary after you spend $50 or more on purchases within the anniversary year",
+    "top_perk": "Anniversary Miles",
     "image_url": "/card-art/3b904311-7cbd-4371-bf70-056b6cbc9098.webp",
     "reward_rates": [
       {
@@ -978,6 +1316,22 @@
         "quote": "Plus, earn 1.5 Miles for every $1 spent on all other purchases."
       }
     ],
+    "credits": [
+      {
+        "name": "Anniversary Miles",
+        "amount": 5000.0,
+        "per": "year",
+        "kind": "anniversary_points",
+        "quote": "5,000 Miles every year on your account anniversary after you spend $50 or more on purchases within the anniversary year"
+      },
+      {
+        "name": "Experience Points",
+        "amount": 20.0,
+        "per": "year",
+        "kind": "other",
+        "quote": "Receive 20 XP every year on your account anniversary."
+      }
+    ],
     "id": "3b904311-7cbd-4371-bf70-056b6cbc9098",
     "source_image_url": "https://www.bankofamerica.com/content/images/ContextualSiteGraphics/CreditCardArt/en_US/Approved_PCM/1bdx_cmsig_v-250.png"
   },
@@ -989,7 +1343,7 @@
     "annual_fee": 59,
     "apr_range": "19.74% - 27.74% variable",
     "apr_intro": "None",
-    "apr_regular": "19.74% - 27.74% variable",
+    "apr_regular": "19.74% - 27.74%",
     "rewards_summary": "Earn 3 points per $1 spent on Allegiant purchases, 2 points per $1 spent on qualifying dining purchases, and 1 point per $1 spent on all other purchases.",
     "signup_bonus": "30,000 Bonus Points, equal to $300 off a future Allegiant trip, after you make $1,500 or more in purchases within the first 90 days of account opening.",
     "recommended_credit_score": null,
@@ -1000,7 +1354,7 @@
       "personal"
     ],
     "best_for": "Foodies",
-    "top_perk": "Priority Boarding",
+    "top_perk": "Complimentary priority check-in, priority boarding and one free beverage every time you fly Allegiant.",
     "image_url": "/card-art/599f8d3f-af2c-4466-809e-dc27cc2a97f4.webp",
     "reward_rates": [
       {
@@ -1025,6 +1379,7 @@
         "quote": "1 point per $1 spent on all other purchases"
       }
     ],
+    "credits": [],
     "id": "599f8d3f-af2c-4466-809e-dc27cc2a97f4",
     "source_image_url": "https://www.bankofamerica.com/content/images/ContextualSiteGraphics/CreditCardArt/en_US/Approved_PCM/ragp_sigcm_v_250.png"
   },
@@ -1037,17 +1392,17 @@
     "apr_range": "19.74% - 27.74% variable",
     "apr_intro": "None",
     "apr_regular": "19.74% - 27.74%",
-    "rewards_summary": "Earn unlimited 3 points for every $1 spent on eligible Alaska Airlines and Hawaiian Airlines purchases, 2 points on gas and streaming services, and 1 point on all other purchases.",
+    "rewards_summary": "Earn unlimited points for travel with no blackout dates on Alaska Airlines and Hawaiian Airlines flights when booking with points or a companion fare.",
     "signup_bonus": "Get 50,000 bonus points and a $99 Companion Fare (plus taxes and fees from $23) with this offer.",
     "recommended_credit_score": null,
     "foreign_transaction_fee": null,
     "tags": [
-      "gas",
+      "travel",
       "flights",
       "premium",
       "personal"
     ],
-    "best_for": "Commuters",
+    "best_for": "Casual Travelers",
     "top_perk": "Free checked bag + preferred boarding",
     "image_url": "/card-art/185c6ca0-290f-4e9f-a237-53aaf934fb30.webp",
     "reward_rates": [
@@ -1073,6 +1428,15 @@
         "quote": "Earn unlimited 1 point for every $1 spent on all other purchases."
       }
     ],
+    "credits": [
+      {
+        "name": "Companion Fare",
+        "amount": 99.0,
+        "per": "year",
+        "kind": "brand_travel",
+        "quote": "Get a $99 Companion Fare (plus taxes and fees from $23) each account anniversary after you spend $6,000 or more on purchases within the prior anniversary year."
+      }
+    ],
     "id": "185c6ca0-290f-4e9f-a237-53aaf934fb30",
     "source_image_url": "https://www.bankofamerica.com/content/images/ContextualSiteGraphics/CreditCardArt/en_US/Approved_PCM/1bbt_sigcm_v_atmos_ascent_250.png"
   },
@@ -1096,7 +1460,7 @@
       "personal"
     ],
     "best_for": "Foodies",
-    "top_perk": "Free checked bag and preferred boarding for you and up to 6 guests on the same reservation",
+    "top_perk": "Free checked bag and preferred boarding for you and up to 6 guests on the same reservation when you pay for your Alaska Airlines or Hawaiian Airlines flight with your card.",
     "image_url": "/card-art/9a39d0b1-363b-49e9-a7f1-94728266401a.webp",
     "reward_rates": [
       {
@@ -1121,6 +1485,15 @@
         "quote": "Earn unlimited 1 point for every $1 spent on all other purchases."
       }
     ],
+    "credits": [
+      {
+        "name": "Alaska Lounge passes",
+        "amount": 8.0,
+        "per": "year",
+        "kind": "lounge",
+        "quote": "Receive 8 Alaska Lounge passes every calendar year (2 per quarter)."
+      }
+    ],
     "id": "9a39d0b1-363b-49e9-a7f1-94728266401a",
     "source_image_url": "https://www.bankofamerica.com/content/images/ContextualSiteGraphics/CreditCardArt/en_US/Approved_PCM/1bed_rewcm_v_atmos_visafront_infinite_250.png"
   },
@@ -1133,12 +1506,13 @@
     "apr_range": "0% for 15 billing cycles for purchases, and for any balance transfers made within the first 60 days of opening your account. After the intro APR offer ends, a Variable APR that's currently 17.74% to 27.74% will apply.",
     "apr_intro": "0% for 15 billing cycles for purchases, and for any balance transfers made within the first 60 days of opening your account.",
     "apr_regular": "17.74% - 27.74% variable",
-    "rewards_summary": "Earn 6% cash back in the category of your choice for the first year, 3% cash back in your choice category after that, and unlimited 1% cash back on all other purchases.",
+    "rewards_summary": "Earn 6% cash back in the category of your choice for the first year, 3% cash back on purchases in your choice category, and 2% cash back at grocery stores and wholesale clubs, with unlimited 1% cash back on all other purchases.",
     "signup_bonus": "$200 online cash rewards bonus after making at least $1,000 in purchases in the first 90 days of your account opening.",
     "recommended_credit_score": null,
     "foreign_transaction_fee": "None",
     "tags": [
       "cashback",
+      "groceries",
       "no-fee",
       "low-apr",
       "personal"
@@ -1159,16 +1533,17 @@
         "rate": 2.0,
         "unit": "percent",
         "cap": null,
-        "quote": "Automatic 2% cash back at grocery stores and wholesale clubs"
+        "quote": "Automatic 2% cash back at grocery stores and wholesale clubs."
       },
       {
         "category": "dining",
         "rate": 3.0,
         "unit": "percent",
-        "cap": null,
-        "quote": "Earn 3% cash back + 3% first-year cash back bonus in the category of your choice"
+        "cap": "$2,500 in combined purchases each quarter",
+        "quote": "Earn 3% cash back + 3% first-year cash back bonus in the category of your choice."
       }
     ],
+    "credits": [],
     "id": "41f23880-d985-47d8-969f-a20f24d3ccb5",
     "source_image_url": "https://www.bankofamerica.com/content/images/ContextualSiteGraphics/CreditCardArt/en_US/Approved_PCM/8ckn_cshsigcm_v_250x158.png"
   },
@@ -1178,13 +1553,13 @@
     "card_name": "Bank of America® Customized Cash Rewards Credit Card for Students",
     "issuer": "Bank of America",
     "annual_fee": 0,
-    "apr_range": "0% for 15 billing cycles, then 17.74% - 27.74% variable",
+    "apr_range": "0% for 15 billing cycles for purchases, and for any balance transfers made within the first 60 days of opening your account. After the intro APR offer ends, a Variable APR that's currently 17.74% to 27.74% will apply.",
     "apr_intro": "0% for 15 billing cycles for purchases, and for any balance transfers made within the first 60 days of opening your account.",
     "apr_regular": "17.74% - 27.74% variable",
-    "rewards_summary": "Earn 6% cash back in the category of your choice for the first year, 3% cash back in that category thereafter, and 2% cash back at grocery stores and wholesale clubs.",
+    "rewards_summary": "Earn 6% cash back in the category of your choice for the first year, 3% cash back in your choice category after that, and 2% cash back at grocery stores and wholesale clubs, with unlimited 1% cash back on all other purchases.",
     "signup_bonus": "$200 online cash rewards bonus after making at least $1,000 in purchases in the first 90 days of your account opening.",
     "recommended_credit_score": null,
-    "foreign_transaction_fee": null,
+    "foreign_transaction_fee": "None",
     "tags": [
       "cashback",
       "groceries",
@@ -1199,19 +1574,20 @@
     "reward_rates": [
       {
         "category": "other",
-        "rate": 6.0,
+        "rate": 3.0,
         "unit": "percent",
         "cap": "$2,500 in combined purchases each quarter",
-        "quote": "Earn 6% and 2% cash back on the first $2,500 in combined purchases each quarter in the choice category"
+        "quote": "Earn 6% and 2% cash back on the first $2,500 in combined purchases each quarter in the choice category, and at grocery stores and wholesale clubs, then earn unlimited 1% thereafter."
       },
       {
         "category": "groceries",
         "rate": 2.0,
         "unit": "percent",
         "cap": null,
-        "quote": "Automatic 2% cash back at grocery stores and wholesale clubs"
+        "quote": "Automatic 2% cash back at grocery stores and wholesale clubs."
       }
     ],
+    "credits": [],
     "id": "ab3ca688-d6ba-4b92-aa37-9703734b177c",
     "source_image_url": "https://www.bankofamerica.com/content/images/ContextualSiteGraphics/CreditCardArt/en_US/Approved_PCM/8ckn_cshsigcm_v_250x158.png"
   },
@@ -1223,9 +1599,9 @@
     "annual_fee": 95,
     "apr_range": "19.74% - 27.74% variable",
     "apr_intro": "None",
-    "apr_regular": "19.74% - 27.74%",
-    "rewards_summary": "Earn unlimited 2 points for every $1 spent on travel and dining purchases and unlimited 1.5 points for every $1 spent on all other purchases.",
-    "signup_bonus": "60,000 online bonus points offer — a $600 value — after you make at least $4,000 in purchases in the first 90 days of account opening",
+    "apr_regular": "19.74% - 27.74% variable",
+    "rewards_summary": "Earn unlimited points – 2 points for every $1 spent on travel and dining purchases and 1.5 points per $1 on all other purchases.",
+    "signup_bonus": "60,000 online bonus points offer — a $600 value after you make at least $4,000 in purchases in the first 90 days of account opening",
     "recommended_credit_score": null,
     "foreign_transaction_fee": "None",
     "tags": [
@@ -1239,25 +1615,27 @@
     "image_url": "/card-art/8c7edd3c-384a-4427-b6d7-a11b7300d283.webp",
     "reward_rates": [
       {
-        "category": "travel",
-        "rate": 2.0,
-        "unit": "points",
-        "cap": null,
-        "quote": "2 points for every $1 spent on travel and dining purchases"
-      },
-      {
-        "category": "dining",
-        "rate": 2.0,
-        "unit": "points",
-        "cap": null,
-        "quote": "2 points for every $1 spent on travel and dining purchases"
-      },
-      {
         "category": "other",
         "rate": 1.5,
         "unit": "points",
         "cap": null,
-        "quote": "1.5 points for every $1 spent on all other purchases"
+        "quote": "1.5 points per $1 on all other purchases"
+      }
+    ],
+    "credits": [
+      {
+        "name": "Airline Incidental Statement Credits",
+        "amount": 100.0,
+        "per": "year",
+        "kind": "brand_travel",
+        "quote": "Get up to $100 in Airline Incidental Statement Credits annually for qualifying purchases such as seat upgrades, baggage fees, in-flight services, and airline lounge fees - automatically applied to your card statement"
+      },
+      {
+        "name": "Airport Security Statement Credits",
+        "amount": 100.0,
+        "per": "4_years",
+        "kind": "merchant",
+        "quote": "Get up to $100 in Airport Security Statement Credits for TSA PreCheck® or Global Entry application fees, every four years"
       }
     ],
     "id": "8c7edd3c-384a-4427-b6d7-a11b7300d283",
@@ -1273,7 +1651,7 @@
     "apr_intro": "None",
     "apr_regular": "19.74% - 27.74%",
     "rewards_summary": "Earn unlimited 2 points for every dollar spent on travel and dining purchases and unlimited 1.5 points per dollar on all other purchases. There's no limit to the points you can earn, and points don't expire as long as the account remains open.",
-    "signup_bonus": "75,000 online bonus points offer — a $750 value — after you make at least $5,000 in purchases in the first 90 days of account opening",
+    "signup_bonus": "75,000 online bonus points offer — a $750 value after you make at least $5,000 in purchases in the first 90 days of account opening",
     "recommended_credit_score": null,
     "foreign_transaction_fee": "None",
     "tags": [
@@ -1299,6 +1677,29 @@
         "unit": "points",
         "cap": null,
         "quote": "Earn unlimited 2 points for every dollar spent on travel and dining purchases"
+      }
+    ],
+    "credits": [
+      {
+        "name": "Airline Incidental Statement Credits",
+        "amount": 300.0,
+        "per": "year",
+        "kind": "brand_travel",
+        "quote": "Receive up to $300 annually in Airline Incidental Statement Credits for qualifying purchases such as seat upgrades, baggage fees, airline lounge fees and in-flight services"
+      },
+      {
+        "name": "Lifestyle Statement Credits",
+        "amount": 150.0,
+        "per": "year",
+        "kind": "merchant",
+        "quote": "Receive up to $150 annually for lifestyle conveniences including video streaming services, food delivery, fitness subscriptions and rideshare services"
+      },
+      {
+        "name": "Global Entry or TSA PreCheck® application fee credit",
+        "amount": 120.0,
+        "per": "4_years",
+        "kind": "trusted_traveler",
+        "quote": "Receive up to $120 in statement credits for Global Entry or TSA PreCheck® application fees, every four years"
       }
     ],
     "id": "65f34786-5a81-4698-9210-ed6b21623e2c",
@@ -1334,6 +1735,7 @@
         "quote": "Earn unlimited 1.5 points for every $1 you spend on everyday purchases."
       }
     ],
+    "credits": [],
     "id": "3222fce2-6f44-42d2-b24b-ef76187ab978",
     "source_image_url": "https://www.bankofamerica.com/content/images/ContextualSiteGraphics/CreditCardArt/en_US/Approved_PCM/8blm_trvcm_v_250x158.png"
   },
@@ -1343,9 +1745,9 @@
     "card_name": "Bank of America® Travel Rewards Credit Card",
     "issuer": "Bank of America",
     "annual_fee": 0,
-    "apr_range": "0% Intro APR for your first 15 billing cycles for purchases, and for any balance transfers made within the first 60 days of opening your account. After the intro APR offer ends, a Variable APR that's currently 17.74% to 27.74% will apply.",
-    "apr_intro": "0% for 15 billing cycles",
-    "apr_regular": "17.74% - 27.74% variable",
+    "apr_range": "0% for 15 billing cycles, then 17.74% - 27.74% Variable",
+    "apr_intro": "0% for 15 billing cycles for purchases, and for any balance transfers made within the first 60 days of opening your account.",
+    "apr_regular": "17.74% - 27.74% Variable",
     "rewards_summary": "Earn unlimited 1.5 points for every $1 you spend on everyday purchases with no expiration on points as long as your account remains open.",
     "signup_bonus": "25,000 online bonus points if you make at least $1,000 in purchases in the first 90 days of your account opening – which can be redeemed for a $250 statement credit toward travel and dining purchases",
     "recommended_credit_score": null,
@@ -1370,6 +1772,7 @@
         "quote": "Earn unlimited 1.5 points for every $1 you spend on everyday purchases."
       }
     ],
+    "credits": [],
     "id": "f8e5edcc-61bd-4428-9b89-6998f174f729",
     "source_image_url": "https://www.bankofamerica.com/content/images/ContextualSiteGraphics/CreditCardArt/en_US/Approved_PCM/8blm_trvsigcm_v_250x158.png"
   },
@@ -1380,10 +1783,10 @@
     "issuer": "Bank of America",
     "annual_fee": 0,
     "apr_range": "0% for 15 billing cycles, then 17.74% - 27.74% Variable",
-    "apr_intro": "0% for 15 billing cycles for purchases, and for any balance transfers made within the first 60 days of opening your account.",
-    "apr_regular": "17.74% - 27.74% variable",
+    "apr_intro": "0% for 15 billing cycles",
+    "apr_regular": "17.74% - 27.74% Variable",
     "rewards_summary": "Earn unlimited 1.5 points for every $1 you spend on everyday purchases with no expiration on points as long as your account remains open.",
-    "signup_bonus": "25,000 online bonus points if you make at least $1,000 in purchases in the first 90 days of your account opening.",
+    "signup_bonus": "25,000 online bonus points if you make at least $1,000 in purchases in the first 90 days of your account opening",
     "recommended_credit_score": null,
     "foreign_transaction_fee": "None",
     "tags": [
@@ -1405,6 +1808,7 @@
         "quote": "Earn unlimited 1.5 points for every $1 you spend on everyday purchases."
       }
     ],
+    "credits": [],
     "id": "a0fe1f5f-9535-463d-972a-4da86676aad6",
     "source_image_url": "https://www.bankofamerica.com/content/images/ContextualSiteGraphics/CreditCardArt/en_US/Approved_PCM/8blm_trvcm_v_250x158.png"
   },
@@ -1414,11 +1818,11 @@
     "card_name": "Bank of America® Unlimited Cash Rewards Credit Card",
     "issuer": "Bank of America",
     "annual_fee": 0,
-    "apr_range": "0% Intro APR for 15 billing cycles for purchases, and for any balance transfers made within the first 60 days of opening your account. After the intro APR offer ends, a Variable APR that's currently 17.74% to 27.74% will apply.",
-    "apr_intro": "0% for 15 billing cycles",
-    "apr_regular": "17.74% - 27.74% variable",
+    "apr_range": "0% for 15 billing cycles, then 17.74% - 27.74% Variable",
+    "apr_intro": "0% for 15 billing cycles for purchases, and for any balance transfers made within the first 60 days of opening your account.",
+    "apr_regular": "17.74% - 27.74% Variable",
     "rewards_summary": "Earn unlimited 1.5% cash back on all purchases with no limit to the amount of cash back you can earn.",
-    "signup_bonus": "$250 online cash rewards bonus after making at least $1,000 in purchases in the first 90 days of your account opening",
+    "signup_bonus": "$250 online cash rewards bonus after making at least $1,000 in purchases in the first 90 days of your account opening.",
     "recommended_credit_score": null,
     "foreign_transaction_fee": "3%",
     "tags": [
@@ -1439,6 +1843,7 @@
         "quote": "Earn unlimited 1.5% cash back on all purchases"
       }
     ],
+    "credits": [],
     "id": "ea56b41e-0055-4ec7-acc4-f447ee62e59a",
     "source_image_url": "https://www.bankofamerica.com/content/images/ContextualSiteGraphics/CreditCardArt/en_US/Approved_PCM/8cty_cshsigcm_v_250x157.png"
   },
@@ -1448,11 +1853,11 @@
     "card_name": "Bank of America® Unlimited Cash Rewards Credit Card for Students",
     "issuer": "Bank of America",
     "annual_fee": 0,
-    "apr_range": "0% Intro APR for your first 15 billing cycles for purchases, and for any balance transfers made within the first 60 days of opening your account. After the intro APR offer ends, a Variable APR that's currently 17.74% to 27.74% will apply.",
-    "apr_intro": "0% for 15 billing cycles",
-    "apr_regular": "17.74% - 27.74% variable",
-    "rewards_summary": "Earn unlimited 1.5% cash back on all purchases with no limit to the amount of cash back you can earn, and cash rewards do not expire as long as your account remains open.",
-    "signup_bonus": "$250 online cash rewards bonus after making at least $1,000 in purchases in the first 90 days of your account opening",
+    "apr_range": "0% for 15 billing cycles, then 17.74% - 27.74% Variable",
+    "apr_intro": "0% for 15 billing cycles for purchases, and for any balance transfers made within the first 60 days of opening your account.",
+    "apr_regular": "17.74% - 27.74% Variable",
+    "rewards_summary": "Earn unlimited 1.5% cash back on all purchases with no limit to the amount of cash back you can earn.",
+    "signup_bonus": "$250 online cash rewards bonus offer after making at least $1,000 in purchases in the first 90 days of your account opening.",
     "recommended_credit_score": null,
     "foreign_transaction_fee": "3%",
     "tags": [
@@ -1474,6 +1879,7 @@
         "quote": "Earn unlimited 1.5% cash back on all purchases"
       }
     ],
+    "credits": [],
     "id": "019db2db-9949-4347-83ed-cf0ab69a63f0",
     "source_image_url": "https://www.bankofamerica.com/content/images/ContextualSiteGraphics/CreditCardArt/en_US/Approved_PCM/8cty_cshsigcm_v_250x157.png"
   },
@@ -1507,6 +1913,7 @@
         "quote": "Earn unlimited 1.5% cash back on all purchases"
       }
     ],
+    "credits": [],
     "id": "18f0ff69-58cc-4955-8680-49bb685b8d64",
     "source_image_url": "https://www.bankofamerica.com/content/images/ContextualSiteGraphics/CreditCardArt/en_US/Approved_PCM/8cty_cshcm_v_250x157.png"
   },
@@ -1516,9 +1923,9 @@
     "card_name": "BankAmericard® Credit Card",
     "issuer": "Bank of America",
     "annual_fee": 0,
-    "apr_range": "0% for 21 billing cycles, then 15.24% - 26.24% variable",
-    "apr_intro": "0% for 21 billing cycles for purchases, and for any balance transfers made within 60 days of opening your account",
-    "apr_regular": "15.24% - 26.24% variable",
+    "apr_range": "0% for 21 billing cycles, then 15.24% - 26.24% Variable",
+    "apr_intro": "0% for 21 billing cycles for purchases, and for any balance transfers made within 60 days of opening your account.",
+    "apr_regular": "15.24% - 26.24% Variable",
     "rewards_summary": "The card offers no annual fee and a 0% introductory APR for the first 21 billing cycles, making it ideal for those looking to save on interest.",
     "signup_bonus": "None",
     "recommended_credit_score": null,
@@ -1532,6 +1939,7 @@
     "top_perk": null,
     "image_url": "/card-art/2731a297-8853-416e-8677-c3fffeb6007d.webp",
     "reward_rates": [],
+    "credits": [],
     "id": "2731a297-8853-416e-8677-c3fffeb6007d",
     "source_image_url": "https://www.bankofamerica.com/content/images/ContextualSiteGraphics/CreditCardArt/en_US/Approved_PCM/8cae_nrwcm_mc_250x158.png"
   },
@@ -1555,9 +1963,10 @@
       "personal"
     ],
     "best_for": "Building Credit",
-    "top_perk": "$0 Liability Guarantee",
+    "top_perk": null,
     "image_url": "/card-art/cac4d475-2974-48f7-b738-472767829044.webp",
     "reward_rates": [],
+    "credits": [],
     "id": "cac4d475-2974-48f7-b738-472767829044",
     "source_image_url": "https://www.bankofamerica.com/content/images/ContextualSiteGraphics/CreditCardArt/en_US/Approved_PCM/8cae_nrwcm_mc_250x158.png"
   },
@@ -1582,6 +1991,7 @@
     "top_perk": null,
     "image_url": "/card-art/a936e4ba-71f7-4a86-b3d2-b720f924bdbf.webp",
     "reward_rates": [],
+    "credits": [],
     "id": "a936e4ba-71f7-4a86-b3d2-b720f924bdbf",
     "source_image_url": "https://www.bankofamerica.com/content/images/ContextualSiteGraphics/CreditCardArt/en_US/Approved_PCM/8cae_nrwcm_mc_250x158.png"
   },
@@ -1591,15 +2001,16 @@
     "card_name": "Customized Cash Rewards Secured Credit Card",
     "issuer": "Bank of America",
     "annual_fee": 0,
-    "apr_range": "None",
+    "apr_range": "27.74% variable",
     "apr_intro": "None",
-    "apr_regular": "27.74% variable",
-    "rewards_summary": "Earn 6% cash back in the category of your choice for the first year, 3% cash back in the choice category thereafter, and unlimited 1% cash back on all other purchases.",
+    "apr_regular": "27.74%",
+    "rewards_summary": "Earn 6% cash back in the category of your choice for the first year, 3% cash back in your choice category after that, and 2% cash back at grocery stores and wholesale clubs.",
     "signup_bonus": "None",
     "recommended_credit_score": null,
     "foreign_transaction_fee": null,
     "tags": [
       "cashback",
+      "groceries",
       "no-fee",
       "personal"
     ],
@@ -1609,10 +2020,10 @@
     "reward_rates": [
       {
         "category": "other",
-        "rate": 6.0,
+        "rate": 3.0,
         "unit": "percent",
-        "cap": "$2,500",
-        "quote": "Earn 6% and 2% cash back on the first $2,500 in combined purchases each quarter in the choice category."
+        "cap": "$2,500 each quarter",
+        "quote": "Earn 6% and 2% cash back on the first $2,500 in combined purchases each quarter in the choice category, and at grocery stores and wholesale clubs."
       },
       {
         "category": "groceries",
@@ -1622,6 +2033,7 @@
         "quote": "Automatic 2% cash back at grocery stores and wholesale clubs."
       }
     ],
+    "credits": [],
     "id": "95e8e56f-42d7-4789-8fe7-c213dfb8e577",
     "source_image_url": "https://www.bankofamerica.com/content/images/ContextualSiteGraphics/CreditCardArt/en_US/Approved_PCM/8ckn_cshcm_v_250x158.png"
   },
@@ -1633,8 +2045,8 @@
     "annual_fee": 0,
     "apr_range": "17.74% - 27.74% variable",
     "apr_intro": "None",
-    "apr_regular": "17.74% - 27.74% variable",
-    "rewards_summary": "Earn 3 WorldPoints® points for every $1 spent on Norwegian purchases, 2 points per $1 spent on eligible air and hotel purchases, and 1 point per $1 spent on all other purchases.",
+    "apr_regular": "17.74% - 27.74%",
+    "rewards_summary": "Earn triple points on Norwegian purchases, double points on eligible air and hotel purchases, and one point on all other purchases.",
     "signup_bonus": "Get 20,000 bonus points after you make $1,000 or more in purchases in the first 90 days of account opening – which can be redeemed for $200 off your next Norwegian cruise",
     "recommended_credit_score": null,
     "foreign_transaction_fee": "None",
@@ -1656,12 +2068,13 @@
       },
       {
         "category": "other",
-        "rate": 2.0,
+        "rate": 1.0,
         "unit": "points",
         "cap": null,
-        "quote": "Earn 2 WorldPoints® points per $1 spent on eligible air and hotel purchases"
+        "quote": "Earn 1 WorldPoints® point per $1 spent on all other purchases"
       }
     ],
+    "credits": [],
     "id": "8ed34626-ab98-4555-95d2-052cdd26d272",
     "source_image_url": "https://www.bankofamerica.com/content/images/ContextualSiteGraphics/CreditCardArt/en_US/Approved_PCM/radz_wldcm_mc_250.png"
   },
@@ -1674,7 +2087,7 @@
     "apr_range": "17.74% - 27.74% variable",
     "apr_intro": "None",
     "apr_regular": "17.74% - 27.74% variable",
-    "rewards_summary": "Earn 4 points per dollar spent on eligible Royal Caribbean, Celebrity Cruises and Silversea purchases, 2 points on eligible airline, hotel, dining, grocery, gas and EV charging station purchases, and 1 point on all other purchases.",
+    "rewards_summary": "Earn 4 points per dollar spent on eligible Royal Caribbean, Celebrity Cruises, and Silversea purchases, 2 points on eligible airline, hotel, dining, grocery, gas, and EV charging station purchases, and 1 point on all other purchases.",
     "signup_bonus": "60,000 bonus points, redeemable for $600 in onboard credit or cruise discounts, after spending $2,500 on purchases within the first 90 days of account opening",
     "recommended_credit_score": null,
     "foreign_transaction_fee": "None",
@@ -1699,32 +2112,20 @@
         "quote": "4 points per dollar spent on eligible Royal Caribbean®"
       },
       {
-        "category": "dining",
-        "rate": 2.0,
-        "unit": "points",
-        "cap": null,
-        "quote": "2 points per dollar spent on eligible airline, hotel, dining, grocery, gas and EV charging station purchases"
-      },
-      {
-        "category": "groceries",
-        "rate": 2.0,
-        "unit": "points",
-        "cap": null,
-        "quote": "2 points per dollar spent on eligible airline, hotel, dining, grocery, gas and EV charging station purchases"
-      },
-      {
-        "category": "gas",
-        "rate": 2.0,
-        "unit": "points",
-        "cap": null,
-        "quote": "2 points per dollar spent on eligible airline, hotel, dining, grocery, gas and EV charging station purchases"
-      },
-      {
         "category": "other",
-        "rate": 1.0,
+        "rate": 2.0,
         "unit": "points",
         "cap": null,
-        "quote": "1 point per dollar spent on all other purchases"
+        "quote": "2 points per dollar spent on eligible airline, hotel, dining, grocery, gas and EV charging station purchases"
+      }
+    ],
+    "credits": [
+      {
+        "name": "Global Entry/TSA Precheck Credit",
+        "amount": 120.0,
+        "per": "4_years",
+        "kind": "trusted_traveler",
+        "quote": "Up to $120 Global Entry/TSA Precheck in statement credits every 4 years"
       }
     ],
     "id": "d2bca081-2bc8-44dc-bdef-feb65dfa7723",
@@ -1739,7 +2140,7 @@
     "apr_range": "17.74% - 27.74% variable",
     "apr_intro": "None",
     "apr_regular": "17.74% - 27.74% variable",
-    "rewards_summary": "Earn 3 points per dollar spent on eligible Royal Caribbean, Celebrity Cruises and Silversea purchases, 2 points per dollar spent on eligible grocery, gas and EV charging station purchases, and 1 point per dollar spent on all other purchases.",
+    "rewards_summary": "Earn 3 points per dollar spent on eligible Royal Caribbean, Celebrity Cruises, and Silversea purchases, 2 points per dollar on eligible grocery, gas, and EV charging station purchases, and 1 point per dollar on all other purchases.",
     "signup_bonus": "30,000 bonus points, redeemable for $300 in onboard credit or cruise discounts, after spending $1,500 on purchases within the first 90 days of account opening",
     "recommended_credit_score": null,
     "foreign_transaction_fee": "None",
@@ -1750,7 +2151,7 @@
       "personal"
     ],
     "best_for": "Commuters",
-    "top_perk": "Unlocks special cruise perks like priority boarding and access to exclusive cardholder events.",
+    "top_perk": "Special cruise perks like priority boarding and access to exclusive cardholder events.",
     "image_url": "/card-art/46977ef6-63d9-4535-8479-09bfc8c009b7.webp",
     "reward_rates": [
       {
@@ -1775,6 +2176,15 @@
         "quote": "1 point per dollar spent on all other purchases"
       }
     ],
+    "credits": [
+      {
+        "name": "Cruise Discount",
+        "amount": 100.0,
+        "per": "year",
+        "kind": "merchant",
+        "quote": "$100 cruise discount aﬅer spending $10,000 on purchases every year"
+      }
+    ],
     "id": "46977ef6-63d9-4535-8479-09bfc8c009b7",
     "source_image_url": "https://www.bankofamerica.com/content/images/ContextualSiteGraphics/CreditCardArt/en_US/Approved_PCM/ragu-sigcm-v-250.png"
   },
@@ -1787,13 +2197,12 @@
     "apr_range": "17.74% - 27.74% variable",
     "apr_intro": "0% for 15 billing cycles for purchases, and for any balance transfers made within the first 60 days of opening your account.",
     "apr_regular": "17.74% - 27.74% variable",
-    "rewards_summary": "Earn 6% cash back in the category of your choice for the first year, plus 3% cash back in that category thereafter, and 2% cash back at grocery stores and wholesale clubs.",
+    "rewards_summary": "Earn 6% cash back in the category of your choice for the first year, 3% cash back on purchases in your choice category after the first year, and unlimited 1% cash back on all other purchases.",
     "signup_bonus": "$200 online cash rewards bonus after making at least $1,000 in purchases in the first 90 days of your account opening.",
     "recommended_credit_score": null,
     "foreign_transaction_fee": null,
     "tags": [
       "cashback",
-      "groceries",
       "no-fee",
       "personal"
     ],
@@ -1805,7 +2214,7 @@
         "category": "other",
         "rate": 6.0,
         "unit": "percent",
-        "cap": "$2,500 quarterly",
+        "cap": "$2,500 in combined purchases each quarter",
         "quote": "6% cash back in the category of your choice – for the first year."
       },
       {
@@ -1814,15 +2223,9 @@
         "unit": "percent",
         "cap": null,
         "quote": "Automatic 2% cash back at grocery stores and wholesale clubs."
-      },
-      {
-        "category": "dining",
-        "rate": 3.0,
-        "unit": "percent",
-        "cap": "$2,500 quarterly",
-        "quote": "Earn 6% and 2% cash back on the first $2,500 in combined purchases each quarter in the choice category, and at grocery stores and wholesale clubs."
       }
     ],
+    "credits": [],
     "id": "c9d610a1-54ef-4667-99d8-e8f93c666fc0",
     "source_image_url": "https://www.bankofamerica.com/content/images/ContextualSiteGraphics/CreditCardArt/en_US/Approved_PCM/qvys_sigcm_v_250.png"
   },
@@ -1832,13 +2235,13 @@
     "card_name": "AARP® Essential Rewards Mastercard®",
     "issuer": "Barclays US",
     "annual_fee": 0,
-    "apr_range": "20.49% to 29.99%, based on your creditworthiness and other factors.",
+    "apr_range": "20.49% to 29.99%, based on your creditworthiness and other factors",
     "apr_intro": "0% introductory APR for the first 15 billing cycles following each balance transfer that posts to your account within 45 days of account opening.",
     "apr_regular": "20.49% to 29.99%",
     "rewards_summary": "Earn 3% Cash Back on Gas & Drug Store purchases, 2% Cash Back on eligible Medical expenses, and 1% Cash Back on all other purchases.",
     "signup_bonus": "Earn a $100 Cash Back Bonus after spending $500 on purchases in the first 90 days of account opening.",
     "recommended_credit_score": null,
-    "foreign_transaction_fee": null,
+    "foreign_transaction_fee": "3%",
     "tags": [
       "gas",
       "cashback",
@@ -1846,7 +2249,7 @@
       "personal"
     ],
     "best_for": "Commuters",
-    "top_perk": "Unlimited rewards never expire.",
+    "top_perk": "Unlimited rewards that never expire",
     "image_url": "/card-art/63c278c0-6ae7-48fb-861b-c5b6c80d97d5.webp",
     "reward_rates": [
       {
@@ -1854,14 +2257,14 @@
         "rate": 3.0,
         "unit": "percent",
         "cap": null,
-        "quote": "Earn 3% Cash Back on Gas & Drug Store purchases."
+        "quote": "Earn Unlimited 3% Cash Back on Gas and Drug Store purchases."
       },
       {
         "category": "drugstores",
         "rate": 3.0,
         "unit": "percent",
         "cap": null,
-        "quote": "Earn 3% Cash Back on Gas & Drug Store purchases."
+        "quote": "Earn Unlimited 3% Cash Back on Gas and Drug Store purchases."
       },
       {
         "category": "other",
@@ -1871,6 +2274,7 @@
         "quote": "Earn Unlimited 1% Cash Back on all other purchases."
       }
     ],
+    "credits": [],
     "id": "63c278c0-6ae7-48fb-861b-c5b6c80d97d5",
     "source_image_url": "https://cards.barclaycardus.com/content/dam/bcuspublic/credit-card/aarp/card-art/ARE_LP_C_Card_Essential_320x205.png"
   },
@@ -1880,9 +2284,9 @@
     "card_name": "AARP® Travel Rewards Mastercard®",
     "issuer": "Barclays US",
     "annual_fee": 0,
-    "apr_range": "20.49% to 29.99%, based on your creditworthiness and other factors. This APR will vary with the market based on the Prime Rate.",
+    "apr_range": "20.49% to 29.99%, based on your creditworthiness and other factors",
     "apr_intro": "0% introductory APR for the first 15 billing cycles following each balance transfer that posts to your account within 45 days of account opening.",
-    "apr_regular": "20.49% to 29.99%, based on your creditworthiness and other factors.",
+    "apr_regular": "20.49% to 29.99%, based on your creditworthiness and other factors",
     "rewards_summary": "Earn 3% Cash Back on Airfare, Hotel Stays and Car Rentals, 2% Cash Back on eligible Restaurant purchases, and 1% Cash Back on all other purchases.",
     "signup_bonus": "Earn a $100 Cash Back Bonus after spending $500 on purchases in the first 90 days of account opening.",
     "recommended_credit_score": null,
@@ -1897,7 +2301,7 @@
       "personal"
     ],
     "best_for": "Casual Travelers",
-    "top_perk": "Unlimited rewards that never expire",
+    "top_perk": "$0 Fraud Liability Protection",
     "image_url": "/card-art/62a1b02e-8f46-4346-a53e-a2bf9eae1b6e.webp",
     "reward_rates": [
       {
@@ -1922,13 +2326,14 @@
         "quote": "Earn 1% Cash Back on all other purchases."
       }
     ],
+    "credits": [],
     "id": "62a1b02e-8f46-4346-a53e-a2bf9eae1b6e",
     "source_image_url": "https://cards.barclaycardus.com/content/dam/bcuspublic/credit-card/aarp/card-art/ART_LP_Card_Travel_320x205.png"
   },
   {
     "url": "https://cards.barclaycardus.com/banking/cards/athleta-encore-mastercard/",
     "provider": "barclays",
-    "card_name": "Athleta Encore Mastercard®",
+    "card_name": "Athleta Encore Mastercard",
     "issuer": "Barclays US",
     "annual_fee": 0,
     "apr_range": "33.49%",
@@ -1951,7 +2356,7 @@
         "rate": 1.0,
         "unit": "points",
         "cap": null,
-        "quote": "Earn 1X points for every $1 spent everywhere else where Mastercard® is accepted"
+        "quote": "Earn 1X points for every $1 spent everywhere else where Mastercard is accepted"
       },
       {
         "category": "dining",
@@ -1968,6 +2373,22 @@
         "quote": "Earn 5X points for every $1 spent at the Gap Inc. family of brands"
       }
     ],
+    "credits": [
+      {
+        "name": "Free Shipping",
+        "amount": null,
+        "per": "month",
+        "kind": "merchant",
+        "quote": "Free shipping on all online orders $35 or more"
+      },
+      {
+        "name": "FICO Score Access",
+        "amount": null,
+        "per": "month",
+        "kind": "other",
+        "quote": "Complimentary FICO® Score"
+      }
+    ],
     "id": "8c75db34-d23d-4846-bff1-81520fb2c326",
     "source_image_url": "https://cards.barclaycardus.com/content/dam/bcuspublic/card-plastic/card-front/AT_Encore_CD_Flat_Card_Art_230x157.png"
   },
@@ -1978,7 +2399,7 @@
     "issuer": "Barclays US",
     "annual_fee": 0,
     "apr_range": "33.49%",
-    "apr_intro": "None",
+    "apr_intro": null,
     "apr_regular": "33.49%",
     "rewards_summary": "Earn 5X points for every $1 spent at the Gap Inc. family of brands, 3X points at eligible retail apparel brands, and 1X points on all other purchases.",
     "signup_bonus": "Receive 20% off your first purchase with your new card at Banana Republic",
@@ -1997,7 +2418,7 @@
         "rate": 1.0,
         "unit": "points",
         "cap": null,
-        "quote": "Earn 1X points for every $1 spent everywhere else where Mastercard® is accepted"
+        "quote": "Earn 1X points for every $1 spent everywhere else where Mastercard is accepted"
       },
       {
         "category": "dining",
@@ -2012,6 +2433,22 @@
         "unit": "points",
         "cap": null,
         "quote": "Earn 5X points for every $1 spent at the Gap Inc. family of brands"
+      }
+    ],
+    "credits": [
+      {
+        "name": "Free shipping",
+        "amount": null,
+        "per": "month",
+        "kind": "merchant",
+        "quote": "Free shipping on all online orders $35 or more"
+      },
+      {
+        "name": "Complimentary FICO Score",
+        "amount": null,
+        "per": "month",
+        "kind": "other",
+        "quote": "Keep an eye on your credit with complimentary online access to FICO Credit Score"
       }
     ],
     "id": "8ea5694f-9bd3-424f-a7d9-81635077b9ed",
@@ -2055,6 +2492,15 @@
         "quote": "Earn 2x points for every $1 spent at restaurants (excluding Barnes & Noble Café purchases)"
       }
     ],
+    "credits": [
+      {
+        "name": "Barnes & Noble Premium Membership",
+        "amount": null,
+        "per": "year",
+        "kind": "other",
+        "quote": "Earn 12 months of Barnes & Noble Premium Membership if you spend $7,500/year on eligible purchases"
+      }
+    ],
     "id": "0d69f111-bfc1-4d8c-bcd5-3d21dcab4b7e",
     "source_image_url": "https://cards.barclaycardus.com/content/dam/bcuspublic/card-plastic/card-front/BN1_card_BarnesNoble_MC_230x157.png"
   },
@@ -2093,7 +2539,16 @@
         "rate": 1.0,
         "unit": "points",
         "cap": null,
-        "quote": "1 BreezePoint for every $1 spent on all other Net Purchases made with your Card Account."
+        "quote": "1X on all other purchases - Earn 1 BreezePoint for every $1 spent on all other Net Purchases made with your Card Account."
+      }
+    ],
+    "credits": [
+      {
+        "name": "Anniversary Bonus",
+        "amount": 7500.0,
+        "per": "year",
+        "kind": "anniversary_points",
+        "quote": "Earn 7,500 Anniversary Bonus BreezePoints after every account anniversary with eligible purchases."
       }
     ],
     "id": "86ff6633-edb1-4c55-9353-fb625f2c24a8",
@@ -2105,10 +2560,10 @@
     "card_name": "Capital Vacations® World Mastercard®",
     "issuer": "Barclays US",
     "annual_fee": 0,
-    "apr_range": "19.49% to 29.74%, based on your creditworthiness and other factors. This APR will vary with the market based on the Prime Rate.",
+    "apr_range": "19.49% to 29.74%, based on your creditworthiness and other factors.",
     "apr_intro": "0% introductory APR for the first 15 billing cycles following each balance transfer that posts to your account within 45 days of account opening.",
     "apr_regular": "19.49% to 29.74%, based on your creditworthiness and other factors.",
-    "rewards_summary": "Earn 5X Rewards for every $1 spent on all eligible Capital Vacations purchases, 2X Rewards for RCI and travel-related purchases, and 1X Rewards on all other eligible purchases.",
+    "rewards_summary": "Earn 5X Rewards for every $1 spent on all eligible Capital Vacations purchases, 2X Rewards for RCI and travel-related purchases, and 1X Rewards on all other purchases.",
     "signup_bonus": "Earn 5,000 Bonus Rewards after making your first purchase",
     "recommended_credit_score": null,
     "foreign_transaction_fee": "None",
@@ -2134,6 +2589,15 @@
         "unit": "percent",
         "cap": null,
         "quote": "Earn 2X Rewards for every $1 spent on all eligible RCI and travel-related purchases"
+      }
+    ],
+    "credits": [
+      {
+        "name": "3-night Capital Vacations Resort Stay Certificate",
+        "amount": null,
+        "per": "year",
+        "kind": "other",
+        "quote": "3-night Capital Vacations Resort Stay Certificate After spending $10,000 in net purchases each calendar year"
       }
     ],
     "id": "799826da-dd2b-40ed-9e1f-96b4297cc248",
@@ -2167,14 +2631,14 @@
         "rate": 6.0,
         "unit": "points",
         "cap": null,
-        "quote": "Earn up to 6x points on Carnival purchases"
+        "quote": "Earn up to 6x points on Carnival purchases."
       },
       {
         "category": "dining",
         "rate": 2.0,
         "unit": "points",
         "cap": null,
-        "quote": "Earn 2x points for every dollar spent at eligible restaurants and grocery stores"
+        "quote": "Earn 2x points for every dollar spent at eligible restaurants and grocery stores (excluding Target and Walmart)."
       },
       {
         "category": "other",
@@ -2184,6 +2648,7 @@
         "quote": "Earn 1x points for every dollar spent on all other purchases."
       }
     ],
+    "credits": [],
     "id": "282c922d-cc2e-4d5f-bd9a-9d2b42d305f2",
     "source_image_url": "https://cards.barclaycardus.com/content/dam/bcuspublic/adobe-dam/carnival/Carnival_Card_NewFlag_wPadding_359x246.png"
   },
@@ -2195,8 +2660,8 @@
     "annual_fee": 499,
     "apr_range": "19.74% to 29.74%, based on your creditworthiness and other factors. This APR will vary with the market based on the Prime Rate.",
     "apr_intro": "0% introductory APR for the first 12 billing cycles following each balance transfer that posts to your account within 45 days of account opening.",
-    "apr_regular": "19.74% to 29.74%, based on your creditworthiness and other factors.",
-    "rewards_summary": "Earn 3 Skywards Miles on eligible Emirates purchases, 2 Skywards Miles on eligible travel purchases, and 1 Skywards Mile on all other purchases. Additionally, earn 10,000 anniversary bonus Skywards Miles annually.",
+    "apr_regular": "19.74% to 29.74%",
+    "rewards_summary": "Earn 3 Skywards Miles on eligible Emirates purchases, 2 Skywards Miles on eligible travel purchases, and 1 Skywards Mile on all other purchases.",
     "signup_bonus": "Earn 50,000 bonus Skywards Miles after spending $3,000 on purchases in the first 90 days.",
     "recommended_credit_score": null,
     "foreign_transaction_fee": "None",
@@ -2206,7 +2671,7 @@
       "personal"
     ],
     "best_for": "Casual Travelers",
-    "top_perk": "Priority Pass™ Select lounge access",
+    "top_perk": "Global Entry or TSA PreCheck application fee credit",
     "image_url": "/card-art/77178e0b-39da-4749-92fe-6c0dcd26597e.webp",
     "reward_rates": [
       {
@@ -2222,6 +2687,15 @@
         "unit": "miles",
         "cap": null,
         "quote": "Earn 1 Skywards Mile on all other purchases"
+      }
+    ],
+    "credits": [
+      {
+        "name": "Anniversary Bonus Miles",
+        "amount": 10000.0,
+        "per": "year",
+        "kind": "anniversary_points",
+        "quote": "Earn 10,000 anniversary bonus Skywards Miles annually"
       }
     ],
     "id": "77178e0b-39da-4749-92fe-6c0dcd26597e",
@@ -2262,6 +2736,22 @@
         "unit": "miles",
         "cap": null,
         "quote": "Earn 1 Skywards Mile on all other purchases"
+      }
+    ],
+    "credits": [
+      {
+        "name": "FICO Score Access",
+        "amount": null,
+        "per": "month",
+        "kind": "other",
+        "quote": "Complimentary online access to your FICO® Credit Score"
+      },
+      {
+        "name": "Fraud Liability Protection",
+        "amount": null,
+        "per": "year",
+        "kind": "other",
+        "quote": "$0 Fraud Liability protection"
       }
     ],
     "id": "734c8f34-efff-480f-b252-96882fff47dc",
@@ -2313,13 +2803,22 @@
         "quote": "Earn 1x miles on all other purchases."
       }
     ],
+    "credits": [
+      {
+        "name": "Flight Voucher",
+        "amount": 100.0,
+        "per": "year",
+        "kind": "other",
+        "quote": "Earn a $100 Flight Voucher every account anniversary with eligible purchases."
+      }
+    ],
     "id": "998dfc65-82c6-4b04-9a87-5caa4fdfef80",
     "source_image_url": "https://cards.barclaycardus.com/content/dam/bcuspublic/adobe-dam/frontier/FTF_card_rRGB_Fee_MC_NoBleed_padding.png"
   },
   {
     "url": "https://cards.barclaycardus.com/banking/cards/gap-encore-mastercard/",
     "provider": "barclays",
-    "card_name": "Gap Encore Mastercard®",
+    "card_name": "Gap Encore Mastercard",
     "issuer": "Barclays US",
     "annual_fee": 0,
     "apr_range": "33.49%",
@@ -2342,7 +2841,7 @@
         "rate": 1.0,
         "unit": "points",
         "cap": null,
-        "quote": "Earn 1X points for every $1 spent everywhere else where Mastercard® is accepted"
+        "quote": "Earn 1X points for every $1 spent everywhere else where Mastercard is accepted"
       },
       {
         "category": "dining",
@@ -2352,11 +2851,27 @@
         "quote": "Earn 3X points for every $1 at all eligible retail apparel brands"
       },
       {
-        "category": "groceries",
+        "category": "travel",
         "rate": 5.0,
         "unit": "points",
         "cap": null,
         "quote": "Earn 5X points for every $1 spent at the Gap Inc. family of brands"
+      }
+    ],
+    "credits": [
+      {
+        "name": "Free Shipping",
+        "amount": null,
+        "per": "month",
+        "kind": "merchant",
+        "quote": "Free shipping on all online orders $35 or more"
+      },
+      {
+        "name": "FICO Score Access",
+        "amount": null,
+        "per": "month",
+        "kind": "other",
+        "quote": "Complimentary FICO® Score"
       }
     ],
     "id": "2d690c85-2038-420f-90f4-a26bcf8e5172",
@@ -2374,13 +2889,13 @@
     "rewards_summary": "Earn 7x Business Card Points for every $1 spent on eligible GM purchases and 3x Business Card Points for every $1 spent on everything else.",
     "signup_bonus": "Earn 100,000 bonus points after spending $5,000 in the first 5 months of account opening.",
     "recommended_credit_score": null,
-    "foreign_transaction_fee": null,
+    "foreign_transaction_fee": "3%",
     "tags": [
       "business",
       "no-fee"
     ],
     "best_for": "Business Owners",
-    "top_perk": null,
+    "top_perk": "Complimentary employee cards",
     "image_url": "/card-art/bd836839-e35f-4f36-b176-02e37bda6e6c.webp",
     "reward_rates": [
       {
@@ -2391,6 +2906,7 @@
         "quote": "Earn 7x Business Card Points for every $1 spent on eligible GM purchases."
       }
     ],
+    "credits": [],
     "id": "bd836839-e35f-4f36-b176-02e37bda6e6c",
     "source_image_url": "https://cards.barclaycardus.com/content/dam/bcuspublic/card-plastic/card-front/GMB_CD_Flat_Card_Art_359x226.png"
   },
@@ -2401,12 +2917,12 @@
     "issuer": "Barclays US",
     "annual_fee": 0,
     "apr_range": "0% introductory APR for 9 months on qualifying GM purchases greater than $499, then 22.49% to 32.49% Variable",
-    "apr_intro": "0% introductory APR for 9 months on qualifying GM purchases greater than $499",
+    "apr_intro": "0% introductory APR for 9 months on qualifying GM purchases greater than $499.",
     "apr_regular": "22.49% to 32.49% Variable",
     "rewards_summary": "Earn up to 10x points on eligible GM purchases and 3x points on all other purchases.",
     "signup_bonus": "Earn 30,000 bonus points after spending $1,000 in the first 90 days of account opening.",
     "recommended_credit_score": null,
-    "foreign_transaction_fee": null,
+    "foreign_transaction_fee": "3%",
     "tags": [
       "no-fee",
       "low-apr",
@@ -2421,9 +2937,10 @@
         "rate": 7.0,
         "unit": "points",
         "cap": null,
-        "quote": "7x points on every $1 spent on eligible GM purchases when you use your GM Rewards Mastercard."
+        "quote": "7x points on every $1 spent on eligible GM purchases when you use your GM Rewards™ Mastercard."
       }
     ],
+    "credits": [],
     "id": "19f56ff3-37f0-4b77-83e7-1145b0ae001e",
     "source_image_url": "https://cards.barclaycardus.com/content/dam/bcuspublic/credit-card/gm/gm-consumer/GMR_LP_Card_Rewards_359x226.png"
   },
@@ -2469,6 +2986,22 @@
         "unit": "points",
         "cap": null,
         "quote": "1X points on all other purchases"
+      }
+    ],
+    "credits": [
+      {
+        "name": "Annual bonus points",
+        "amount": 5000.0,
+        "per": "year",
+        "kind": "anniversary_points",
+        "quote": "5,000 bonus points each year after your JetBlue Business Card account anniversary"
+      },
+      {
+        "name": "Statement credit",
+        "amount": 100.0,
+        "per": "year",
+        "kind": "merchant",
+        "quote": "Receive a $100 statement credit after you purchase a JetBlue Vacations package of $100 or more with your JetBlue Business Card."
       }
     ],
     "id": "c9acaeee-4632-4c1b-a8b4-84954486f3d2",
@@ -2519,6 +3052,7 @@
         "quote": "1X points on all other purchases"
       }
     ],
+    "credits": [],
     "id": "484141a4-a426-450b-b936-001d3fe76c95",
     "source_image_url": "https://cards.barclaycardus.com/content/dam/bcuspublic/card-plastic/card-front/JBM_card_NoFee_WM_Flat_230x157.png"
   },
@@ -2530,9 +3064,9 @@
     "annual_fee": 99,
     "apr_range": "19.74% to 29.74%, based on your creditworthiness and other factors. This APR will vary with the market based on the Prime Rate.",
     "apr_intro": "0% introductory APR for the first twelve billing cycles following each balance transfer that posts to your account within 45 days of account opening.",
-    "apr_regular": "19.74% to 29.74%, based on your creditworthiness and other factors. This APR will vary with the market based on the Prime Rate.",
+    "apr_regular": "19.74% to 29.74%, based on your creditworthiness and other factors.",
     "rewards_summary": "Earn 6X points on eligible JetBlue purchases, 2X points at restaurants and eligible grocery stores, and 1X points on all other purchases.",
-    "signup_bonus": "Earn 70,000 bonus points after qualifying account activity.",
+    "signup_bonus": "Earn 70,000 bonus points after spending $1,000 on purchases and paying the annual fee in full, both within the first 90 days.",
     "recommended_credit_score": null,
     "foreign_transaction_fee": "None",
     "tags": [
@@ -2567,6 +3101,22 @@
         "quote": "1X points on all other purchases"
       }
     ],
+    "credits": [
+      {
+        "name": "Annual bonus points",
+        "amount": 5000.0,
+        "per": "year",
+        "kind": "anniversary_points",
+        "quote": "5,000 bonus points each year after your JetBlue Plus Card account anniversary"
+      },
+      {
+        "name": "Statement credit for JetBlue Vacations",
+        "amount": 100.0,
+        "per": "year",
+        "kind": "merchant",
+        "quote": "Receive a $100 statement credit after you purchase a JetBlue Vacations package of $100 or more with your JetBlue Plus Card."
+      }
+    ],
     "id": "f1f12706-0fae-4e1c-a93f-86a2e1456828",
     "source_image_url": "https://cards.barclaycardus.com/content/dam/bcuspublic/card-plastic/card-front/JBE_card_Plus_WE_Flat_230x157.png"
   },
@@ -2578,7 +3128,7 @@
     "annual_fee": 499,
     "apr_range": "19.74% to 29.74%, based on your creditworthiness and other factors. This APR will vary with the market based on the Prime Rate.",
     "apr_intro": "0% introductory APR for the first twelve billing cycles following each balance transfer that posts to your account within 45 days of account opening.",
-    "apr_regular": "19.74% to 29.74%, based on your creditworthiness and other factors. This APR will vary with the market based on the Prime Rate.",
+    "apr_regular": "19.74% to 29.74%, based on your creditworthiness and other factors.",
     "rewards_summary": "Earn 6X points on eligible JetBlue purchases, 2X points at restaurants and eligible grocery stores, and 1X points on all other purchases.",
     "signup_bonus": "Earn 90,000 bonus points after qualifying account activity",
     "recommended_credit_score": null,
@@ -2613,6 +3163,29 @@
         "unit": "points",
         "cap": null,
         "quote": "1X points on all other purchases"
+      }
+    ],
+    "credits": [
+      {
+        "name": "Annual Travel Credit",
+        "amount": 300.0,
+        "per": "year",
+        "kind": "travel_broad",
+        "quote": "Earn up to $300 in statement credits on TrueBlue Travel purchases per calendar year"
+      },
+      {
+        "name": "Global Entry or TSA PreCheck Credit",
+        "amount": 120.0,
+        "per": "4_years",
+        "kind": "trusted_traveler",
+        "quote": "Up to $120 application fee statement credit every 4 years for Global Entry or TSA PreCheck"
+      },
+      {
+        "name": "Annual Bonus Points",
+        "amount": 5000.0,
+        "per": "year",
+        "kind": "anniversary_points",
+        "quote": "5,000 bonus points each year after your JetBlue Premier Card account anniversary"
       }
     ],
     "id": "c91d68cf-9908-4330-bb88-bda59944aee4",
@@ -2655,6 +3228,22 @@
         "quote": "Earn 1 mile per $1 spent on all other purchases."
       }
     ],
+    "credits": [
+      {
+        "name": "Lounge Access",
+        "amount": null,
+        "per": "year",
+        "kind": "lounge",
+        "quote": "Receive lounge access with two complimentary Lufthansa Business Lounge Vouchers annually."
+      },
+      {
+        "name": "Annual Companion Ticket",
+        "amount": null,
+        "per": "year",
+        "kind": "other",
+        "quote": "Receive an Annual Companion Ticket after each account anniversary (taxes and fees apply)."
+      }
+    ],
     "id": "8d157b85-27dc-4fc9-ac00-a928cb46d67c",
     "source_image_url": "https://cards.barclaycardus.com/content/dam/bcuspublic/card-plastic/card-front/LFT_DFW1ZLF1.png"
   },
@@ -2681,26 +3270,13 @@
     "reward_rates": [
       {
         "category": "other",
-        "rate": 1.0,
-        "unit": "points",
-        "cap": null,
-        "quote": "Earn 1X points for every $1 spent everywhere else where Mastercard is accepted"
-      },
-      {
-        "category": "dining",
-        "rate": 3.0,
-        "unit": "points",
-        "cap": null,
-        "quote": "Earn 3X points for every $1 at all eligible retail apparel brands"
-      },
-      {
-        "category": "groceries",
         "rate": 5.0,
         "unit": "points",
         "cap": null,
         "quote": "Earn 5X points for every $1 spent at the Gap Inc. family of brands"
       }
     ],
+    "credits": [],
     "id": "124083df-65ae-4530-9eea-75b40997f327",
     "source_image_url": "https://cards.barclaycardus.com/content/dam/bcuspublic/card-plastic/card-front/ON_Encore_CD_Flat_Card_Art_230x157.png"
   },
@@ -2713,7 +3289,7 @@
     "apr_range": "19.49% to 29.74%, based on your creditworthiness and other factors. This APR will vary with the market based on the Prime Rate.",
     "apr_intro": "0% introductory APR for the first fifteen billing cycles following each balance transfer that posts to your account within 45 days of account opening.",
     "apr_regular": "19.49% to 29.74%, based on your creditworthiness and other factors.",
-    "rewards_summary": "Earn 5X Rewards for every $1 spent on all eligible RCI purchases, 2X Rewards for every $1 spent on all eligible travel purchases, and 1X Rewards for every $1 spent on all other purchases.",
+    "rewards_summary": "Earn 5X Rewards for every $1 spent on all eligible RCI purchases, 2X Rewards on eligible travel purchases, and 1X Rewards on all other purchases.",
     "signup_bonus": "5,000 Bonus Rewards after making your first purchase",
     "recommended_credit_score": null,
     "foreign_transaction_fee": "None",
@@ -2729,16 +3305,25 @@
       {
         "category": "travel",
         "rate": 2.0,
-        "unit": "percent",
+        "unit": "points",
         "cap": null,
         "quote": "Earn 2X Rewards for every $1 spent on all eligible travel including rideshare, gas, and EV charging purchases."
       },
       {
         "category": "other",
         "rate": 5.0,
-        "unit": "percent",
+        "unit": "points",
         "cap": null,
         "quote": "Earn 5X Rewards for every $1 spent on all eligible RCI purchases."
+      }
+    ],
+    "credits": [
+      {
+        "name": "Vacation Credit",
+        "amount": 250.0,
+        "per": "year",
+        "kind": "brand_travel",
+        "quote": "$250 USD Vacation Credit after spending $10,000 in net purchases each calendar year."
       }
     ],
     "id": "ed1cdaa0-be58-4a57-bb6f-92d73ea456b1",
@@ -2753,7 +3338,7 @@
     "apr_range": "18.74% to 29.74%, based on your creditworthiness and other factors.",
     "apr_intro": "0% introductory APR for the first fifteen billing cycles following each balance transfer that posts to your account within 45 days of account opening.",
     "apr_regular": "18.74% to 29.74%, based on your creditworthiness and other factors.",
-    "rewards_summary": "Earn 1.529% cash back rewards on your purchases when your Upromise Program account is linked to an eligible College Savings Plan. Earn 1.25% cash back rewards on your purchases if your Upromise Program account is not linked to a College Savings Plan.",
+    "rewards_summary": "Earn 1.529% cash back rewards on your purchases when your Upromise Program account is linked to an eligible College Savings Plan.",
     "signup_bonus": "$200 Bonus Cash Back Rewards after spending $1,000 on purchases in the first 90 days",
     "recommended_credit_score": null,
     "foreign_transaction_fee": "None",
@@ -2763,7 +3348,7 @@
       "personal"
     ],
     "best_for": "Maximizing Cash Back",
-    "top_perk": "$0 Fraud Liability Protection",
+    "top_perk": "Free online access to your FICO® Credit Score.",
     "image_url": "/card-art/056ce14d-dfbe-4c92-a0c0-f21a8201b4b5.webp",
     "reward_rates": [
       {
@@ -2774,6 +3359,7 @@
         "quote": "Earn 1.529% Cash Back Rewards on your purchases when your Upromise Program account is linked to an eligible College Savings Plan."
       }
     ],
+    "credits": [],
     "id": "056ce14d-dfbe-4c92-a0c0-f21a8201b4b5",
     "source_image_url": "https://cards.barclaycardus.com/content/dam/bcuspublic/card-plastic/card-front/UPR_card_rRGB_Upromise_WM_230x157.png"
   },
@@ -2785,21 +3371,20 @@
     "annual_fee": 395,
     "apr_range": "19.49% to 29.99%, based on your creditworthiness and other factors. This APR will vary with the market based on the Prime Rate.",
     "apr_intro": "0% introductory APR for the first 15 billing cycles following each balance transfer that posts to your account within 45 days of account opening.",
-    "apr_regular": "19.49% to 29.99%, based on your creditworthiness and other factors. This APR will vary with the market based on the Prime Rate.",
-    "rewards_summary": "Earn 8 points per $1 spent on eligible purchases made at Hotels by Wyndham, 4 points per $1 spent on eligible dining, grocery store purchases, and travel purchases, and 1 point per $1 spent on all other purchases.",
-    "signup_bonus": "Earn up to 120,000 bonus points after spending $6,000 on qualifying purchases and paying the annual fee in full, both within the first 120 days, and also earn 30,000 bonus points after spending $750 at Hotels by Wyndham in the first 180 days.",
+    "apr_regular": "19.49% to 29.99%, based on your creditworthiness and other factors.",
+    "rewards_summary": "Earn 8 points per $1 spent on eligible purchases made at Hotels by Wyndham, 4 points per $1 spent on dining and grocery store purchases, and 1 point per $1 spent on all other purchases.",
+    "signup_bonus": "Earn up to 120,000 bonus points after meeting qualifying spending requirements.",
     "recommended_credit_score": null,
     "foreign_transaction_fee": "None",
     "tags": [
-      "travel",
       "dining",
       "groceries",
       "hotels",
       "premium",
       "personal"
     ],
-    "best_for": "Casual Travelers",
-    "top_perk": "$100 statement credit after making eligible hotel purchases",
+    "best_for": "Foodies",
+    "top_perk": "Automatically receive a Wyndham Rewards DIAMOND member level and enjoy suite upgrades.",
     "image_url": "/card-art/2f2f5aef-6bcf-49f2-b865-d2ab7870e863.webp",
     "reward_rates": [
       {
@@ -2824,6 +3409,43 @@
         "quote": "Earn 1 point per $1 spent on all other purchases (excluding Wyndham Vacation Club down payments)."
       }
     ],
+    "credits": [
+      {
+        "name": "Hotel Purchases Credit",
+        "amount": 100.0,
+        "per": "year",
+        "kind": "merchant",
+        "quote": "$100: Statement Credit after making Eligible Hotel Purchases."
+      },
+      {
+        "name": "Meal Delivery Services Credit",
+        "amount": 120.0,
+        "per": "year",
+        "kind": "merchant",
+        "quote": "Enjoy up to $10 in statement credits back each month--up to $120 each calendar year--after making qualifying meal delivery purchases with your card."
+      },
+      {
+        "name": "Streaming Services Credit",
+        "amount": 100.0,
+        "per": "year",
+        "kind": "merchant",
+        "quote": "Enjoy up to $100 in statement credits back each calendar year after making qualifying streaming service purchases with your card."
+      },
+      {
+        "name": "Wholesale Membership Club Credit",
+        "amount": 65.0,
+        "per": "year",
+        "kind": "merchant",
+        "quote": "$65: Statement Credit after making Eligible Wholesale Membership Club Purchases."
+      },
+      {
+        "name": "TSA Precheck or Global Entry Credit",
+        "amount": 120.0,
+        "per": "4_years",
+        "kind": "trusted_traveler",
+        "quote": "$120: Statement Credit after applying for TSA Precheck or Global Entry."
+      }
+    ],
     "id": "2f2f5aef-6bcf-49f2-b865-d2ab7870e863",
     "source_image_url": "https://cards.barclaycardus.com/content/dam/bcuspublic/card-plastic/card-front/WYP_EarnerPremier_VS_noBleed_230x157.png"
   },
@@ -2835,8 +3457,8 @@
     "annual_fee": 149,
     "apr_range": "19.74% to 29.74%, based on your creditworthiness and other factors. This APR will vary with the market based on the Prime Rate.",
     "apr_intro": "0% promotional APR for 6 billing cycles on all Wyndham Timeshare Purchases",
-    "apr_regular": "19.74% to 29.74%, based on your creditworthiness and other factors. This APR will vary with the market based on the Prime Rate.",
-    "rewards_summary": "Earn 8 points per $1 spent on eligible purchases made at Hotels by Wyndham and 5 points per $1 spent on eligible Vacation Club, gas, and office supply store purchases.",
+    "apr_regular": "19.74% to 29.74%",
+    "rewards_summary": "Earn 8 points per $1 spent on eligible purchases made at Hotels by Wyndham, 5 points per $1 spent on eligible Vacation Club, gas, and office supply store purchases, and 1 point per $1 spent on all other purchases.",
     "signup_bonus": "Earn up to 100,000 bonus points",
     "recommended_credit_score": null,
     "foreign_transaction_fee": "None",
@@ -2872,6 +3494,22 @@
         "quote": "Earn 1 point per $1 spent on all other purchases (excluding Wyndham Vacation Club down payments)."
       }
     ],
+    "credits": [
+      {
+        "name": "Anniversary Bonus",
+        "amount": 15000.0,
+        "per": "year",
+        "kind": "anniversary_points",
+        "quote": "Receive 15,000 bonus points each anniversary year after payment of your annual fee"
+      },
+      {
+        "name": "Wholesale Membership Club Credit",
+        "amount": 65.0,
+        "per": "year",
+        "kind": "merchant",
+        "quote": "$65 Annual Wholesale Statement Credit"
+      }
+    ],
     "id": "6631599e-0ff8-4049-a225-dcb2a9ed6b92",
     "source_image_url": "https://cards.barclaycardus.com/content/dam/bcuspublic/card-plastic/card-front/BWY-Earner-Business-Card_VS_noBleed_230x157.png"
   },
@@ -2883,20 +3521,21 @@
     "annual_fee": 0,
     "apr_range": "19.49% to 29.99%, based on your creditworthiness and other factors. This APR will vary with the market based on the Prime Rate.",
     "apr_intro": "0% introductory APR for the first 15 billing cycles following each balance transfer that posts to your account within 45 days of account opening.",
-    "apr_regular": "19.49% to 29.99%, based on your creditworthiness and other factors. This APR will vary with the market based on the Prime Rate.",
-    "rewards_summary": "Earn 5 points per $1 spent on eligible purchases made at Hotels by Wyndham, 2 points per $1 spent on dining and grocery store purchases, and 1 point per $1 spent on all other purchases.",
+    "apr_regular": "19.49% to 29.99%",
+    "rewards_summary": "Earn 5 points per $1 spent on eligible purchases made at Hotels by Wyndham, 2 points per $1 spent on dining, grocery store purchases, and gas purchases, and 1 point per $1 spent on all other purchases.",
     "signup_bonus": "Earn up to 75,000 bonus points",
     "recommended_credit_score": null,
     "foreign_transaction_fee": "None",
     "tags": [
       "dining",
+      "gas",
       "groceries",
       "hotels",
       "no-fee",
       "personal"
     ],
     "best_for": "Foodies",
-    "top_perk": "Automatically receive a Wyndham Rewards GOLD member level and enjoy perks like preferred room selection, late checkout, and more.",
+    "top_perk": "Automatic GOLD Level Benefits",
     "image_url": "/card-art/578be95a-fd9c-40af-a3a5-114053bfd955.webp",
     "reward_rates": [
       {
@@ -2911,14 +3550,7 @@
         "rate": 2.0,
         "unit": "points",
         "cap": null,
-        "quote": "Earn 2 points per $1 spent on eligible dining, grocery store purchases (excluding Target and Walmart) and gas purchases."
-      },
-      {
-        "category": "gas",
-        "rate": 2.0,
-        "unit": "points",
-        "cap": null,
-        "quote": "Earn 2 points per $1 spent on eligible dining, grocery store purchases (excluding Target and Walmart) and gas purchases."
+        "quote": "Earn 2 points per $1 spent on eligible dining, grocery store purchases (excluding Target® and Walmart®) and gas purchases."
       },
       {
         "category": "other",
@@ -2926,6 +3558,15 @@
         "unit": "points",
         "cap": null,
         "quote": "Earn 1 point per $1 spent on all other purchases (excluding Wyndham Vacation Club down payments)."
+      }
+    ],
+    "credits": [
+      {
+        "name": "Anniversary Bonus Points",
+        "amount": 7500.0,
+        "per": "year",
+        "kind": "anniversary_points",
+        "quote": "Earn 7,500 bonus points each anniversary year if you spend $15,000 on eligible purchases."
       }
     ],
     "id": "578be95a-fd9c-40af-a3a5-114053bfd955",
@@ -2938,9 +3579,9 @@
     "issuer": "Barclays US",
     "annual_fee": 95,
     "apr_range": "19.49% to 29.99%, based on your creditworthiness and other factors. This APR will vary with the market based on the Prime Rate.",
-    "apr_intro": "0% promotional APR for 6 billing cycles on all Wyndham Timeshare Purchases.",
+    "apr_intro": "0% introductory APR for the first 15 billing cycles following each balance transfer that posts to your account within 45 days of account opening.",
     "apr_regular": "19.49% to 29.99%, based on your creditworthiness and other factors.",
-    "rewards_summary": "Earn 6 points per $1 spent on eligible purchases made at Hotels by Wyndham, 4 points per $1 spent on eligible dining, grocery store purchases, and travel purchases, and 1 point per $1 spent on all other purchases.",
+    "rewards_summary": "Earn 6 points per $1 spent on eligible purchases made at Hotels by Wyndham, 4 points per $1 spent on dining, grocery store purchases, and travel, and 1 point per $1 spent on all other purchases.",
     "signup_bonus": "Earn up to 100,000 bonus points",
     "recommended_credit_score": null,
     "foreign_transaction_fee": "None",
@@ -2971,18 +3612,20 @@
         "quote": "Earn 4 points per $1 spent on eligible dining, grocery store purchases (excluding Target® and Walmart®) and travel purchases."
       },
       {
-        "category": "groceries",
-        "rate": 4.0,
-        "unit": "points",
-        "cap": null,
-        "quote": "Earn 4 points per $1 spent on eligible dining, grocery store purchases (excluding Target® and Walmart®) and travel purchases."
-      },
-      {
         "category": "other",
         "rate": 1.0,
         "unit": "points",
         "cap": null,
         "quote": "Earn 1 point per $1 spent on all other purchases (excluding Wyndham Vacation Club down payments)."
+      }
+    ],
+    "credits": [
+      {
+        "name": "Anniversary Bonus",
+        "amount": 15000.0,
+        "per": "year",
+        "kind": "anniversary_points",
+        "quote": "Receive 15,000 bonus points each anniversary year after payment of your annual fee."
       }
     ],
     "id": "61946cb2-1615-4014-b58e-c4e5d6ec6c46",
@@ -2994,10 +3637,10 @@
     "card_name": "Bass Pro Shops and Cabela's CLUB Business card",
     "issuer": "Capital One",
     "annual_fee": 0,
-    "apr_range": "7.99% for purchases made with Bass Pro Shops and Cabela's",
-    "apr_intro": "None",
+    "apr_range": "7.99% for purchases at Bass Pro Shops and Cabela's",
+    "apr_intro": null,
     "apr_regular": "7.99%",
-    "rewards_summary": "Earn 1.5% points back on purchases everywhere Mastercard is accepted and 5% points back on all Bass Pro Shops and Cabela's purchases.",
+    "rewards_summary": "Earn 5% back in CLUB Points on all Bass Pro Shops and Cabela's purchases and 1.5% back on all other purchases.",
     "signup_bonus": "Earn $75 in CLUB Points when you spend $1,000 on your Bass Pro Shops & Cabela's CLUB Business card within 60 days of account approval.",
     "recommended_credit_score": "Good-Excellent",
     "foreign_transaction_fee": "None",
@@ -3025,8 +3668,9 @@
         "quote": "1.5% points back on purchases everywhere Mastercard is accepted."
       }
     ],
+    "credits": [],
     "id": "9bf36133-b277-4098-b50f-3941f412fff8",
-    "source_image_url": "https://ecm.capitalone.com/WCM/card/products/og/smallbusinesscard_club_120120_317x200.png"
+    "source_image_url": "https://ecm.capitalone.com/WCM/card/products/smallbusinesscard_club_120120/mobile.jpg"
   },
   {
     "url": "https://www.capitalone.com/credit-cards/bass-pro-shops/",
@@ -3037,8 +3681,8 @@
     "apr_range": "9.99% Variable",
     "apr_intro": "None",
     "apr_regular": "9.99% Variable",
-    "rewards_summary": "CLUB Members earn points back on purchases, with higher earn rates for those who achieve Silver or Black status based on annual spending.",
-    "signup_bonus": "$20 in CLUB Points upon approval, plus $20 in CLUB Points after making 5 purchases anywhere Mastercard is accepted within 30 days of account approval.",
+    "rewards_summary": "CLUB Members earn up to 5% back in CLUB Points based on their spending tier, with no annual spend requirement for the Classic tier.",
+    "signup_bonus": "$20 in CLUB Points upon approval, plus $20 after 5 purchases within 30 days of account approval.",
     "recommended_credit_score": "Good-Excellent",
     "foreign_transaction_fee": "None",
     "tags": [
@@ -3058,6 +3702,7 @@
         "quote": "Earn 5% points back"
       }
     ],
+    "credits": [],
     "id": "84fea064-ad29-40f5-8994-e00960dfed5a",
     "source_image_url": "https://ecm.capitalone.com/WCM/card/products/bass_pro_cardart.png"
   },
@@ -3082,6 +3727,7 @@
     "top_perk": null,
     "image_url": "/card-art/8b53e907-3529-45e9-83f9-05fc7ea9ef38.webp",
     "reward_rates": [],
+    "credits": [],
     "id": "8b53e907-3529-45e9-83f9-05fc7ea9ef38",
     "source_image_url": "https://ecm.capitalone.com/WCM/card/pages/bjsgraphtag.png"
   },
@@ -3094,8 +3740,8 @@
     "apr_range": "9.99% Variable",
     "apr_intro": "None",
     "apr_regular": "9.99% Variable",
-    "rewards_summary": "Earn CLUB Points for purchases at Bass Pro Shops and Cabela's, with higher earn rates for higher spending tiers.",
-    "signup_bonus": "$20 in CLUB Points upon approval, plus $20 after 5 purchases within 30 days.",
+    "rewards_summary": "CLUB Members earn up to 5% back in CLUB Points based on their spending tier, with no annual spend requirement for the base tier.",
+    "signup_bonus": "$20 in CLUB Points upon approval, plus $20 in CLUB Points after 5 purchases within 30 days of account approval.",
     "recommended_credit_score": "Good-Excellent",
     "foreign_transaction_fee": "None",
     "tags": [
@@ -3115,6 +3761,7 @@
         "quote": "Earn 5% points back"
       }
     ],
+    "credits": [],
     "id": "ed113fb4-6ed0-44d0-9ff8-59eda85e376c",
     "source_image_url": "https://ecm.capitalone.com/WCM/card/products/cabelas_card_art_2023/mobile.png"
   },
@@ -3127,7 +3774,7 @@
     "apr_range": null,
     "apr_intro": null,
     "apr_regular": null,
-    "rewards_summary": "Earn 7.5% in rewards on Kohl's purchases every day, plus earn 3% in rewards on gas, 2% in rewards at grocery stores, and 1% in rewards on all other purchases.",
+    "rewards_summary": "Earn 7.5% in rewards at Kohl's every day, plus additional rewards on gas and grocery purchases.",
     "signup_bonus": "None",
     "recommended_credit_score": "Good-Excellent",
     "foreign_transaction_fee": null,
@@ -3138,31 +3785,32 @@
       "personal"
     ],
     "best_for": "Commuters",
-    "top_perk": "24-hour Visa Signature Concierge",
+    "top_perk": "Monthly exclusive savings opportunities",
     "image_url": "/card-art/48a8ad07-d338-4037-a38a-f96bbf0e0811.webp",
     "reward_rates": [
       {
-        "category": "groceries",
-        "rate": 2.0,
+        "category": "other",
+        "rate": 7.5,
         "unit": "percent",
         "cap": null,
-        "quote": "2% in rewards at grocery stores"
+        "quote": "Earn 7.5% in rewards on Kohl's purchases every day."
       },
       {
         "category": "gas",
         "rate": 3.0,
         "unit": "percent",
         "cap": null,
-        "quote": "3% in rewards on gas"
+        "quote": "3% in rewards on gas."
       },
       {
-        "category": "other",
-        "rate": 7.5,
+        "category": "groceries",
+        "rate": 2.0,
         "unit": "percent",
         "cap": null,
-        "quote": "Earn 7.5% in rewards on Kohl's purchases every day"
+        "quote": "2% in rewards at grocery stores."
       }
     ],
+    "credits": [],
     "id": "48a8ad07-d338-4037-a38a-f96bbf0e0811",
     "source_image_url": "https://ecm.capitalone.com/WCM/card/products/kohls_visa_sig_master_rgb_300x189.png"
   },
@@ -3173,21 +3821,29 @@
     "issuer": "Capital One",
     "annual_fee": 0,
     "apr_range": "29.24% variable APR",
-    "apr_intro": "None",
-    "apr_regular": "29.24% variable",
-    "rewards_summary": "The card is designed for building credit with no rewards structure mentioned.",
+    "apr_intro": null,
+    "apr_regular": "29.24% variable APR",
+    "rewards_summary": "The card does not offer rewards.",
     "signup_bonus": "None",
     "recommended_credit_score": "Fair",
     "foreign_transaction_fee": null,
     "tags": [
-      "students",
       "no-fee",
       "personal"
     ],
-    "best_for": "Building Credit",
+    "best_for": "Everyday Spend",
     "top_perk": null,
     "image_url": "/card-art/cc7b978a-cc3b-4d1a-b29c-e5d48a963580.webp",
     "reward_rates": [],
+    "credits": [
+      {
+        "name": "CreditWise",
+        "amount": null,
+        "per": "month",
+        "kind": "other",
+        "quote": "Enjoy unlimited access to your credit score and tools to help you monitor your credit profile with CreditWise from Capital One."
+      }
+    ],
     "id": "cc7b978a-cc3b-4d1a-b29c-e5d48a963580",
     "source_image_url": "https://ecm.capitalone.com/WCM/digital/reviews-forms/us-card/cardart_prim_323x203.png"
   },
@@ -3200,9 +3856,9 @@
     "apr_range": "29.24% variable APR",
     "apr_intro": "None",
     "apr_regular": "29.24% variable",
-    "rewards_summary": "This card helps you build or rebuild your credit with responsible use and reports to the three major credit bureaus.",
+    "rewards_summary": "The card does not offer rewards but helps build credit with responsible use.",
     "signup_bonus": "None",
-    "recommended_credit_score": null,
+    "recommended_credit_score": "Good/Excellent",
     "foreign_transaction_fee": "None",
     "tags": [
       "no-fee",
@@ -3212,6 +3868,7 @@
     "top_perk": "No foreign transaction fees",
     "image_url": "/card-art/07f284a9-554e-4df1-9d9a-b6ec215e8d23.webp",
     "reward_rates": [],
+    "credits": [],
     "id": "07f284a9-554e-4df1-9d9a-b6ec215e8d23",
     "source_image_url": "https://ecm.capitalone.com/WCM/card/products/plat_cardart_prim_323x203/mobile.png"
   },
@@ -3221,38 +3878,47 @@
     "card_name": "Pottery Barn Key Rewards Visa",
     "issuer": "Capital One",
     "annual_fee": 0,
-    "apr_range": "29.24% Variable",
+    "apr_range": "29.24% variable APR",
     "apr_intro": "None",
-    "apr_regular": "29.24% Variable",
+    "apr_regular": "29.24% variable APR",
     "rewards_summary": "Earn 10% back in rewards for your first 30 days at Pottery Barn, Williams Sonoma, West Elm & more, and 5% back thereafter.",
     "signup_bonus": "10% back in rewards for your first 30 days",
     "recommended_credit_score": "Good-Excellent",
-    "foreign_transaction_fee": "None",
+    "foreign_transaction_fee": null,
     "tags": [
       "no-fee",
       "personal"
     ],
     "best_for": "Everyday Spend",
     "top_perk": "$25 birthday reward sent annually to your email.",
-    "image_url": null,
+    "image_url": "/card-art/822e1516-ea8e-4f54-a459-b67143e0a10b.webp",
     "reward_rates": [
       {
         "category": "other",
         "rate": 5.0,
         "unit": "percent",
-        "cap": "first 30 days",
-        "quote": "10% back for your first 30 days at Pottery Barn, Williams Sonoma, West Elm & more."
+        "cap": null,
+        "quote": "5% thereafter at Pottery Barn, Williams Sonoma, West Elm, Rejuvenation and more."
       },
       {
-        "category": "dining",
+        "category": "groceries",
         "rate": 4.0,
         "unit": "percent",
         "cap": null,
         "quote": "4% back on grocery stores, dining, fast food & food delivery."
       }
     ],
+    "credits": [
+      {
+        "name": "Birthday Reward",
+        "amount": 25.0,
+        "per": "year",
+        "kind": "other",
+        "quote": "$25 birthday reward sent annually to your email."
+      }
+    ],
     "id": "822e1516-ea8e-4f54-a459-b67143e0a10b",
-    "source_image_url": "https://ecm.capitalone.com/WCM/card/pages/open-graph/potterybarn.png"
+    "source_image_url": "https://ecm.capitalone.com/WCM/card/products/pb_ca_cb_rgb.png"
   },
   {
     "url": "https://www.capitalone.com/credit-cards/cash-back/quicksilver/",
@@ -3284,6 +3950,7 @@
         "quote": "1.5% cash back on every purchase"
       }
     ],
+    "credits": [],
     "id": "da82f153-ff86-44eb-b58f-5fcc54d8bbdb",
     "source_image_url": "https://ecm.capitalone.com/WCM/card/products/quicksilver_cardart.png"
   },
@@ -3317,6 +3984,7 @@
         "quote": "Earn unlimited 1.5% cash back on every purchase, every day."
       }
     ],
+    "credits": [],
     "id": "b8e49f54-c44b-4d30-8372-3e0c4252fb8c",
     "source_image_url": "https://ecm.capitalone.com/WCM/card/products/quicksilver_cardart.png"
   },
@@ -3328,7 +3996,7 @@
     "annual_fee": 0,
     "apr_range": "29.24% variable APR",
     "apr_intro": "None",
-    "apr_regular": "29.24% variable",
+    "apr_regular": "29.24% variable APR",
     "rewards_summary": "Earn unlimited 1.5% cash back on every purchase, every day.",
     "signup_bonus": "None",
     "recommended_credit_score": "Fair",
@@ -3350,6 +4018,7 @@
         "quote": "Earn unlimited 1.5% cash back on every purchase, every day."
       }
     ],
+    "credits": [],
     "id": "65d8357e-2c50-4f69-9caf-d24d8f711bc5",
     "source_image_url": "https://ecm.capitalone.com/WCM/card/products/quicksilver_cardart.png"
   },
@@ -3360,7 +4029,7 @@
     "issuer": "Capital One",
     "annual_fee": 0,
     "apr_range": "18.74% - 28.74% variable APR",
-    "apr_intro": null,
+    "apr_intro": "None",
     "apr_regular": "18.74% - 28.74% variable APR",
     "rewards_summary": "Earn unlimited 1.5% cash back on every purchase, every day.",
     "signup_bonus": "Earn a one-time $50 cash bonus once you spend $100 on purchases within 3 months from account opening.",
@@ -3384,6 +4053,7 @@
         "quote": "Earn unlimited 1.5% cash back on every purchase, every day."
       }
     ],
+    "credits": [],
     "id": "2cd5ba5c-fecc-465d-b6fe-09743e07a571",
     "source_image_url": "https://ecm.capitalone.com/WCM/card/products/qs_cardart_prim_1290x812_2.png"
   },
@@ -3406,7 +4076,7 @@
       "personal"
     ],
     "best_for": "Maximizing Cash Back",
-    "top_perk": null,
+    "top_perk": "Automatic Credit Line Reviews",
     "image_url": "/card-art/96b75b6d-1d7a-4d7a-bc71-a01dccc28885.webp",
     "reward_rates": [
       {
@@ -3417,6 +4087,7 @@
         "quote": "Earn unlimited 1.5% cash back on every purchase."
       }
     ],
+    "credits": [],
     "id": "96b75b6d-1d7a-4d7a-bc71-a01dccc28885",
     "source_image_url": "https://ecm.capitalone.com/WCM/card/products/quicksilver_one_cardart.png"
   },
@@ -3426,9 +4097,9 @@
     "card_name": "REI Co-op Mastercard",
     "issuer": "Capital One",
     "annual_fee": 0,
-    "apr_range": null,
-    "apr_intro": "None",
-    "apr_regular": null,
+    "apr_range": "17.49%-28.49% variable APR",
+    "apr_intro": null,
+    "apr_regular": "17.49%-28.49% variable APR",
     "rewards_summary": "Earn 5% in card rewards on REI Co-op purchases and 1.5% on all other purchases.",
     "signup_bonus": "$100 REI gift card after first purchase outside of REI within 60 days from account opening.",
     "recommended_credit_score": "Good-Excellent",
@@ -3456,6 +4127,7 @@
         "quote": "1.5% in card rewards on all other purchases."
       }
     ],
+    "credits": [],
     "id": "878a897b-3287-48d0-8261-f5db152703c0",
     "source_image_url": "https://ecm.capitalone.com/WCM/card/pages/rei/rei-co-op-mastercard.png"
   },
@@ -3486,27 +4158,35 @@
     "image_url": "/card-art/f37e57e0-3361-4571-9a3d-c09ef557251b.webp",
     "reward_rates": [
       {
-        "category": "travel",
-        "rate": 5.0,
-        "unit": "percent",
-        "cap": null,
-        "quote": "Earn unlimited 5% cash back on hotels, vacation rentals and rental cars booked through Capital One Travel."
-      },
-      {
         "category": "dining",
         "rate": 3.0,
         "unit": "percent",
         "cap": null,
-        "quote": "Earn unlimited 3% cash back at grocery stores, on dining, entertainment and popular streaming services."
+        "quote": "Earn unlimited 3% cash back on food and fun"
+      },
+      {
+        "category": "groceries",
+        "rate": 3.0,
+        "unit": "percent",
+        "cap": null,
+        "quote": "Earn unlimited 3% cash back at grocery stores"
+      },
+      {
+        "category": "travel",
+        "rate": 5.0,
+        "unit": "percent",
+        "cap": null,
+        "quote": "Earn unlimited 5% cash back on hotels, vacation rentals and rental cars booked through Capital One Travel"
       },
       {
         "category": "other",
         "rate": 1.0,
         "unit": "percent",
         "cap": null,
-        "quote": "Earn unlimited 1% cash back on all other purchases and rewards don’t expire for the life of the account."
+        "quote": "Earn unlimited 1% cash back on all other purchases"
       }
     ],
+    "credits": [],
     "id": "f37e57e0-3361-4571-9a3d-c09ef557251b",
     "source_image_url": "https://ecm.capitalone.com/WCM/card/products/new-savor-card-art/mobile.png"
   },
@@ -3539,16 +4219,24 @@
         "rate": 3.0,
         "unit": "percent",
         "cap": null,
-        "quote": "Earn unlimited 3% cash back at grocery stores"
+        "quote": "Earn unlimited 3% cash back at grocery stores, on dining, entertainment and popular streaming services."
       },
       {
-        "category": "other",
-        "rate": 1.0,
+        "category": "dining",
+        "rate": 3.0,
         "unit": "percent",
         "cap": null,
-        "quote": "1% cash back on all other purchases."
+        "quote": "Earn unlimited 3% cash back at grocery stores, on dining, entertainment and popular streaming services."
+      },
+      {
+        "category": "streaming",
+        "rate": 3.0,
+        "unit": "percent",
+        "cap": null,
+        "quote": "Earn unlimited 3% cash back at grocery stores, on dining, entertainment and popular streaming services."
       }
     ],
+    "credits": [],
     "id": "1c4f8c2b-dd65-45db-adda-fdf555b4a0da",
     "source_image_url": "https://ecm.capitalone.com/WCM/card/products/new-savor-card-art/mobile.png"
   },
@@ -3561,7 +4249,7 @@
     "apr_range": "18.74% - 28.74% variable APR",
     "apr_intro": null,
     "apr_regular": "18.74% - 28.74% variable APR",
-    "rewards_summary": "Earn unlimited 3% cash back at grocery stores and on dining, and 1% on all other purchases.",
+    "rewards_summary": "Earn unlimited 3% cash back at grocery stores and on dining, entertainment, and popular streaming services.",
     "signup_bonus": "Earn a one-time $50 cash bonus once you spend $100 on purchases within 3 months from account opening",
     "recommended_credit_score": null,
     "foreign_transaction_fee": "None",
@@ -3582,16 +4270,10 @@
         "rate": 3.0,
         "unit": "percent",
         "cap": null,
-        "quote": "Earn unlimited 3% cash back at grocery stores and on dining."
-      },
-      {
-        "category": "dining",
-        "rate": 3.0,
-        "unit": "percent",
-        "cap": null,
-        "quote": "Earn unlimited 3% cash back at grocery stores and on dining."
+        "quote": "Earn unlimited 3% cash back at grocery stores"
       }
     ],
+    "credits": [],
     "id": "9240997c-cb5d-4ce5-9259-48acc646b6f1",
     "source_image_url": "https://ecm.capitalone.com/WCM/card/products/new-savor-card-art/mobile.png"
   },
@@ -3603,7 +4285,7 @@
     "annual_fee": 39,
     "apr_range": "29.24% variable APR",
     "apr_intro": null,
-    "apr_regular": "29.24% variable",
+    "apr_regular": "29.24% variable APR",
     "rewards_summary": "Earn unlimited 3% cash back at grocery stores, on dining, entertainment and popular streaming services, plus 1% cash back on all other purchases.",
     "signup_bonus": "None",
     "recommended_credit_score": "Fair",
@@ -3631,9 +4313,10 @@
         "rate": 1.0,
         "unit": "percent",
         "cap": null,
-        "quote": "plus 1% cash back on all other purchases."
+        "quote": "1% cash back on all other purchases"
       }
     ],
+    "credits": [],
     "id": "da4875eb-0daa-46ae-bcce-56d825e37266",
     "source_image_url": "https://ecm.capitalone.com/WCM/digital/reviews-forms/us-card/cardart_prim_1290x812.png"
   },
@@ -3666,6 +4349,15 @@
         "quote": "Earn 2% in rewards on every purchase, every day."
       }
     ],
+    "credits": [
+      {
+        "name": "AutoPay Discount",
+        "amount": 5.0,
+        "per": "month",
+        "kind": "merchant",
+        "quote": "$5 off per line per month when you use your card for T-Mobile AutoPay (eligible plans only, up to 8 lines)."
+      }
+    ],
     "id": "ea9faf7b-7409-4671-b289-bad10c7fdcae",
     "source_image_url": "https://ecm.capitalone.com/WCM/card/pages/t-mobile-set/t-mobile-card-art/mobile.png"
   },
@@ -3690,6 +4382,7 @@
     "top_perk": null,
     "image_url": "/card-art/b4ae7f75-507f-4ba3-b769-b803b69d852e.webp",
     "reward_rates": [],
+    "credits": [],
     "id": "b4ae7f75-507f-4ba3-b769-b803b69d852e",
     "source_image_url": "https://ecm.capitalone.com/WCM/card/products/partner/unions/ibt-card-art.png"
   },
@@ -3699,13 +4392,13 @@
     "card_name": "The Key Rewards Visa",
     "issuer": "Capital One",
     "annual_fee": 0,
-    "apr_range": "29.24% Variable",
+    "apr_range": "29.24% variable APR",
     "apr_intro": "None",
-    "apr_regular": "29.24% Variable",
-    "rewards_summary": "Earn 10% back in rewards for your first 30 days at participating brands, and 5% thereafter. Additionally, earn 4% back on grocery stores and dining, and 1% back on all other purchases.",
+    "apr_regular": "29.24% variable APR",
+    "rewards_summary": "Earn 10% back in rewards for your first 30 days at participating brands, and 5% thereafter. Additionally, earn 4% back on grocery stores and restaurants, and 1% back everywhere else.",
     "signup_bonus": "10% back in rewards for your first 30 days",
     "recommended_credit_score": "Good-Excellent",
-    "foreign_transaction_fee": "None",
+    "foreign_transaction_fee": null,
     "tags": [
       "dining",
       "groceries",
@@ -3714,14 +4407,14 @@
     ],
     "best_for": "Foodies",
     "top_perk": "$25 birthday reward sent annually to your email.",
-    "image_url": null,
+    "image_url": "/card-art/80b594c2-738c-4494-b891-8a39484d75bb.webp",
     "reward_rates": [
       {
         "category": "other",
-        "rate": 1.0,
+        "rate": 5.0,
         "unit": "percent",
-        "cap": null,
-        "quote": "1% back everywhere else Visa is accepted."
+        "cap": "first 30 days",
+        "quote": "10% back for your first 30 days at Pottery Barn, Williams Sonoma, West Elm & more."
       },
       {
         "category": "dining",
@@ -3729,24 +4422,19 @@
         "unit": "percent",
         "cap": null,
         "quote": "4% back on grocery stores, dining, fast food & food delivery."
-      },
+      }
+    ],
+    "credits": [
       {
-        "category": "travel",
-        "rate": 5.0,
-        "unit": "percent",
-        "cap": null,
-        "quote": "5% thereafter at Pottery Barn, Williams Sonoma, West Elm & more."
-      },
-      {
-        "category": "groceries",
-        "rate": 4.0,
-        "unit": "percent",
-        "cap": null,
-        "quote": "4% back on grocery stores, dining, fast food & food delivery."
+        "name": "Birthday Reward",
+        "amount": 25.0,
+        "per": "year",
+        "kind": "other",
+        "quote": "$25 birthday reward sent annually to your email."
       }
     ],
     "id": "80b594c2-738c-4494-b891-8a39484d75bb",
-    "source_image_url": "https://ecm.capitalone.com/WCM/card/pages/open-graph/thekeyrewards.png"
+    "source_image_url": "https://ecm.capitalone.com/WCM/card/products/kr_ca_cb_rgb.png"
   },
   {
     "url": "https://www.capitalone.com/credit-cards/venture/",
@@ -3757,7 +4445,7 @@
     "apr_range": "19.74% - 28.74% variable APR",
     "apr_intro": null,
     "apr_regular": "19.74% - 28.74% variable",
-    "rewards_summary": "Earn unlimited 2X miles on every purchase, plus 5X miles on hotels, vacation rentals, and rental cars booked through Capital One Travel.",
+    "rewards_summary": "Earn unlimited 2X miles on every purchase, and 5X miles on hotels, vacation rentals, and rental cars booked through Capital One Travel.",
     "signup_bonus": "Earn 75,000 bonus miles once you spend $4,000 on purchases within the first 3 months from account opening.",
     "recommended_credit_score": "Excellent",
     "foreign_transaction_fee": "None",
@@ -3772,18 +4460,34 @@
     "image_url": "/card-art/708bc179-8771-4747-ae84-82d9687289a3.webp",
     "reward_rates": [
       {
-        "category": "travel",
-        "rate": 5.0,
-        "unit": "percent",
-        "cap": null,
-        "quote": "Earn 5X miles on hotels, vacation rentals, and rental cars booked through Capital One Travel."
-      },
-      {
         "category": "other",
         "rate": 2.0,
-        "unit": "percent",
+        "unit": "miles",
         "cap": null,
         "quote": "Get unlimited 2X miles per dollar on every purchase, every day."
+      },
+      {
+        "category": "travel",
+        "rate": 5.0,
+        "unit": "miles",
+        "cap": null,
+        "quote": "Earn 5X miles on hotels, vacation rentals, and rental cars booked through Capital One Travel."
+      }
+    ],
+    "credits": [
+      {
+        "name": "Global Entry or TSA PreCheck Credit",
+        "amount": 120.0,
+        "per": "4_years",
+        "kind": "trusted_traveler",
+        "quote": "Receive up to a $120 credit for Global Entry or TSA PreCheck®."
+      },
+      {
+        "name": "Lifestyle Collection Experience Credit",
+        "amount": 50.0,
+        "per": "year",
+        "kind": "merchant",
+        "quote": "Receive a $50 experience credit on every Lifestyle Collection stay."
       }
     ],
     "id": "708bc179-8771-4747-ae84-82d9687289a3",
@@ -3798,12 +4502,13 @@
     "apr_range": "19.74% - 28.74% variable APR",
     "apr_intro": null,
     "apr_regular": "19.74% - 28.74% variable",
-    "rewards_summary": "Earn double miles on every purchase and even more on every trip, with 10X miles on hotels and rental cars booked through Capital One Travel.",
-    "signup_bonus": "Earn up to 100,000 bonus miles when they’re approved.",
+    "rewards_summary": "Earn double miles on every purchase & even more on every trip, with 10X miles on hotels & rental cars booked through Capital One Travel and 5X miles on flights and vacation rentals.",
+    "signup_bonus": "Refer your friends and family to apply for a Venture X card and earn up to 100,000 bonus miles when they’re approved.",
     "recommended_credit_score": "Excellent",
     "foreign_transaction_fee": "None",
     "tags": [
       "travel",
+      "flights",
       "hotels",
       "premium",
       "personal"
@@ -3815,18 +4520,19 @@
       {
         "category": "travel",
         "rate": 10.0,
-        "unit": "miles",
+        "unit": "percent",
         "cap": null,
         "quote": "10X Miles on hotels & rental cars booked through Capital One Travel"
       },
       {
         "category": "other",
         "rate": 2.0,
-        "unit": "miles",
+        "unit": "percent",
         "cap": null,
         "quote": "2X Miles on all other purchases, every day"
       }
     ],
+    "credits": [],
     "id": "f1d28583-572d-4227-b7de-c393060639c4",
     "source_image_url": "https://ecm.capitalone.com/WCM/card/products/venture-x-card-art.png"
   },
@@ -3869,6 +4575,7 @@
         "quote": "Earn unlimited 5 miles per dollar on hotels, vacation rentals and rental cars booked through Capital One Travel"
       }
     ],
+    "credits": [],
     "id": "9a8e8bf3-3da8-4243-82f8-a685df628079",
     "source_image_url": "https://ecm.capitalone.com/WCM/card/products/ventureone_cardart_prim_323x203/mobile.png"
   },
@@ -3878,9 +4585,9 @@
     "card_name": "VentureOne Rewards for Good Credit",
     "issuer": "Capital One",
     "annual_fee": 0,
-    "apr_range": "29.24% variable APR.",
+    "apr_range": "29.24% variable APR",
     "apr_intro": "None",
-    "apr_regular": "29.24% variable APR.",
+    "apr_regular": "29.24% variable",
     "rewards_summary": "Earn unlimited 1.25 miles per dollar on every purchase and 5 miles per dollar on hotels, vacation rentals and rental cars booked through Capital One Travel.",
     "signup_bonus": "None",
     "recommended_credit_score": "Good",
@@ -3892,7 +4599,7 @@
       "personal"
     ],
     "best_for": "Casual Travelers",
-    "top_perk": "No Foreign Transaction Fees",
+    "top_perk": null,
     "image_url": "/card-art/8206630e-0dcc-4a6c-85f2-a9100bd3bfef.webp",
     "reward_rates": [
       {
@@ -3910,6 +4617,7 @@
         "quote": "Earn unlimited 5 miles per dollar on hotels, vacation rentals and rental cars booked through Capital One Travel"
       }
     ],
+    "credits": [],
     "id": "8206630e-0dcc-4a6c-85f2-a9100bd3bfef",
     "source_image_url": "https://ecm.capitalone.com/WCM/card/products/ventureone_cardart_prim_323x203/mobile.png"
   },
@@ -3919,38 +4627,47 @@
     "card_name": "West Elm Key Rewards Visa",
     "issuer": "Capital One",
     "annual_fee": 0,
-    "apr_range": "29.24% Variable",
+    "apr_range": "29.24% variable APR",
     "apr_intro": "None",
-    "apr_regular": "29.24% Variable",
-    "rewards_summary": "Earn 10% back in rewards for your first 30 days, 5% thereafter at Pottery Barn, Williams Sonoma, West Elm, Rejuvenation and more.",
+    "apr_regular": "29.24% variable APR",
+    "rewards_summary": "Earn 10% back in rewards for your first 30 days, and 5% thereafter at Pottery Barn, Williams Sonoma, West Elm, and more.",
     "signup_bonus": "10% back in rewards for your first 30 days",
     "recommended_credit_score": "Good-Excellent",
-    "foreign_transaction_fee": "None",
+    "foreign_transaction_fee": null,
     "tags": [
       "no-fee",
       "personal"
     ],
     "best_for": "Everyday Spend",
     "top_perk": "$25 birthday reward sent annually to your email.",
-    "image_url": null,
+    "image_url": "/card-art/d9797a43-812e-4556-b653-4d484b503ee5.webp",
     "reward_rates": [
       {
         "category": "other",
         "rate": 5.0,
         "unit": "percent",
         "cap": null,
-        "quote": "5% thereafter at Pottery Barn, Williams Sonoma, West Elm & more."
+        "quote": "5% thereafter at Pottery Barn, Williams Sonoma, West Elm, Rejuvenation and more."
       },
       {
-        "category": "dining",
+        "category": "groceries",
         "rate": 4.0,
         "unit": "percent",
         "cap": null,
         "quote": "4% back on grocery stores, dining, fast food & food delivery."
       }
     ],
+    "credits": [
+      {
+        "name": "Birthday Reward",
+        "amount": 25.0,
+        "per": "year",
+        "kind": "other",
+        "quote": "$25 birthday reward sent annually to your email."
+      }
+    ],
     "id": "d9797a43-812e-4556-b653-4d484b503ee5",
-    "source_image_url": "https://ecm.capitalone.com/WCM/card/pages/open-graph/westelm.png"
+    "source_image_url": "https://ecm.capitalone.com/WCM/card/products/we_ca_cb_rgb.png"
   },
   {
     "url": "https://www.capitalone.com/credit-cards/williams-sonoma/",
@@ -3958,19 +4675,19 @@
     "card_name": "Williams Sonoma Key Rewards Visa",
     "issuer": "Capital One",
     "annual_fee": 0,
-    "apr_range": "29.24% Variable",
+    "apr_range": "29.24% variable APR",
     "apr_intro": "None",
-    "apr_regular": "29.24% Variable",
+    "apr_regular": "29.24% variable APR",
     "rewards_summary": "Earn 10% back in rewards for your first 30 days, 5% thereafter at Pottery Barn, Williams Sonoma, West Elm, and more.",
     "signup_bonus": "10% back in rewards for your first 30 days",
     "recommended_credit_score": "Good-Excellent",
-    "foreign_transaction_fee": "None",
+    "foreign_transaction_fee": null,
     "tags": [
       "no-fee",
       "personal"
     ],
     "best_for": "Everyday Spend",
-    "top_perk": "Free standard shipping at Williams Sonoma",
+    "top_perk": "$25 birthday reward sent annually to your email.",
     "image_url": "/card-art/cd0e9adc-3cfe-491d-bb29-f9de2c269fba.webp",
     "reward_rates": [
       {
@@ -3986,6 +4703,15 @@
         "unit": "percent",
         "cap": null,
         "quote": "4% back on grocery stores, dining, fast food & food delivery."
+      }
+    ],
+    "credits": [
+      {
+        "name": "Birthday Reward",
+        "amount": 25.0,
+        "per": "year",
+        "kind": "other",
+        "quote": "$25 birthday reward sent annually to your email."
       }
     ],
     "id": "cd0e9adc-3cfe-491d-bb29-f9de2c269fba",
@@ -6313,7 +7039,7 @@
     "apr_intro": "0% intro APR for 18 months on balance transfers and 6 months on purchases",
     "apr_regular": "17.74% to 26.74% variable",
     "rewards_summary": "The card offers rewards on purchases, allowing cardholders to earn cash back on their spending.",
-    "signup_bonus": null,
+    "signup_bonus": "None",
     "recommended_credit_score": null,
     "foreign_transaction_fee": "None",
     "tags": [
@@ -6327,6 +7053,7 @@
     "top_perk": null,
     "image_url": "/card-art/ee54f23b-08de-4b75-b647-bb6e51cab666.webp",
     "reward_rates": [],
+    "credits": [],
     "id": "ee54f23b-08de-4b75-b647-bb6e51cab666",
     "source_image_url": "https://ecm.capitalone.com/WCM/dfs-card/images/bg-bt-women-smiling-and-discover-it-card-566-411.png"
   },
@@ -6358,9 +7085,10 @@
         "rate": 5.0,
         "unit": "percent",
         "cap": "up to the quarterly maximum when you activate",
-        "quote": "Earn 5% cash back on everyday purchases at different places you shop each quarter"
+        "quote": "Earn 5% cash back on everyday purchases at different places you shop each quarter, up to the quarterly maximum when you activate."
       }
     ],
+    "credits": [],
     "id": "43116b4d-24c0-4099-9bc7-6e6b1f99ffc6",
     "source_image_url": "https://ecm.capitalone.com/WCM/dfs-card/images/it-card-marquee.png"
   },
@@ -6374,7 +7102,7 @@
     "apr_intro": "0% intro APR for 15 months on purchases and balance transfers",
     "apr_regular": "17.74% to 26.74% variable",
     "rewards_summary": "Earn 2% cash back at gas stations and restaurants on up to $1,000 in combined purchases each quarter, automatically. Plus, earn unlimited 1% cash back on all other purchases.",
-    "signup_bonus": "Unlimited Cashback Match at the end of your first year",
+    "signup_bonus": "Unlimited Cashback Match",
     "recommended_credit_score": null,
     "foreign_transaction_fee": "None",
     "tags": [
@@ -6386,7 +7114,7 @@
       "personal"
     ],
     "best_for": "Foodies",
-    "top_perk": "Unlimited Cashback Match",
+    "top_perk": null,
     "image_url": "/card-art/97b70081-4eeb-4ea2-abd3-7519408b52fb.webp",
     "reward_rates": [
       {
@@ -6404,6 +7132,7 @@
         "quote": "Plus, earn unlimited 1% cash back on all other purchases."
       }
     ],
+    "credits": [],
     "id": "97b70081-4eeb-4ea2-abd3-7519408b52fb",
     "source_image_url": "https://ecm.capitalone.com/WCM/dfs-card/products/cardart-0introapr-cashchrome.png"
   },
@@ -6417,8 +7146,8 @@
     "apr_intro": "0% intro APR for 15 months on purchases and balance transfers",
     "apr_regular": "17.74% - 26.74% variable",
     "rewards_summary": "Earn unlimited 1.5x miles on travel purchases and all your everyday purchases. At the end of your first year, Discover will match all the miles you've earned.",
-    "signup_bonus": null,
-    "recommended_credit_score": null,
+    "signup_bonus": "None",
+    "recommended_credit_score": "Good/Excellent",
     "foreign_transaction_fee": "None",
     "tags": [
       "travel",
@@ -6427,17 +7156,18 @@
       "personal"
     ],
     "best_for": "Casual Travelers",
-    "top_perk": "Miles match at the end of the first year",
+    "top_perk": "$0 Fraud Liability",
     "image_url": "/card-art/4fa79287-004c-474e-b14c-cfbfc5c3fee5.webp",
     "reward_rates": [
       {
         "category": "other",
         "rate": 1.5,
-        "unit": "miles",
+        "unit": "percent",
         "cap": null,
         "quote": "Earn unlimited 1.5x miles on travel purchases and all your everyday purchases."
       }
     ],
+    "credits": [],
     "id": "4fa79287-004c-474e-b14c-cfbfc5c3fee5",
     "source_image_url": "https://ecm.capitalone.com/WCM/dfs-card/images/miles-marquee-image_287x237/rdesktop.png"
   },
@@ -6451,7 +7181,7 @@
     "apr_intro": "None",
     "apr_regular": null,
     "rewards_summary": "Earn 5% cash back on everyday purchases at different places you shop each quarter, up to the quarterly maximum when you activate. Plus, earn 1% cash back on all other purchases.",
-    "signup_bonus": "Unlimited Cashback Match: Get an unlimited dollar-for-dollar match of all the cash back you earn at the end of your first year, automatically.",
+    "signup_bonus": "Unlimited Cashback Match",
     "recommended_credit_score": null,
     "foreign_transaction_fee": "None",
     "tags": [
@@ -6460,7 +7190,7 @@
       "personal"
     ],
     "best_for": "Maximizing Cash Back",
-    "top_perk": "Unlimited Cashback Match",
+    "top_perk": "$0 Fraud Liability",
     "image_url": "/card-art/84aed05d-b766-4b7c-bb39-ecabf6b1081c.webp",
     "reward_rates": [
       {
@@ -6471,6 +7201,7 @@
         "quote": "Earn 5% cash back on everyday purchases at different places you shop each quarter, up to the quarterly maximum when you activate."
       }
     ],
+    "credits": [],
     "id": "84aed05d-b766-4b7c-bb39-ecabf6b1081c",
     "source_image_url": "https://ecm.capitalone.com/WCM/dfs-card/products/cardart-cashit-with-shadow/rdesktop.png"
   },
@@ -6484,7 +7215,7 @@
     "apr_intro": "0% intro APR for 6 months on purchases",
     "apr_regular": "16.74% to 25.74% variable",
     "rewards_summary": "Earn 5% cash back on everyday purchases at different places you shop each quarter, up to the quarterly maximum when you activate, plus earn 1% cash back on all other purchases.",
-    "signup_bonus": "Unlimited Cashback Match at the end of your first year",
+    "signup_bonus": "Unlimited Cashback Match",
     "recommended_credit_score": null,
     "foreign_transaction_fee": "None",
     "tags": [
@@ -6495,7 +7226,7 @@
       "personal"
     ],
     "best_for": "Maximizing Cash Back",
-    "top_perk": "Unlimited Cashback Match",
+    "top_perk": null,
     "image_url": "/card-art/f81ccfa8-0954-4298-b3cf-d97283e2029a.webp",
     "reward_rates": [
       {
@@ -6503,7 +7234,21 @@
         "rate": 5.0,
         "unit": "percent",
         "cap": "quarterly maximum when you activate",
-        "quote": "Earn 5% cash back on everyday purchases at different places you shop each quarter like grocery stores, restaurants, gas stations, and more"
+        "quote": "Earn 5% cash back on everyday purchases at different places you shop each quarter"
+      },
+      {
+        "category": "groceries",
+        "rate": 5.0,
+        "unit": "percent",
+        "cap": "quarterly maximum when you activate",
+        "quote": "Earn 5% cash back on everyday purchases at different places you shop each quarter"
+      },
+      {
+        "category": "gas",
+        "rate": 5.0,
+        "unit": "percent",
+        "cap": "quarterly maximum when you activate",
+        "quote": "Earn 5% cash back on everyday purchases at different places you shop each quarter"
       },
       {
         "category": "other",
@@ -6513,6 +7258,7 @@
         "quote": "Plus, earn 1% cash back on all other purchases."
       }
     ],
+    "credits": [],
     "id": "f81ccfa8-0954-4298-b3cf-d97283e2029a",
     "source_image_url": "https://ecm.capitalone.com/WCM/dfs-card/images/cardart-student-it-frenchie-620-382.png"
   },
@@ -6564,6 +7310,7 @@
         "quote": "Plus, earn unlimited 1% cash back on all other purchases."
       }
     ],
+    "credits": [],
     "id": "1dd6bbfc-f6cd-4a0d-9e9e-85651e6123e3",
     "source_image_url": "https://ecm.capitalone.com/WCM/dfs-card/products/cardart-cash-chrome-shadow.png"
   },
@@ -6577,7 +7324,7 @@
     "apr_intro": "0% intro APR for 15 months on purchases and balance transfers",
     "apr_regular": "18.74% to 28.74% variable",
     "rewards_summary": "Earn 5% cash back on everyday purchases at different places you shop each quarter, up to the quarterly maximum when you activate, plus earn 1% cash back on all other purchases.",
-    "signup_bonus": "Unlimited Cashback Match: Get an unlimited dollar-for-dollar match of all the cash back you earn at the end of your first year, automatically.",
+    "signup_bonus": "Unlimited Cashback Match - Get an unlimited dollar-for-dollar match of all the cash back you earn at the end of your first year, automatically.",
     "recommended_credit_score": "Good/Excellent",
     "foreign_transaction_fee": "None",
     "tags": [
@@ -6587,29 +7334,29 @@
       "personal"
     ],
     "best_for": "Maximizing Cash Back",
-    "top_perk": "Unlimited Cashback Match",
+    "top_perk": "$0 Fraud Liability",
     "image_url": "/card-art/44fdbef6-78ea-43db-9eb4-6d0af2134735.webp",
     "reward_rates": [
       {
         "category": "groceries",
         "rate": 5.0,
         "unit": "percent",
-        "cap": "quarterly maximum when you activate",
-        "quote": "Earn 5% cash back on everyday purchases at different places you shop each quarter"
+        "cap": "quarterly maximum",
+        "quote": "Earn 5% cash back on everyday purchases at different places you shop each quarter like grocery stores, restaurants, gas stations, and more, up to the quarterly maximum when you activate."
       },
       {
         "category": "dining",
         "rate": 5.0,
         "unit": "percent",
-        "cap": "quarterly maximum when you activate",
-        "quote": "Earn 5% cash back on everyday purchases at different places you shop each quarter"
+        "cap": "quarterly maximum",
+        "quote": "Earn 5% cash back on everyday purchases at different places you shop each quarter like grocery stores, restaurants, gas stations, and more, up to the quarterly maximum when you activate."
       },
       {
         "category": "gas",
         "rate": 5.0,
         "unit": "percent",
-        "cap": "quarterly maximum when you activate",
-        "quote": "Earn 5% cash back on everyday purchases at different places you shop each quarter"
+        "cap": "quarterly maximum",
+        "quote": "Earn 5% cash back on everyday purchases at different places you shop each quarter like grocery stores, restaurants, gas stations, and more, up to the quarterly maximum when you activate."
       },
       {
         "category": "other",
@@ -6619,6 +7366,7 @@
         "quote": "Plus, earn 1% cash back on all other purchases."
       }
     ],
+    "credits": [],
     "id": "44fdbef6-78ea-43db-9eb4-6d0af2134735",
     "source_image_url": "https://ecm.capitalone.com/WCM/dfs-card/images/nhl-marquee.png"
   },
@@ -6628,9 +7376,9 @@
     "card_name": "NAPA Credit Card",
     "issuer": "Synchrony Bank",
     "annual_fee": 0,
-    "apr_range": null,
+    "apr_range": "6 or 12 month promotional financing offers",
     "apr_intro": null,
-    "apr_regular": null,
+    "apr_regular": "6 or 12 month promotional financing offers",
     "rewards_summary": "The NAPA Credit Card program helps customers manage their auto expenses while providing businesses with solutions beyond just consumer financing.",
     "signup_bonus": "None",
     "recommended_credit_score": null,
@@ -6643,6 +7391,7 @@
     "top_perk": null,
     "image_url": "/card-art/70fed711-f203-450b-94bb-976090a5fbcf.webp",
     "reward_rates": [],
+    "credits": [],
     "id": "70fed711-f203-450b-94bb-976090a5fbcf",
     "source_image_url": "https://www.synchrony.com/syfb/img/syf_cc-0551_-_napa_rebrand_-_digital___internal_site_updates_-__1100x735__napa_credit_card_-_r1.jpg"
   },
@@ -6666,7 +7415,7 @@
       "personal"
     ],
     "best_for": "Maximizing Cash Back",
-    "top_perk": "Zero fraud liability",
+    "top_perk": null,
     "image_url": "/card-art/4f8a6ed6-41a1-4234-8380-bf09ed72baa1.webp",
     "reward_rates": [
       {
@@ -6677,6 +7426,7 @@
         "quote": "5% cash back on your first $2,000 in combined eligible purchases each quarter in two categories you choose"
       }
     ],
+    "credits": [],
     "id": "4f8a6ed6-41a1-4234-8380-bf09ed72baa1",
     "source_image_url": "https://www.usbank.com/content/dam/usbank/en/images/illustrations/card-art/credit-cards/secured-card-art-fanned.png/_jcr_content/renditions/cq5dam.webp.457.301.webp"
   },
@@ -6701,6 +7451,7 @@
     "top_perk": null,
     "image_url": "/card-art/1f638c5e-2ed8-4b8a-8dac-c81807c67859.webp",
     "reward_rates": [],
+    "credits": [],
     "id": "1f638c5e-2ed8-4b8a-8dac-c81807c67859",
     "source_image_url": "https://www.usbank.com/content/dam/usbank/en/images/illustrations/card-art/credit-cards/secured-card-art-fanned.png/_jcr_content/renditions/cq5dam.webp.457.301.webp"
   },
@@ -6713,7 +7464,7 @@
     "apr_range": "0% intro APR for 15 billing cycles, then 17.74% - 27.74% Variable",
     "apr_intro": "0% intro APR on purchases and balance transfers for the first 15 billing cycles",
     "apr_regular": "17.74% - 27.74% Variable",
-    "rewards_summary": "Earn 5X points on prepaid hotels and car rentals booked directly in the Travel Center, 4X points on travel and gas stations, and 2X points on dining and groceries.",
+    "rewards_summary": "Cardholders earn 5X points on prepaid hotels and car rentals booked directly in the Travel Center, 4X points on travel and gas stations, and 2X points on dining and groceries.",
     "signup_bonus": "Earn 20,000 bonus points after spending $1,000 in Net Purchases in the first 90 days.",
     "recommended_credit_score": "Good/Excellent",
     "foreign_transaction_fee": "None",
@@ -6753,25 +7504,27 @@
         "quote": "2X points on dining, streaming services and at grocery stores.*"
       },
       {
-        "category": "streaming",
-        "rate": 2.0,
-        "unit": "points",
-        "cap": null,
-        "quote": "2X points on dining, streaming services and at grocery stores.*"
-      },
-      {
-        "category": "groceries",
-        "rate": 2.0,
-        "unit": "points",
-        "cap": null,
-        "quote": "2X points on dining, streaming services and at grocery stores.*"
-      },
-      {
         "category": "other",
         "rate": 1.0,
         "unit": "points",
         "cap": null,
         "quote": "1X point on all other eligible purchases."
+      }
+    ],
+    "credits": [
+      {
+        "name": "TSA PreCheck® application fee credit",
+        "amount": null,
+        "per": "year",
+        "kind": "trusted_traveler",
+        "quote": "You will receive a statement credit for your application fee within 1-2 billing cycles."
+      },
+      {
+        "name": "Airport lounge access",
+        "amount": null,
+        "per": "year",
+        "kind": "lounge",
+        "quote": "Enjoy airport lounge access."
       }
     ],
     "id": "8a8aa307-59db-4ce7-b64b-78c113382eb4"
@@ -6797,7 +7550,7 @@
       "personal"
     ],
     "best_for": "Foodies",
-    "top_perk": "$15 credit for annual streaming service purchases such as Netflix and Spotify®.",
+    "top_perk": "$15 credit for annual streaming service purchases such as Netflix and Spotify.",
     "image_url": null,
     "reward_rates": [
       {
@@ -6805,21 +7558,14 @@
         "rate": 2.0,
         "unit": "points",
         "cap": null,
-        "quote": "2X points at grocery stores* and gas stations/EV charging stations*"
+        "quote": "2X points at gas stations and EV charging stations."
       },
       {
         "category": "groceries",
         "rate": 2.0,
         "unit": "points",
         "cap": null,
-        "quote": "2X points at grocery stores* and gas stations/EV charging stations*"
-      },
-      {
-        "category": "streaming",
-        "rate": 2.0,
-        "unit": "points",
-        "cap": null,
-        "quote": "2X Points on streaming services"
+        "quote": "2X points on streaming services and at grocery stores."
       },
       {
         "category": "other",
@@ -6827,6 +7573,15 @@
         "unit": "points",
         "cap": null,
         "quote": "1X Point on all other eligible purchases."
+      }
+    ],
+    "credits": [
+      {
+        "name": "Streaming Service Credit",
+        "amount": 15.0,
+        "per": "year",
+        "kind": "merchant",
+        "quote": "$15 credit for annual streaming service purchases such as Netflix and Spotify."
       }
     ],
     "id": "02b86941-7329-40b6-b105-5bde8bbdbb97",
@@ -6842,7 +7597,7 @@
     "apr_intro": "0% intro APR on purchases and balance transfers for the first 15 billing cycles",
     "apr_regular": "17.74% - 27.74% Variable",
     "rewards_summary": "Earn 4X points on dining, takeout, and restaurant delivery on your first $2,000 each quarter, 2X points at grocery stores and gas stations, and 1X point on all other eligible purchases.",
-    "signup_bonus": "Earn 20,000 bonus points just spend $1,000 in Net Purchases in the first 90 days.",
+    "signup_bonus": "Earn 20,000 bonus points after spending $1,000 in Net Purchases in the first 90 days.",
     "recommended_credit_score": "Good/Excellent",
     "foreign_transaction_fee": "None",
     "tags": [
@@ -6893,6 +7648,15 @@
         "quote": "1X point on all other eligible purchases"
       }
     ],
+    "credits": [
+      {
+        "name": "Streaming Service Credit",
+        "amount": 15.0,
+        "per": "year",
+        "kind": "merchant",
+        "quote": "Get a $15 credit for annual streaming service purchases like Netflix, Apple TV, Spotify and more."
+      }
+    ],
     "id": "ee66b63b-363f-42e8-b43f-7244265890cb"
   },
   {
@@ -6915,7 +7679,7 @@
       "personal"
     ],
     "best_for": "Maximizing Cash Back",
-    "top_perk": "Flexible redemption options for cash back",
+    "top_perk": "5% cash back on prepaid travel",
     "image_url": null,
     "reward_rates": [
       {
@@ -6933,6 +7697,7 @@
         "quote": "2% cash back on one everyday category you choose each quarter, like gas stations and EV charging stations*, grocery stores* or restaurants."
       }
     ],
+    "credits": [],
     "id": "9c89ab97-17dc-4aeb-ab71-bc4f74a5f745"
   },
   {
@@ -6941,10 +7706,10 @@
     "card_name": "U.S. Bank Shield® Visa® Credit Card",
     "issuer": "U.S. Bank",
     "annual_fee": 0,
-    "apr_range": "17.24% - 28.24% Variable",
+    "apr_range": "0% intro APR for 21 billing cycles, then 17.24% - 28.24% Variable",
     "apr_intro": "0% intro APR on purchases and balance transfers for 21 billing cycles",
     "apr_regular": "17.24% - 28.24% Variable",
-    "rewards_summary": "Earn 4% cash back on prepaid air, hotel, and car reservations booked directly in the Travel Center when you use your card.",
+    "rewards_summary": "Cardholders earn 4% cash back on prepaid air, hotel, and car reservations booked directly in the Travel Center.",
     "signup_bonus": "None",
     "recommended_credit_score": "Good/Excellent",
     "foreign_transaction_fee": "None",
@@ -6953,6 +7718,7 @@
       "cashback",
       "hotels",
       "no-fee",
+      "low-apr",
       "personal"
     ],
     "best_for": "Casual Travelers",
@@ -6967,6 +7733,22 @@
         "quote": "4% cash back on prepaid air, hotel and car reservations booked directly in the Travel Center when you use your card."
       }
     ],
+    "credits": [
+      {
+        "name": "Annual Statement Credit",
+        "amount": 20.0,
+        "per": "year",
+        "kind": "merchant",
+        "quote": "Earn a $20 annual statement credit for 11 consecutive months of purchases."
+      },
+      {
+        "name": "Cell Phone Protection",
+        "amount": 600.0,
+        "per": "year",
+        "kind": "other",
+        "quote": "Get up to $600 reimbursed if your cell phone is stolen or damaged when you pay your monthly cellular bill with your card."
+      }
+    ],
     "id": "f8715502-7a0d-45ad-a5fb-aced074ccf5d"
   },
   {
@@ -6975,10 +7757,10 @@
     "card_name": "U.S. Bank Smartly™ Visa Signature® Card",
     "issuer": "U.S. Bank",
     "annual_fee": 0,
-    "apr_range": "0% intro APR for 12 billing cycles, then 18.49% - 28.49% Variable",
+    "apr_range": "0% intro APR for 12 billing cycles, then 18.49%-28.49% Variable",
     "apr_intro": "0% intro APR on purchases and balance transfers for the first 12 billing cycles",
-    "apr_regular": "18.49% - 28.49% Variable",
-    "rewards_summary": "Earn unlimited 2% cash back on every purchase with no caps. Additional cash back can be earned with qualifying balances in U.S. Bank accounts.",
+    "apr_regular": "18.49%-28.49% Variable",
+    "rewards_summary": "Earn unlimited 2% cash back on every purchase, with potential for higher cash back rates based on account balances.",
     "signup_bonus": "None",
     "recommended_credit_score": "Good/Excellent",
     "foreign_transaction_fee": "None",
@@ -6989,7 +7771,7 @@
       "personal"
     ],
     "best_for": "Maximizing Cash Back",
-    "top_perk": "Unlimited 2% cash back on every purchase",
+    "top_perk": null,
     "image_url": null,
     "reward_rates": [
       {
@@ -7000,6 +7782,7 @@
         "quote": "Earn unlimited 2% cash back on every purchase."
       }
     ],
+    "credits": [],
     "id": "b49aa128-2c04-4aad-8abe-fb12f57f850d"
   },
   {
