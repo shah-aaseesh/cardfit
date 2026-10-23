@@ -197,7 +197,7 @@ body {
   --compare-violet: #ff6b4a;
   --compare-lavender: #ffe3db;
   --compare-bridge: #ffd23f;
-  --compare-sidebar-width: 276px;
+  --compare-sidebar-width: 0px; /* side drawers removed; rails sit above */
   --compare-content-width: calc(100vw - var(--compare-sidebar-width));
   --compare-stage-width: 1040px;
   --compare-panel-width: 430px;
@@ -209,28 +209,6 @@ body {
     radial-gradient(rgba(20, 20, 20, 0.09) 1px, transparent 1.2px) 0 0 / 22px 22px,
     #fffaf0;
   color: var(--compare-text);
-}
-
-.compare-sidebar {
-  width: var(--compare-sidebar-width);
-  background: transparent;
-  border-right: 0;
-}
-
-.compare-sidebar::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 28px;
-  width: 1px;
-  height: 60%;
-  background: linear-gradient(
-    to bottom,
-    rgba(233, 233, 233, 0.92) 0%,
-    rgba(233, 233, 233, 0.68) 54%,
-    rgba(233, 233, 233, 0) 100%
-  );
-  pointer-events: none;
 }
 
 .compare-workspace {
@@ -248,7 +226,6 @@ body {
 
 .compare-hero {
   margin-top: 86px;
-  transform: translateX(-76px);
 }
 
 .compare-eyebrow {
@@ -333,15 +310,6 @@ body {
   font-size: 18px;
   line-height: 1.55;
   color: var(--compare-muted);
-}
-
-.compare-sidebar-tile {
-  /* Sticker style, matching the rest of the site. */
-  border-radius: 14px;
-  border: 2px solid #141414;
-  background: #ffffff;
-  box-shadow: 3px 3px 0 #141414;
-  backdrop-filter: none;
 }
 
 .compare-dot-stage::before {
@@ -628,7 +596,6 @@ body {
   gap: 60px;
   margin-top: 44px;
   padding-bottom: 62px;
-  transform: translateX(-96px);
 }
 
 .compare-dust {
@@ -649,7 +616,6 @@ body {
   width: min(1008px, calc(100vw - var(--compare-sidebar-width) - 128px));
   min-height: 122px;
   margin-top: 92px;
-  transform: translateX(-56px);
   /* Tiles carry their own surfaces now; the bar is just the row. */
   border: 0;
   background: none;

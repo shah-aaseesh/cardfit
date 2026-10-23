@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { X, Search, Shuffle, Wallet, Bookmark, Check, Minus, ArrowUpRight, Plus, ChevronDown, ChevronLeft, Columns2, Calculator, Receipt, Trophy, ArrowLeftRight } from 'lucide-react';
 import { useCards } from '../hooks/useCards';
@@ -132,12 +132,12 @@ export default function Compare({ watchlist, setWatchlist, ownedCards, setOwnedC
 
   return (
     <div className="compare-light compare-page min-h-screen overflow-x-clip px-4 pb-16 pt-24 md:px-8 lg:px-0">
-      {/* Mobile / tablet: horizontal wallet rails on top. On desktop these
-          live as vertical drawers on the page edges instead. */}
-      <div className="lg:hidden grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+      {/* My Cards + Watchlist as two horizontal rails above the comparison,
+          on every screen size (the desktop side drawers are gone). */}
+      <div className="mx-auto mb-8 grid w-full max-w-5xl grid-cols-1 items-start gap-4 md:grid-cols-2 lg:px-10">
         <Rail
           label="My Cards"
-          icon={<Wallet className="w-3.5 h-3.5" />}
+          icon={<Wallet className="w-4 h-4" />}
           ids={ownedCards}
           allCards={allCards}
           onDragStart={handleDragStart}
@@ -146,7 +146,7 @@ export default function Compare({ watchlist, setWatchlist, ownedCards, setOwnedC
         />
         <Rail
           label="Watchlist"
-          icon={<Bookmark className="w-3.5 h-3.5" />}
+          icon={<Bookmark className="w-4 h-4" />}
           ids={watchlist}
           allCards={allCards}
           onDragStart={handleDragStart}
@@ -155,35 +155,9 @@ export default function Compare({ watchlist, setWatchlist, ownedCards, setOwnedC
         />
       </div>
 
-      {/* Desktop: My Cards + Watchlist drawers docked to the left screen edge,
-          stacked vertically. The comparison stage is offset right to clear them. */}
-      <aside className="compare-sidebar hidden lg:flex fixed left-0 top-0 bottom-0 z-30 flex-col gap-3 px-[25px] pt-[108px] pb-[35px]">
-        <VerticalRail
-          label="My Cards"
-          icon={<Wallet className="w-[22px] h-[22px]" strokeWidth={2} />}
-          tone="orange"
-          ids={ownedCards}
-          allCards={allCards}
-          onDragStart={handleDragStart}
-          onRemove={(id) => setOwnedCards((prev) => prev.filter((x) => x !== id))}
-          emptyHint="Cards you own show here."
-          defaultOpen
-        />
-        <VerticalRail
-          label="Watchlist"
-          icon={<Bookmark className="w-[22px] h-[22px]" strokeWidth={2} />}
-          tone="violet"
-          ids={watchlist}
-          allCards={allCards}
-          onDragStart={handleDragStart}
-          onRemove={(id) => setWatchlist((prev) => prev.filter((x) => x !== id))}
-          addButton={watchlistAddMini}
-        />
-      </aside>
-
-      {/* lg:pr-10 keeps a right gutter: the workspace spans to the viewport
-          edge, which clipped the comparison's outline and sticker shadow. */}
-      <div className="compare-workspace w-full mx-auto lg:ml-[var(--compare-sidebar-width)] lg:pr-10">
+      {/* lg:px-10 keeps a gutter: the workspace spans to the viewport edge,
+          which clipped the comparison's outline and sticker shadow. */}
+      <div className="compare-workspace w-full mx-auto lg:px-10">
         <div className="min-w-0">
           {!hasBoth ? (
             /* Hero empty state: headline + porcelain slots (a filled slot
@@ -348,7 +322,7 @@ function HeroSlot({
           <Plus className="h-7 w-7" strokeWidth={2.4} />
         </span>
         <span className="mt-2 text-lg font-bold text-[var(--cl-ink)]">Pick a card</span>
-        <span className="text-sm text-[var(--cl-muted)]">or drag one from the side</span>
+        <span className="text-sm text-[var(--cl-muted)]">or drag one from your cards above</span>
       </button>
     );
   }
@@ -509,7 +483,7 @@ function CompareColumn({
         >
           <Plus className="w-7 h-7" strokeWidth={1.25} />
           <span className="font-medium text-[var(--cl-ink)]">Select a card</span>
-          <span className="text-sm">or drag one from the side</span>
+          <span className="text-sm">or drag one from your cards above</span>
         </button>
       </div>
     );
@@ -702,81 +676,6 @@ function MiniCard({
 // share of the stacked sidebar when open; collapses to a slim tab that yields
 // its height to its sibling.
 
-function VerticalRail({
-  label,
-  icon,
-  tone = 'orange',
-  ids,
-  allCards,
-  onDragStart,
-  onRemove,
-  addButton,
-  emptyHint,
-  defaultOpen = false,
-}: {
-  label: string;
-  icon: React.ReactNode;
-  tone?: 'orange' | 'violet';
-  ids: string[];
-  allCards: CreditCard[];
-  onDragStart: (e: React.DragEvent, id: string) => void;
-  onRemove: (id: string) => void;
-  addButton?: React.ReactNode;
-  emptyHint?: string;
-  defaultOpen?: boolean;
-}) {
-  const [open, setOpen] = useState(defaultOpen);
-  const known = ids.filter((id) => allCards.some((c) => c.id === id));
-
-  if (!open) {
-    return (
-      <button
-        onClick={() => setOpen(true)}
-        aria-expanded={false}
-        aria-label={`Expand ${label}`}
-        className="compare-sidebar-tile shrink-0 flex h-[58px] w-[150px] flex-row items-center justify-between gap-2 px-[10px] text-[var(--compare-muted)] hover:bg-[var(--surface)] transition-colors"
-      >
-        <span className="text-[14px] font-medium whitespace-nowrap flex items-center gap-2.5">
-          <span className="text-[var(--compare-text)]">{icon}</span>
-          <span className="text-[var(--compare-text)]">{label}</span>
-        </span>
-        <span className="grid h-[24px] min-w-[24px] place-items-center rounded-full bg-[var(--compare-peach)] px-1.5 text-[13px] font-semibold text-[var(--compare-text)] shadow-[inset_0_1px_0_rgb(255_255_255_/_0.95)]">{known.length}</span>
-      </button>
-    );
-  }
-
-  return (
-    <div className="compare-sidebar-tile w-[150px] flex-1 min-h-0 flex flex-col px-2.5 py-4">
-      <div className="flex items-center justify-between gap-2 shrink-0">
-        <span className="text-[14px] font-medium text-[var(--compare-text)] flex items-center gap-2.5 min-w-0">
-          <span className="text-[var(--compare-text)] shrink-0">{icon}</span>
-          <span className="truncate">{label}</span>
-        </span>
-        <span className="text-[13px] font-medium text-[var(--compare-muted)]">{known.length}</span>
-        <button
-          onClick={() => setOpen(false)}
-          aria-expanded
-          aria-label={`Collapse ${label}`}
-          className="p-1 rounded-full text-[var(--cl-muted)] hover:text-[var(--cl-ink)] hover:bg-[var(--cl-hairline)]/60 transition-colors"
-        >
-          <ChevronLeft className="w-4 h-4" />
-        </button>
-      </div>
-
-      <div className="mt-3 flex-1 min-h-0 flex flex-col items-center gap-3 overflow-y-auto hide-scrollbar">
-        {known.map((id) => {
-          const card = allCards.find((c) => c.id === id)!;
-          return <MiniCard key={id} card={card} onDragStart={onDragStart} onRemove={onRemove} />;
-        })}
-        {addButton}
-        {known.length === 0 && !addButton && (
-          <p className="text-xs text-[var(--cl-muted)] py-8 px-1 text-center">{emptyHint || 'Nothing here yet.'}</p>
-        )}
-      </div>
-    </div>
-  );
-}
-
 // --- Horizontal card rail (mobile wallets + recently-viewed tray) -----------
 
 function Rail({
@@ -798,20 +697,25 @@ function Rail({
   addButton?: React.ReactNode;
   emptyHint?: string;
 }) {
-  const [open, setOpen] = useState(false);
   const known = ids.filter((id) => allCards.some((c) => c.id === id));
+  // Open when there's something to drag in; an empty rail stays a slim bar.
+  // Saved cards are restored just after first render, so open on the
+  // empty -> filled change too (not on every add, so a close sticks).
+  const [open, setOpen] = useState(() => known.length > 0);
+  const hasCards = known.length > 0;
+  useEffect(() => { if (hasCards) setOpen(true); }, [hasCards]);
   return (
-    <div className="rounded-2xl border border-[var(--cl-hairline-strong)] bg-[var(--surface)] px-4 py-3 min-w-0 shadow-[0_16px_40px_-34px_rgba(0,0,0,0.42)]">
+    <div className="pop-sm rounded-2xl bg-white px-4 py-3 min-w-0">
       <button
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         className="w-full flex items-center justify-between gap-2"
       >
-        <span className="text-[12px] font-semibold uppercase tracking-wider text-[var(--cl-muted)] flex items-center gap-1.5">
-          <span className="text-[var(--cl-gold)]">{icon}</span> {label}
-          <span className="text-[var(--cl-muted)]/70 normal-case tracking-normal">({known.length})</span>
+        <span className="text-sm font-bold text-[var(--cl-ink)] flex items-center gap-2">
+          {icon} {label}
+          <span className="grid h-6 min-w-6 place-items-center rounded-full bg-[var(--compare-peach)] px-1.5 text-xs font-bold tabular-nums">{known.length}</span>
         </span>
-        <ChevronDown className={`w-4 h-4 text-[var(--cl-muted)] transition-transform ${open ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`w-4 h-4 text-[var(--cl-ink)] transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
 
       <AnimatePresence initial={false}>
