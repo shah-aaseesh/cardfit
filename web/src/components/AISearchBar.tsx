@@ -6,7 +6,7 @@ const PLACEHOLDERS = [
   "a travel card with lounge access and no foreign fees...",
   "cashback for groceries and gas...",
   "my first card, something to build credit with...",
-  "big sign-up bonus, fee under $100...",
+  "a card name, like Sapphire Preferred or Costco...",
 ];
 
 interface AISearchBarProps {

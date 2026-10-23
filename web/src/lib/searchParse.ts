@@ -21,9 +21,12 @@ import { FILTERS, normalizeFilters as resolveConflicts } from './filters';
 const TRAVEL_WORDS = [
   'travel', 'trip', 'vacation', 'abroad', 'international',
   'flight', 'flights', 'airline', 'airlines', 'fly', 'flying', 'airfare',
-  'hotel', 'hotels', 'resort', 'stays', 'marriott', 'hyatt', 'ihg',
+  'hotel', 'hotels', 'resort', 'stays',
   'lounge', 'priority pass', 'airport lounge',
 ];
+// Brand names (Marriott, Hyatt, Delta...) are deliberately NOT filter words:
+// "marriott card" should find Marriott's cards by name (see searchTerms).
+
 
 const SYNONYMS: Record<string, string[]> = {
   rewards: ['rewards', 'points', 'miles', ...TRAVEL_WORDS],
@@ -39,7 +42,24 @@ const SYNONYMS: Record<string, string[]> = {
   students: ['student', 'college', 'first card', 'build credit', 'building credit', 'beginner', 'starter'],
   balance: ['balance transfer', 'debt', 'pay off', 'consolidate', 'carry a balance'],
   personal: ['personal', 'everyday', 'daily'],
+  'no-ftf': ['no foreign', 'foreign transaction', 'foreign fee', 'without foreign', 'abroad fee'],
 };
+
+// Words that say nothing about which card: never searched as names.
+const STOP_WORDS = new Set([
+  'a', 'an', 'the', 'for', 'with', 'and', 'or', 'of', 'to', 'in', 'on', 'my', 'me', 'i', 'want', 'need',
+  'card', 'cards', 'credit', 'best', 'good', 'great', 'top', 'that', 'is', 'are', 'any', 'some', 'who',
+  'visa', 'mastercard', 'signature', 'rewards', 'reward',
+]);
+const FILTER_WORDS = new Set(Object.values(SYNONYMS).flat().flatMap((p) => p.toLowerCase().match(/[a-z0-9$%]+/g) || []));
+
+/** The words in a search that are neither filter words nor filler: what the
+ *  person typed to name a card ("sapphire reserve", "costco", "delta").
+ *  Searched against card names; reported back when nothing matches. */
+export function searchTerms(query: string): string[] {
+  const tokens = query.toLowerCase().match(/[a-z0-9]+/g) || [];
+  return tokens.filter((t) => !STOP_WORDS.has(t) && !FILTER_WORDS.has(t));
+}
 
 const validIds = new Set(FILTERS.map(f => f.id));
 const cache = new Map<string, string[]>();

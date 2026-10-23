@@ -52,7 +52,9 @@ export default function HeroPreview({ cards, topRank }: { cards: CreditCard[]; t
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: reduced ? 0 : 0.55 }}
       >
-        <p className="text-[11px] font-bold uppercase tracking-wider text-[var(--cl-ink)]/70">#{topRank} for rewards</p>
+        {/* The preview only shows cards with art, so its first card may not be
+            #1; a "#2" headline read as an odd choice. */}
+        <p className="text-[11px] font-bold uppercase tracking-wider text-[var(--cl-ink)]/70">{topRank === 1 ? '#1 for rewards' : 'Top 10 for rewards'}</p>
         <p className="mt-0.5 font-editorial text-3xl leading-none text-[var(--cl-ink)]">
           {usd(v.headline)}<span className="ml-1 text-sm font-semibold tracking-normal text-[var(--cl-ink)]/70">/ year</span>
         </p>

@@ -53,6 +53,8 @@ export const FILTERS: FilterDef[] = [
   // against the card's real fee in ranking.ts, not these tags.
   { id: 'no-fee', label: 'No Annual Fee', group: 'quality', matchTags: ['no-fee'] },
   { id: 'premium', label: 'Premium', group: 'quality', matchTags: ['premium', 'lounge'] },
+  // Checked against the card's stated foreign transaction fee in ranking.ts.
+  { id: 'no-ftf', label: 'No Foreign Fee', group: 'quality', matchTags: [] },
 ];
 
 export const FILTER_BY_ID: Record<string, FilterDef> = Object.fromEntries(
@@ -117,6 +119,7 @@ export function cardMatchesFilter(cardTags: string[] | undefined, filterId: stri
 const QUALITY_PHRASE: Record<string, string> = {
   'no-fee': 'no annual fee',
   premium: 'premium perks',
+  'no-ftf': 'no foreign fee',
 };
 
 /**

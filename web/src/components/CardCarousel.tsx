@@ -6,7 +6,9 @@ import FinePrint from './FinePrint';
 import BubbleFilters from './BubbleFilters';
 import AISearchBar from './AISearchBar';
 import { answersToPrefs, buildDeck, chipSpendBasis, getTopCards, RankMode } from '../lib/ranking';
-import { describeFilters } from '../lib/filters';
+import { describeFilters, FILTER_BY_ID } from '../lib/filters';
+import { searchTerms } from '../lib/searchParse';
+import { cardMatchesQuery } from '../lib/cardSearch';
 import { fetchAdvisorNote, advisorEnabled } from '../lib/advisor';
 import { pushRecentlyViewed } from '../lib/recentlyViewed';
 import ValueBlock, { ValueNotes } from './ValueBlock';
@@ -87,6 +89,8 @@ export default function CardCarousel({
   const [providerFilter, setProviderFilter] = useState('all');
   // The query submitted on the landing hero, carried into the results bar.
   const [lastQuery, setLastQuery] = useState('');
+  // Bumped to remount the results search bar with an empty box ("Show all").
+  const [searchKey, setSearchKey] = useState(0);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   // Landing preview: the real top-3 rewards cards (with art), ranked by the
   // same engine as the results page.
@@ -128,13 +132,34 @@ export default function CardCarousel({
     [allCards],
   );
 
+  // Words in the search that aren't filter words are card names ("sapphire
+  // reserve", "costco", "delta"): matching cards become the pool the filters
+  // rank within. Words that match no card are reported back, never silently
+  // ignored (they used to show a random shuffle of every card).
+  const terms = useMemo(() => (matchMode ? [] : searchTerms(lastQuery)), [matchMode, lastQuery]);
+  const nameTokens = useMemo(() => terms.filter((t) => allCards.some((c) => cardMatchesQuery(c, t))), [terms, allCards]);
+  const nameMatchIds = useMemo(() => {
+    if (!nameTokens.length) return null;
+    const ids = allCards.filter((c) => cardMatchesQuery(c, nameTokens.join(' '))).map((c) => c.id);
+    return ids.length ? new Set(ids) : null;
+  }, [nameTokens, allCards]);
+  const ignoredTerms = nameMatchIds ? terms.filter((t) => !nameTokens.includes(t)) : terms;
+  const nameQuery = nameTokens.join(' ');
+  const clearSearch = () => { setLastQuery(''); setSearchKey((k) => k + 1); };
+
   // Rebuild the deck whenever the inputs to ranking change. Ranked decks
   // are deterministic (best-first, stable); browse decks are shuffled.
   useEffect(() => {
     // everyCard, not allCards: buildDeck needs owned retired cards to value
     // the wallet, and keeps every retired card out of the deck itself.
-    const pool = providerFilter === 'all' ? everyCard : everyCard.filter((c) => c.provider === providerFilter);
-    const result = buildDeck(pool, activeFilters, ownedCards, matchMode, matchAnswers, rankMode);
+    let pool = providerFilter === 'all' ? everyCard : everyCard.filter((c) => c.provider === providerFilter);
+    if (nameMatchIds) pool = pool.filter((c) => nameMatchIds.has(c.id) || ownedCards.includes(c.id));
+    // Only unknown words and no filters: nothing to show, rather than a
+    // random shuffle that looks like an answer.
+    const nothingMatched = !matchMode && terms.length > 0 && !nameMatchIds && activeFilters.length === 0;
+    const result = nothingMatched
+      ? { deck: [], ranked: false, complement: false, results: [], topCount: 0, byValue: false }
+      : buildDeck(pool, activeFilters, ownedCards, matchMode, matchAnswers, rankMode);
     // No pinned "featured" card: the site promises nobody pays for placement.
     setCards(result.deck);
     setRanked(result.ranked);
@@ -145,7 +170,7 @@ export default function CardCarousel({
     setExplanations(Object.fromEntries((result.results || []).map((r) => [r.card.id, r.explanation])));
     setCurrentIndex(0);
     setGridOpen(false);
-  }, [everyCard, activeFilters, ownedCards, matchMode, matchAnswers, providerFilter, rankMode]);
+  }, [everyCard, activeFilters, ownedCards, matchMode, matchAnswers, providerFilter, rankMode, nameMatchIds, terms]);
 
   // The arrows move within the current group (top picks or more matches).
   const moreCount = ranked ? cards.length - topCount : 0;
@@ -336,7 +361,7 @@ export default function CardCarousel({
             onFiltersParsed={setActiveFilters}
             examples={[
               'cashback cards with no annual fee for students',
-              'rewards travel card under $300',
+              'Sapphire Preferred',
               'business card with gas rewards',
               'premium dining card with no foreign fees',
             ]}
@@ -450,9 +475,10 @@ export default function CardCarousel({
         <div className="relative z-40 mb-6 flex w-full flex-col items-center gap-3">
           <div className="w-full max-w-3xl px-4">
             <AISearchBar
+              key={searchKey}
               compact
               initialValue={lastQuery}
-              onQueryChange={(q) => { if (q.trim()) setStarted(true); }}
+              onQueryChange={(q) => { setLastQuery(q); if (q.trim()) setStarted(true); }}
               onFiltersParsed={setActiveFilters}
               leftSlot={
                 <div className="relative flex items-center">
@@ -472,16 +498,43 @@ export default function CardCarousel({
               }
             />
           </div>
-          {/* The chips would push the card below the fold, so they live
-              behind a toggle that shows how many are active. */}
-          <button
-            onClick={() => setMobileFiltersOpen((o) => !o)}
-            aria-expanded={mobileFiltersOpen}
-            className="pop-sm h-8 px-4 rounded-full bg-white text-xs font-semibold text-[var(--cl-ink)] flex items-center gap-1.5"
-          >
-            Refine{activeFilters.length ? ` · ${activeFilters.length} active` : ''}
-            <ChevronDown className={`w-3.5 h-3.5 transition-transform ${mobileFiltersOpen ? 'rotate-180' : ''}`} />
-          </button>
+          {/* What the search turned into, as removable chips (a search for
+              "travel card" quietly applying Rewards + Travel was invisible),
+              then the full chip set behind the Filters toggle. */}
+          <div className="flex max-w-3xl flex-wrap items-center justify-center gap-2 px-4">
+            {nameMatchIds && (
+              <button
+                onClick={clearSearch}
+                className="pop-sm h-8 px-3 rounded-full bg-[var(--cl-sky)] text-xs font-semibold text-[var(--cl-ink)] flex items-center gap-1.5"
+                aria-label={`Clear card name search ${nameQuery}`}
+              >
+                Name: “{nameQuery}” <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+            {activeFilters.map((id) => (
+              <button
+                key={id}
+                onClick={() => setActiveFilters(activeFilters.filter((f) => f !== id))}
+                className="pop-sm h-8 px-3 rounded-full bg-[var(--cl-lime)] text-xs font-semibold text-[var(--cl-ink)] flex items-center gap-1.5"
+                aria-label={`Remove filter ${FILTER_BY_ID[id]?.label ?? id}`}
+              >
+                {FILTER_BY_ID[id]?.label ?? id} <X className="w-3.5 h-3.5" />
+              </button>
+            ))}
+            <button
+              onClick={() => setMobileFiltersOpen((o) => !o)}
+              aria-expanded={mobileFiltersOpen}
+              className="pop-sm h-8 px-4 rounded-full bg-white text-xs font-semibold text-[var(--cl-ink)] flex items-center gap-1.5"
+            >
+              {activeFilters.length ? 'More filters' : 'Filters'}
+              <ChevronDown className={`w-3.5 h-3.5 transition-transform ${mobileFiltersOpen ? 'rotate-180' : ''}`} />
+            </button>
+          </div>
+          {ignoredTerms.length > 0 && activeCard && (
+            <p className="px-4 text-center text-xs text-[var(--cl-muted)]">
+              Didn’t match any card or filter: {ignoredTerms.map((t) => `“${t}”`).join(', ')}
+            </p>
+          )}
           {mobileFiltersOpen && <BubbleFilters activeFilters={activeFilters} onFiltersChange={setActiveFilters} />}
         </div>
       )}
@@ -515,7 +568,8 @@ export default function CardCarousel({
         ) : (
         <>
         {ranked && byValue && (
-          <div role="radiogroup" aria-label="Rank cards by" className="pop-sm flex items-center gap-1 rounded-full bg-white p-1 text-sm font-semibold">
+          <div role="radiogroup" aria-label="Rank cards by" className="pop-sm flex items-center gap-1 rounded-full bg-white p-1 pl-4 text-sm font-semibold">
+            <span className="text-xs font-semibold text-[var(--cl-muted)]">Rank by</span>
             {([['ongoing', 'Every year'], ['first_year', 'First-year deal']] as const).map(([m, text]) => (
               <button
                 key={m}
@@ -713,13 +767,22 @@ export default function CardCarousel({
       </>
       ) : (
         <div className="relative z-20 mt-24 md:mt-32 px-6 text-center flex flex-col items-center gap-3">
-          <p className="font-display text-2xl md:text-3xl text-[var(--cl-ink)]">No cards match these filters</p>
-          <p className="text-sm text-[var(--cl-muted)] max-w-sm">These categories are strict — try removing one to widen the results.</p>
+          {terms.length > 0 && !nameMatchIds && activeFilters.length === 0 ? (
+            <>
+              <p className="font-display text-2xl md:text-3xl text-[var(--cl-ink)]">No cards match “{lastQuery.trim()}”</p>
+              <p className="text-sm text-[var(--cl-muted)] max-w-md">Try a card or bank name (“Sapphire Preferred”, “Costco”, “Amex”) or what you want from a card (“cash back on groceries”, “travel card with no foreign fee”).</p>
+            </>
+          ) : (
+            <>
+              <p className="font-display text-2xl md:text-3xl text-[var(--cl-ink)]">No cards match these filters</p>
+              <p className="text-sm text-[var(--cl-muted)] max-w-sm">These categories are strict — try removing one to widen the results.</p>
+            </>
+          )}
           <button
-            onClick={() => { setActiveFilters([]); setProviderFilter('all'); }}
+            onClick={() => { setActiveFilters([]); setProviderFilter('all'); clearSearch(); }}
             className="mt-2 h-10 px-5 rounded-full bg-[var(--cl-pill)] text-[var(--cl-pill-ink)] text-sm font-semibold hover:opacity-90 transition-opacity"
           >
-            Clear filters
+            Show all cards
           </button>
         </div>
       )}

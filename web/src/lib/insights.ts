@@ -143,7 +143,7 @@ export function cardInsights(card: CreditCard): CardInsights {
   const bestFor: string[] = [];
   if (rc.audience === 'student') bestFor.push('Students building credit');
   if (rc.audience === 'business') bestFor.push('Business spending');
-  if (top.cat !== 'general' && top.rate >= 3) bestFor.push(`Heavy ${CAT_LABEL[top.cat]} spenders`);
+  if (top.cat !== 'general' && top.rate >= 3) bestFor.push(`Big spenders on ${CAT_LABEL[top.cat]}`);
   if (rc.rewardSystem === 'cash_back' && rc.baseRate >= 1.5) bestFor.push('Simple flat-rate cash back');
   if (['points', 'miles', 'hotel', 'airline'].includes(rc.rewardSystem)) bestFor.push('Travelers who redeem points');
   if (rc.annualFeeTier === 'premium' || rc.perksValue > 200) bestFor.push('Perk-seekers who travel often');

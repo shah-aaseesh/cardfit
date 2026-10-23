@@ -653,6 +653,11 @@ function cardOwnSegment(card: RankingCard): PublicSegment {
   }
 }
 
+/** True only when the issuer states there's no foreign transaction fee. */
+function noForeignFee(card: CreditCard): boolean {
+  return /^\s*(none|no\b|\$0|0%)/i.test(card.facts.foreignFee || '');
+}
+
 function publicEligible(card: RankingCard, context: PublicRankingContext): { ok: boolean; reasons: string[] } {
   // No fallback to cash_back: an undefined segment means "any reward type",
   // so the reward-system checks below simply don't apply.
@@ -670,6 +675,7 @@ function publicEligible(card: RankingCard, context: PublicRankingContext): { ok:
   if (segment === 'business' && card.audience !== 'business') reasons.push('not a business card');
 
   if (context.annualFeeRule === 'no_annual_fee' && (!card.annualFeeKnown || card.annualFee !== 0)) reasons.push('annual fee above $0');
+  if (context.filters?.includes('no-ftf') && !noForeignFee(card.source)) reasons.push('charges (or does not state) a foreign transaction fee');
   // Premium = any card that charges an annual fee (not just the high-fee
   // tier). A $0 card — or one whose fee we can't confirm — is not premium.
   if (context.annualFeeRule === 'premium' && !(card.annualFeeKnown && card.annualFee > 0)) reasons.push('no annual fee (not premium)');

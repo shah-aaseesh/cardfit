@@ -539,8 +539,9 @@ function CompareColumn({
 
       {/* Hero stats: fee + APR share one row */}
       <div className="mt-7 grid grid-cols-2 divide-x divide-[var(--cl-hairline-strong)] border-y border-[var(--cl-hairline-strong)]">
-        <StatBig value={fee.value} unit={fee.unit} label="Annual Fee" best={best.fee} />
-        <StatBig value={apr.value} unit={apr.unit} label="APR" best={best.apr} />
+        <StatBig value={fee.value} unit={fee.unit} unitFirst label="Annual Fee" best={best.fee} />
+        {/* The top of the variable range: what most people are charged. */}
+        <StatBig value={apr.value} unit={apr.unit} label="APR, up to" best={best.apr} />
       </div>
 
       {/* At-a-glance parity, two columns */}
@@ -563,7 +564,6 @@ function CompareColumn({
         <SpecRow label="Rewards" value={card.facts.rewards} bullets={cardRewardBullets(card.facts)} />
         <SpecRow label="Sign-up bonus" value={leadWithNumber(card.facts.bonus)} />
         <SpecRow label="Foreign fee" value={card.facts.foreignFee} />
-        <SpecRow label="Best for" value={card.facts.bestFor} />
         <SpecRow label="Credit needed" value={card.facts.creditNeeded} />
       </dl>
 
@@ -586,12 +586,14 @@ function CompareColumn({
   );
 }
 
-function StatBig({ value, unit, label, best }: { value: string; unit: string | null; label: string; best?: boolean }) {
+function StatBig({ value, unit, label, best, unitFirst }: { value: string; unit: string | null; label: string; best?: boolean; unitFirst?: boolean }) {
   return (
     <div className="flex flex-col gap-1 py-4 px-4 first:pl-0 last:pr-0">
       <span className="font-mono text-3xl md:text-[2.15rem] leading-none tracking-tight text-[var(--cl-ink)] tabular-nums">
+        {/* "$95", not "95 $": currency leads, percent trails. */}
+        {unit && unitFirst && <sup className="text-[0.4em] font-medium mr-0.5 top-[-0.8em]">{unit}</sup>}
         {value}
-        {unit && <sup className="text-[0.4em] font-medium ml-1 top-[-0.8em]">{unit}</sup>}
+        {unit && !unitFirst && <sup className="text-[0.4em] font-medium ml-1 top-[-0.8em]">{unit}</sup>}
       </span>
       <span className="text-[11px] uppercase tracking-wide text-[var(--cl-muted)]">{label}{best && <BetterTag />}</span>
     </div>
