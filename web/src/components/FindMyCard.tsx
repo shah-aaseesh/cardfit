@@ -351,7 +351,9 @@ function HasCardStep({ answers, set }: StepProps) {
 }
 
 function OwnedCardsStep({ answers, set }: StepProps) {
-  const { cards } = useCards();
+  // Retired cards included: plenty of people hold a card the issuer no
+  // longer offers, and it still shapes what a new card adds.
+  const { allCards: cards } = useCards();
   const [query, setQuery] = useState('');
   const matches = query.trim()
     ? cards.filter(c => cardMatchesQuery(c, query)).slice(0, 6)
@@ -399,7 +401,7 @@ function OwnedCardsStep({ answers, set }: StepProps) {
                 <div className="aspect-[1.586/1] w-12 shrink-0"><CardVisual card={c} variant="thumb" /></div>
                 <div className="flex-1 min-w-0">
                   <div className="text-[var(--cl-ink)] font-medium text-sm truncate">{c.name}</div>
-                  <div className="text-[var(--cl-muted)] text-xs uppercase tracking-wide">{c.issuer}</div>
+                  <div className="text-[var(--cl-muted)] text-xs uppercase tracking-wide">{c.issuer}{c.retired && ' · No longer offered'}</div>
                 </div>
                 <Plus className="w-4 h-4 text-[var(--cl-gold)] shrink-0" />
               </button>

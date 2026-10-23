@@ -202,9 +202,16 @@ def test_export_snapshot_merge_keeps_ids_and_uncrawled_providers():
     assert by_name["Chase Sapphire Preferred® Credit Card"]["id"] == "a1", "id must survive a URL change"
     assert by_name["Chase Sapphire Preferred® Credit Card"]["image_url"] == "/card-art/a1.webp", "self-hosted art kept"
     assert by_name["Gold Card"]["id"] == "b1", "uncrawled provider must be kept"
-    assert "Retired Card" not in by_name, "crawled provider replaces its rows"
+    assert by_name["Retired Card"]["retired"] is True and by_name["Retired Card"]["id"] == "a2", "a vanished card is retired, not deleted"
+    assert not by_name["Chase Sapphire Preferred® Credit Card"].get("retired")
     assert by_name["Brand New Card"]["id"] not in ("a1", "a2", "b1") and "tags" in by_name["Brand New Card"]
-    assert stats == {"kept": 1, "updated": 1, "added": 1, "dropped": 0}, stats
+    assert stats == {"kept": 1, "updated": 1, "added": 1, "retired": 1}, stats
+    # A retired card that comes back keeps its id and is active again.
+    rows2, stats2 = build_snapshot(rows, {"chase": [
+        {"url": "https://c.com/old", "provider": "chase", "card_name": "Retired Card", "annual_fee": 0}]})
+    back = next(r for r in rows2 if r["card_name"] == "Retired Card")
+    assert back["id"] == "a2" and not back.get("retired"), back
+    assert stats2["retired"] == 2, stats2  # Sapphire + Brand New; Retired Card un-retired
     print("OK: snapshot export keeps ids, art and uncrawled providers")
 
 

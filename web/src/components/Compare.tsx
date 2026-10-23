@@ -55,7 +55,9 @@ function parity(card: CreditCard): { label: string; state: Tri }[] {
 }
 
 export default function Compare({ watchlist, setWatchlist, ownedCards, setOwnedCards }: CompareProps) {
-  const { cards: allCards } = useCards();
+  // allCards includes retired cards: people still hold them, so they stay
+  // searchable and comparable here. Shuffle's fallback deck is offers only.
+  const { cards: offeredCards, allCards } = useCards();
   // Exactly two comparison slots.
   const [slots, setSlots] = useState<(string | null)[]>([null, null]);
 
@@ -100,8 +102,9 @@ export default function Compare({ watchlist, setWatchlist, ownedCards, setOwnedC
   // Shuffle fills both slots with distinct random cards. Prefers the
   // user's own cards + watchlist, falling back to the full deck.
   const shuffleCards = () => {
-    const pool = [...new Set([...ownedCards, ...watchlist])];
-    const source = pool.length >= slots.length ? pool : allCards.map((c) => c.id);
+    // Only ids that still resolve: a saved card can drop out of the data.
+    const pool = [...new Set([...ownedCards, ...watchlist])].filter((id) => allCards.some((c) => c.id === id));
+    const source = pool.length >= slots.length ? pool : offeredCards.map((c) => c.id);
     if (source.length < slots.length) return;
     const shuffled = [...source].sort(() => 0.5 - Math.random());
     setSlots((prev) => prev.map((_, i) => shuffled[i]));
@@ -295,7 +298,7 @@ export default function Compare({ watchlist, setWatchlist, ownedCards, setOwnedC
                       <div className="aspect-[1.586/1] w-16 shrink-0"><CardVisual card={c} variant="thumb" /></div>
                       <div className="min-w-0">
                         <div className="text-[var(--cl-ink)] font-medium text-lg truncate">{c.name}</div>
-                        <div className="text-[var(--cl-muted)] text-sm uppercase tracking-wider">{c.issuer}</div>
+                        <div className="text-[var(--cl-muted)] text-sm uppercase tracking-wider">{c.issuer}{c.retired && ' · No longer offered'}</div>
                       </div>
                     </button>
                   ))

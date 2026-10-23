@@ -1,10 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { fetchCards, isSupabaseConfigured } from '../lib/cards';
 import { SNAPSHOT_CARDS } from '../lib/snapshot';
 import { CreditCard } from '../types';
 
 interface UseCardsResult {
+  /** Cards on offer today: what gets browsed, searched and recommended. */
   cards: CreditCard[];
+  /** Also retired ones — for resolving cards a person says they own. */
+  allCards: CreditCard[];
   loading: boolean;
   usingMockData: boolean;
 }
@@ -52,5 +55,6 @@ export function useCards(): UseCardsResult {
     };
   }, []);
 
-  return { cards, loading, usingMockData };
+  const active = useMemo(() => cards.filter((c) => !c.retired), [cards]);
+  return { cards: active, allCards: cards, loading, usingMockData };
 }

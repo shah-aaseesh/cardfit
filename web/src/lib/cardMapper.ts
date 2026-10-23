@@ -23,6 +23,7 @@ export interface CardRow {
   best_for: string | null;
   top_perk: string | null;
   image_url: string | null;
+  retired?: boolean | null;
 }
 
 // Physical card gradients cards are assigned from, keyed by a hash of the
@@ -82,6 +83,7 @@ export function mapRowToCard(row: CardRow): CreditCard {
     gradient: gradientFor(issuer),
     imageUrl: row.image_url || undefined,
     applyUrl: row.url || undefined,
+    retired: row.retired || undefined,
     facts: {
       annualFee: formatAnnualFee(row.annual_fee),
       rewards: row.rewards_summary || 'See issuer site for rewards details',

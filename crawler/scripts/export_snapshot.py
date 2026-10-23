@@ -8,6 +8,10 @@ reached the site. This script does, safely:
 
   - Providers that were crawled replace their rows; providers that weren't
     keep their existing rows (a partial or failed run never wipes data).
+  - A card the crawl no longer finds is marked retired (with retired_on),
+    not deleted: people who hold it can still add it as one of their cards,
+    and the site keeps it out of browsing and recommendations. If it comes
+    back, it's matched like any other card and un-retired.
   - Card ids stay stable: a crawled card reuses the existing id matched by
     URL, then by normalized name within the provider — so users' saved
     wallets/watchlists keep pointing at the same cards. New cards get a
@@ -84,7 +88,7 @@ def review(existing: list[dict], crawled: dict[str, list[dict]]) -> dict[str, li
     held: dict[str, list[str]] = {}
     for provider, records in crawled.items():
         reasons = []
-        old = sum(1 for r in existing if r["provider"] == provider)
+        old = sum(1 for r in existing if r["provider"] == provider and not r.get("retired"))
         new = len(records)
         if old - new >= MIN_DROP and new < old * COUNT_DROP_LIMIT:
             reasons.append(f"card count fell {old} -> {new}")
@@ -118,14 +122,13 @@ def build_snapshot(existing: list[dict], crawled: dict[str, list[dict]]) -> tupl
     by_loose = {}
     for r in existing:
         by_loose.setdefault((r["provider"], loose_key(r)), r)
-    stats = {"kept": 0, "updated": 0, "added": 0, "dropped": 0}
+    stats = {"kept": 0, "updated": 0, "added": 0, "retired": 0}
 
     out = [r for r in existing if r["provider"] not in crawled]
     stats["kept"] = len(out)
 
     used: set[str] = set()  # an existing card id is handed out at most once
     for provider, records in crawled.items():
-        old_count = sum(1 for r in existing if r["provider"] == provider)
         for record in records:
             row = {k: record.get(k) for k in FIELDS}
             enrich(row)
@@ -146,7 +149,13 @@ def build_snapshot(existing: list[dict], crawled: dict[str, list[dict]]) -> tupl
                     row["source_image_url"] = match.get("source_image_url")
             stats["updated" if match else "added"] += 1
             out.append(row)
-        stats["dropped"] += max(0, old_count - len(records))
+
+    today = date.today().isoformat()
+    for r in existing:
+        if r["provider"] in crawled and r["id"] not in used:
+            if not r.get("retired"):
+                stats["retired"] += 1
+            out.append({**r, "retired": True, "retired_on": r.get("retired_on") or today})
 
     out.sort(key=lambda r: (r["provider"], (r.get("card_name") or "").lower()))
     return out, stats

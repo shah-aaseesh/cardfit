@@ -44,6 +44,10 @@ export interface CreditCard {
   imageUrl?: string;
   /** Issuer product page, used by the apply arrow. Absent on mock data. */
   applyUrl?: string;
+  /** The issuer stopped offering it (its page vanished from the crawl). Kept
+   *  so people who still hold it can add it as one of their cards; never
+   *  recommended or browsed. */
+  retired?: boolean;
   facts: CardFacts;
   tags: string[];
 }
