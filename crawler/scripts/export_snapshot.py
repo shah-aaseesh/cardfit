@@ -56,7 +56,7 @@ SNAPSHOT_TS = ROOT / "web" / "src" / "lib" / "snapshot.ts"
 FIELDS = (
     "url", "provider", "card_name", "issuer", "annual_fee", "apr_range", "apr_intro",
     "apr_regular", "rewards_summary", "signup_bonus", "recommended_credit_score",
-    "foreign_transaction_fee", "tags", "best_for", "top_perk", "image_url", "reward_rates",
+    "foreign_transaction_fee", "balance_transfer_fee", "tags", "best_for", "top_perk", "image_url", "reward_rates",
     "credits",
 )
 

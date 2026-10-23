@@ -338,6 +338,46 @@ def test_cosmetic_renames_do_not_flag():
     print("OK: issuer/network words in a name are cosmetic; a real rename still flags")
 
 
+def test_one_time_credits_dropped_and_global_entry_spread():
+    page = _norm("Enjoy $300 to use on hotel and vacation rental bookings in your first cardholder year. "
+                 "Receive up to a $100 credit for Global Entry or TSA PreCheck. "
+                 "Receive a $300 annual credit for bookings through Capital One Travel.")
+    raw = [
+        {"name": "Stays credit", "amount": 300, "per": "year", "kind": "brand_travel",
+         "quote": "$300 to use on hotel and vacation rental bookings in your first cardholder year"},
+        {"name": "Global Entry or TSA PreCheck credit", "amount": 100, "per": "year", "kind": "trusted_traveler",
+         "quote": "up to a $100 credit for Global Entry or TSA PreCheck"},
+        {"name": "Annual Travel Credit", "amount": 300, "per": "year", "kind": "merchant",
+         "quote": "$300 annual credit for bookings through Capital One Travel"},
+    ]
+    credits, dropped = _clean_credits(raw, page)
+    assert dropped == 1, dropped
+    by = {c["name"]: c for c in credits}
+    assert by["Global Entry or TSA PreCheck credit"]["per"] == "4_years"
+    assert by["Annual Travel Credit"]["kind"] == "brand_travel"
+    print("OK: first-year offers dropped; Global Entry is 4-yearly; portal travel credit is brand travel")
+
+
+def test_spend_gated_and_either_or_credits():
+    page = _norm("Every calendar year you make purchases of $30,000 on your card you earn an Economy Companion Ticket. "
+                 "Receive statement credits of $100 for Economy and Premium Economy - or $600 for Business and First - reward flights. "
+                 "Earn a Free Night Reward every year after account renewal.")
+    raw = [
+        {"name": "Economy Companion Ticket", "amount": None, "per": "year", "kind": "free_night",
+         "quote": "Every calendar year you make purchases of $30,000 on your card you earn an Economy Companion Ticket"},
+        {"name": "Reward Flight Statement Credits", "amount": 600, "per": "year", "kind": "brand_travel",
+         "quote": "statement credits of $100 for Economy and Premium Economy - or $600 for Business and First"},
+        {"name": "Free Night Reward", "amount": None, "per": "year", "kind": "free_night",
+         "quote": "Earn a Free Night Reward every year after account renewal"},
+    ]
+    credits, dropped = _clean_credits(raw, page)
+    assert dropped == 1, dropped
+    by = {c["name"]: c for c in credits}
+    assert by["Reward Flight Statement Credits"]["amount"] == 100, by
+    assert "Free Night Reward" in by
+    print("OK: spend-gated perks dropped; either/or credits take the smaller amount")
+
+
 def run_all():
     tests = [v for k, v in globals().items() if k.startswith("test_") and callable(v)]
     failed = []

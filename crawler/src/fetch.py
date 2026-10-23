@@ -49,6 +49,7 @@ def fetch_page(url: str, render: bool = False) -> tuple[str | None, str | None]:
 
 
 def clean_html_to_text(html: str) -> str:
+    embedded = _embedded_cms_text(html)
     soup = BeautifulSoup(html, "html.parser")
     for tag in soup(["script", "style", "nav", "footer", "svg", "noscript", "iframe"]):
         tag.decompose()
@@ -56,7 +57,42 @@ def clean_html_to_text(html: str) -> str:
     text = soup.get_text(separator="\n")
     lines = [line.strip() for line in text.splitlines()]
     lines = [line for line in lines if line]
-    return "\n".join(lines)
+    visible = "\n".join(lines)
+    # Content the page only reveals behind tabs/clicks, placed first so the
+    # extraction window (16k chars) can't cut it off. Fragments already in
+    # the visible text are skipped.
+    extra = [frag for frag in embedded if frag not in visible]
+    return ("\n".join(extra) + "\n" + visible) if extra else visible
+
+
+# Capital One's pages (Hippo CMS) ship benefit sections as HTML strings inside
+# embedded JSON and render them only on click, so the visible text of
+# Venture X had no "$300 annual travel credit" or "10,000 miles anniversary
+# bonus". Only fragments that name money or rewards are kept.
+_CMS_HTML = re.compile(r'"contentType":"hippostd:html","value":"((?:[^"\\]|\\.)*)"')
+_CMS_KEEP = re.compile(r"\$\d|credit|bonus|miles|points|cash back|annual fee|lounge", re.I)
+_CMS_MAX_CHARS = 4000
+
+
+def _embedded_cms_text(html: str) -> list[str]:
+    import json
+    out: list[str] = []
+    total = 0
+    for m in _CMS_HTML.finditer(html or ""):
+        try:
+            fragment = json.loads(f'"{m.group(1)}"')
+        except ValueError:
+            continue
+        text = BeautifulSoup(fragment, "html.parser").get_text(" ")
+        text = re.sub(r"\$\{[^}]*\}", "", text)  # ${footnote:...} / ${product:...} placeholders
+        text = re.sub(r"\s+", " ", text).strip()
+        if len(text) < 20 or not _CMS_KEEP.search(text) or text in out:
+            continue
+        if total + len(text) > _CMS_MAX_CHARS:
+            break
+        out.append(text)
+        total += len(text)
+    return out
 
 
 # Asset filename/path fragments that are never a single flat card face:

@@ -26,7 +26,8 @@ logger = logging.getLogger("extract")
 # v2 added top_perk, reward_rates and evidence quotes.
 # v3 added credits (ongoing statement credits and perks) and reads 16k chars
 # of page text instead of 6k: premium cards list their credits further down.
-EXTRACT_VERSION = 3
+# v4 added balance_transfer_fee, and keeps one-time offers out of credits.
+EXTRACT_VERSION = 4
 EXTRACT_TEXT_CHARS = 16000
 
 REQUIRED_FIELDS = [
@@ -40,6 +41,7 @@ REQUIRED_FIELDS = [
     "signup_bonus",
     "recommended_credit_score",
     "foreign_transaction_fee",
+    "balance_transfer_fee",
 ]
 
 
@@ -59,6 +61,10 @@ class CardData:
     signup_bonus: Optional[str] = None
     recommended_credit_score: Optional[str] = None
     foreign_transaction_fee: Optional[str] = None
+    # Balance transfer fee terms as stated, e.g. "3% intro fee for 4 months,
+    # then 5% (min $5)". The site ranks balance-transfer searches by dollars
+    # saved, which this fee directly reduces.
+    balance_transfer_fee: Optional[str] = None
     # Card art scraped from the page's <img>/og:image tags (see
     # fetch.extract_card_image) — set by the pipeline, not the LLM.
     image_url: Optional[str] = None
@@ -105,10 +111,11 @@ Fields required (use null if not clearly stated on the page — do NOT guess or 
 - signup_bonus: description of any welcome/signup bonus offer. "None" if the page clearly says there is no bonus; null if it isn't mentioned.
 - recommended_credit_score: e.g. "Good/Excellent", "Excellent", or null
 - foreign_transaction_fee: e.g. "None", "3%". "None" only if the page says there is no foreign transaction fee; null if it isn't mentioned.
+- balance_transfer_fee: the balance transfer fee terms exactly as stated, e.g. "3% of each transfer ($5 minimum) for the first 4 months, then 5%". "None" only if the page says there is no balance transfer fee; null if it isn't mentioned.
 - top_perk: the single most valuable ONGOING benefit that is NOT the welcome/signup bonus and NOT a plain earn rate (e.g. "Airport lounge access", "$300 annual travel credit", "Free checked bag"), or null if none is stated.
 - reward_rates: list of every always-on earn rate, one entry per category, each {{"category": one of {categories}, "rate": number, "unit": "percent" | "points" | "miles", "cap": short spend-cap text or null, "quote": the exact sentence fragment from the page}}. Use "other" for "all other purchases". Skip rotating/quarterly or choose-your-own categories and the welcome bonus. [] if none are stated.
 - credits: list of every ONGOING credit or perk the cardholder gets each period. NOT the welcome bonus or one-time offers, NOT earn rates, NOT insurance or protection coverage limits (cell phone protection, purchase protection, extended warranty, rental car or trip insurance), NOT customer reviews. Each {{"name": short name, "amount": dollar value per period as a number or null if the page gives none, "per": one of {periods}, "kind": one of {kinds}, "quote": the exact sentence fragment from the page}}. kind meanings: travel_broad = credit usable on almost any travel purchase; brand_travel = credit only at one hotel/airline brand or through a travel portal (resort, hotel collection, airline fee, portal booking credits); merchant = credit or free subscription at specific non-travel merchants or services (Uber, DoorDash/DashPass, streaming, Apple, Walmart+, Saks, Peloton); trusted_traveler = Global Entry/TSA PreCheck/CLEAR/NEXUS application fee credit; free_night = free hotel night certificate; anniversary_points = bonus points/miles awarded every year (amount = number of points); lounge = airport lounge access; checked_bag = free checked bags; other = anything else. [] if none.
-- evidence: {{"annual_fee": exact page text stating the fee, "signup_bonus": exact page text of the bonus}} — copy verbatim from the page; null for any you can't quote.
+- evidence: {{"annual_fee": exact page text stating the fee, "signup_bonus": exact page text of the bonus, "balance_transfer_fee": exact page text stating the balance transfer fee}} — copy verbatim from the page; null for any you can't quote.
 
 Page content:
 ---
@@ -116,7 +123,7 @@ Page content:
 ---
 
 Respond with ONLY a JSON object matching exactly these keys, no other text:
-{{"card_name": ..., "issuer": ..., "annual_fee": ..., "apr_range": ..., "apr_intro": ..., "apr_regular": ..., "rewards_summary": ..., "signup_bonus": ..., "recommended_credit_score": ..., "foreign_transaction_fee": ..., "top_perk": ..., "reward_rates": [...], "credits": [...], "evidence": {{...}}, "confidence": <0.0-1.0, your own confidence in this extraction>}}
+{{"card_name": ..., "issuer": ..., "annual_fee": ..., "apr_range": ..., "apr_intro": ..., "apr_regular": ..., "rewards_summary": ..., "signup_bonus": ..., "recommended_credit_score": ..., "foreign_transaction_fee": ..., "balance_transfer_fee": ..., "top_perk": ..., "reward_rates": [...], "credits": [...], "evidence": {{...}}, "confidence": <0.0-1.0, your own confidence in this extraction>}}
 """
 
 
@@ -234,9 +241,32 @@ def _fix_credit_kind(name: str, kind: str) -> str:
         return "trusted_traveler"
     if kind == "trusted_traveler":
         return "brand_travel" if _AIRLINE.search(name) else "merchant"
-    if kind == "merchant" and _AIRLINE.search(name):
+    if kind == "merchant" and (_AIRLINE.search(name) or _TRAVEL_WORD.search(name)):
         return "brand_travel"
     return kind
+
+
+# Perks earned only by spending a threshold ("Every calendar year you make
+# purchases of $30,000 ... companion ticket"): not something a typical
+# cardholder gets, so they don't count as ongoing value.
+_SPEND_GATED = re.compile(
+    r"(?:make|making|after|when you)\s+(?:\w+\s+){0,3}(?:purchases|spend(?:ing)?)\s+(?:of\s+)?\$[\d,]+"
+    r"|spend(?:ing)?\s+\$[\d,]+\s+or more|\$[\d,]+\s+in (?:net |eligible )?purchases (?:each|every|in a) (?:calendar |anniversary )?year",
+    re.I,
+)
+
+
+# A portal or brand travel credit the model filed as merchant ("Annual Travel
+# Credit" through Capital One Travel). travel_broad is never inferred from a
+# name: only the model, reading the terms, can say a credit works anywhere.
+_TRAVEL_WORD = re.compile(r"travel|hotel|stays?\b|vacation", re.I)
+# One-time offers stated beside the real perks ("$300 to use on hotel
+# bookings ... in your first cardholder year"): part of the welcome offer,
+# not something earned every year.
+_ONE_TIME = re.compile(
+    r"first (?:cardholder |card ?member |account )?year|one-time|limited[- ]time|welcome (?:offer|bonus)|new (?:card ?member|cardholder)",
+    re.I,
+)
 
 
 def _clean_credits(raw, page_norm: str) -> tuple[list[dict], int]:
@@ -260,6 +290,20 @@ def _clean_credits(raw, page_norm: str) -> tuple[list[dict], int]:
                 amount = float(str(amount).replace("$", "").replace(",", ""))
             except ValueError:
                 amount = None
+        # Global Entry / TSA PreCheck renew every 4-5 years; the model often
+        # files the credit as yearly, which would count it 4x.
+        if kind == "trusted_traveler" and per == "year":
+            per = "4_years"
+        quote = str(item.get("quote") or "")
+        if _ONE_TIME.search(f"{name} {quote}") or _SPEND_GATED.search(quote):
+            dropped += 1
+            continue
+        # "$100 for Economy ... or $600 for Business": the model tends to take
+        # the larger figure; the smaller one is what most people get.
+        if amount is not None and kind != "anniversary_points" and re.search(r"\bor\b", quote):
+            stated = [float(x.replace(",", "")) for x in re.findall(r"\$([\d,]+(?:\.\d+)?)", quote)]
+            if len(set(stated)) > 1 and amount == max(stated):
+                amount = min(stated)
         limit = MAX_ANNIVERSARY_POINTS if kind == "anniversary_points" else MAX_CREDIT_DOLLARS
         if not name or kind not in CREDIT_KINDS or per not in CREDIT_PERIODS:
             dropped += 1
@@ -301,7 +345,7 @@ def llm_extract(url: str, text: str, provider_name: str) -> CardData:
         # stated value with no matching quote is kept but marked for review.
         evidence = parsed.get("evidence") if isinstance(parsed.get("evidence"), dict) else {}
         unverified = [
-            k for k in ("annual_fee", "signup_bonus")
+            k for k in ("annual_fee", "signup_bonus", "balance_transfer_fee")
             if fields.get(k) not in (None, "None") and not _quote_in_page(evidence.get(k), page_norm)
         ]
         # Not every LLM backend honors "respond with a JSON number" as
