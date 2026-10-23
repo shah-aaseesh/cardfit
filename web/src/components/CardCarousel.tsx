@@ -1,11 +1,11 @@
 import { useState, useCallback, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
-import { ChevronLeft, ChevronRight, ChevronDown, Sparkles, Plus, X, Check, ArrowUpRight, ShieldCheck, Receipt, Scale, Coins, Trophy } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ChevronDown, Sparkles, Plus, X, Check, ArrowUpRight, ShieldCheck, Receipt, Scale, Coins, Trophy, LayoutGrid } from 'lucide-react';
 import CardVisual from './CardVisual';
 import FinePrint from './FinePrint';
 import BubbleFilters from './BubbleFilters';
 import AISearchBar from './AISearchBar';
-import { buildDeck, getTop15Cards } from '../lib/ranking';
+import { buildDeck, getTopCards } from '../lib/ranking';
 import { describeFilters } from '../lib/filters';
 import { fetchAdvisorNote, advisorEnabled } from '../lib/advisor';
 import { pushRecentlyViewed } from '../lib/recentlyViewed';
@@ -65,7 +65,7 @@ export default function CardCarousel({
   filters: activeFilters, setFilters: setActiveFilters,
   ownedCards, matchMode, matchAnswers, onBrowseAll, startWithResults = false, onIntroComplete, onFindMatches,
 }: CardCarouselProps) {
-  const { cards: allCards } = useCards();
+  const { cards: allCards, allCards: everyCard } = useCards();
   const [cards, setCards] = useState<CreditCard[]>(allCards);
   const [ranked, setRanked] = useState(false);
   const [complement, setComplement] = useState(false);
@@ -73,6 +73,9 @@ export default function CardCarousel({
   // Per-card "why this fits you" bullets from the recommender (match mode).
   const [explanations, setExplanations] = useState<Record<string, string[]>>({});
   const [currentIndex, setCurrentIndex] = useState(0);
+  // "View all": the whole deck as a grid, since clicking through 39 Chase
+  // cards one at a time is no way to find a specific one.
+  const [gridOpen, setGridOpen] = useState(false);
   const [providerFilter, setProviderFilter] = useState('all');
   // The query submitted on the landing hero, carried into the results bar.
   const [lastQuery, setLastQuery] = useState('');
@@ -80,7 +83,7 @@ export default function CardCarousel({
   // Landing preview: the real top-3 rewards cards (with art), ranked by the
   // same engine as the results page.
   const preview = useMemo(() => {
-    const ranked = getTop15Cards(allCards, { filters: ['rewards'] }).map((r) => r.card);
+    const ranked = getTopCards(allCards, { filters: ['rewards'] }, 40).map((r) => r.card);
     const cards = ranked.filter((c) => c.imageUrl).slice(0, 3);
     return { cards, topRank: ranked.indexOf(cards[0]) + 1 };
   }, [allCards]);
@@ -94,8 +97,8 @@ export default function CardCarousel({
   // In quiz mode cards are ranked by what they add over the user's wallet,
   // so the value block measures the same thing.
   const ownedForValue = useMemo(
-    () => (matchMode ? allCards.filter((c) => ownedCards.includes(c.id)) : []),
-    [matchMode, allCards, ownedCards],
+    () => (matchMode ? everyCard.filter((c) => ownedCards.includes(c.id)) : []),
+    [matchMode, everyCard, ownedCards],
   );
   // Landing state: on first load show only the centered search + filters; the
   // deck appears once the user searches or picks a filter.
@@ -111,7 +114,9 @@ export default function CardCarousel({
   // Rebuild the deck whenever the inputs to ranking change. Ranked decks
   // are deterministic (best-first, stable); browse decks are shuffled.
   useEffect(() => {
-    const pool = providerFilter === 'all' ? allCards : allCards.filter((c) => c.provider === providerFilter);
+    // everyCard, not allCards: buildDeck needs owned retired cards to value
+    // the wallet, and keeps every retired card out of the deck itself.
+    const pool = providerFilter === 'all' ? everyCard : everyCard.filter((c) => c.provider === providerFilter);
     const result = buildDeck(pool, activeFilters, ownedCards, matchMode, matchAnswers);
     // No pinned "featured" card: the site promises nobody pays for placement.
     setCards(result.deck);
@@ -120,7 +125,8 @@ export default function CardCarousel({
     setAboveLimit(result.aboveAnnualFeeLimit?.map((r) => r.card) || []);
     setExplanations(Object.fromEntries((result.results || []).map((r) => [r.card.id, r.explanation])));
     setCurrentIndex(0);
-  }, [allCards, activeFilters, ownedCards, matchMode, matchAnswers, providerFilter]);
+    setGridOpen(false);
+  }, [everyCard, activeFilters, ownedCards, matchMode, matchAnswers, providerFilter]);
 
   const nextCard = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % cards.length);
@@ -172,7 +178,7 @@ export default function CardCarousel({
       topPerk: activeCard.facts.topPerk, bonus: activeCard.facts.bonus, tags: activeCard.tags,
     };
     const profile = {
-      ownedCardNames: ownedCards.map((id) => allCards.find((c) => c.id === id)?.name).filter(Boolean) as string[],
+      ownedCardNames: ownedCards.map((id) => everyCard.find((c) => c.id === id)?.name).filter(Boolean) as string[],
       spend: matchAnswers?.spend as Record<string, number> | undefined,
       credit: matchAnswers?.credit as string | undefined,
       maxFee: matchAnswers?.maxFee as number | undefined,
@@ -473,7 +479,7 @@ export default function CardCarousel({
             <ValueBlock card={activeCard} spend={userSpend} stacked owned={ownedForValue} hideNotes />
           </div>
 
-          {/* Controls: ‹ 1 of 15 ›  ·  Watchlist  ·  Visit — labelled, centred. */}
+          {/* Controls: ‹ 1 of N ›  ·  Watchlist  ·  View all  ·  Visit — labelled, centred. */}
           <div className="order-2 flex flex-wrap items-center justify-center gap-3 lg:order-3 lg:col-span-2">
             <div className="pop-sm flex items-center gap-1 rounded-full bg-white p-1">
               <button
@@ -501,6 +507,15 @@ export default function CardCarousel({
             >
               {watchlist.includes(activeCard.id) ? <><Check className="w-4 h-4" /> Saved</> : <><Plus className="w-4 h-4" /> Watchlist</>}
             </button>
+            {cards.length > 1 && (
+              <button
+                onClick={() => setGridOpen((o) => !o)}
+                aria-expanded={gridOpen}
+                className={`pop-sm pop-lift h-11 px-4 rounded-full text-sm font-semibold flex items-center gap-1.5 text-[var(--cl-ink)] ${gridOpen ? 'bg-[var(--cl-sun)]' : 'bg-white'}`}
+              >
+                <LayoutGrid className="w-4 h-4" /> {gridOpen ? 'Hide list' : `View all ${cards.length}`}
+              </button>
+            )}
             {activeCard.applyUrl ? (
               <a
                 href={activeCard.applyUrl}
@@ -515,6 +530,30 @@ export default function CardCarousel({
             )}
           </div>
         </div>
+
+        {gridOpen && (
+          <ul className="grid w-full max-w-5xl grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+            {cards.map((card, i) => (
+              <li key={card.id}>
+                <button
+                  onClick={() => {
+                    setCurrentIndex(i);
+                    setGridOpen(false);
+                    window.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' });
+                  }}
+                  aria-current={i === currentIndex}
+                  className={`pop-sm pop-lift flex h-full w-full flex-col gap-2 rounded-2xl p-3 text-left ${i === currentIndex ? 'bg-[var(--cl-lime)]' : 'bg-white'}`}
+                >
+                  <div className="aspect-[1.586/1] w-full"><CardVisual card={card} variant="thumb" /></div>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--cl-muted)]">
+                    {ranked ? `#${i + 1} · ` : ''}{card.issuer}
+                  </span>
+                  <span className="text-sm font-semibold leading-snug text-[var(--cl-ink)]">{card.name}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
 
         <ValueNotes card={activeCard} spend={userSpend} owned={ownedForValue} />
 

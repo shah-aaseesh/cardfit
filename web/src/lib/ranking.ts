@@ -165,7 +165,10 @@ export interface DeckResult {
   aboveAnnualFeeLimit?: RankedCardResult[];
 }
 
-const DECK_MAX = 15;
+// Recommendation lists (filter chips, the quiz) stop at 10: past that the
+// matches are weak and the list stops being advice. Browsing (no chips) has
+// no cap, so every card from an issuer can be reached.
+const RANKED_MAX = 10;
 const PUBLIC_MIN_HARD_SCORE = 20;
 const PUBLIC_CANDIDATE_POOL = 40;
 const BAND_RANK: Record<CreditBand, number> = {
@@ -597,7 +600,7 @@ function spendForChips(softCategories: SoftCategory[], business: boolean): Month
   return spend;
 }
 
-function rankByValue(cards: CreditCard[], context: PublicRankingContext, softCategories: SoftCategory[]): RankedCardResult[] {
+function rankByValue(cards: CreditCard[], context: PublicRankingContext, softCategories: SoftCategory[], limit: number): RankedCardResult[] {
   const spend = spendForChips(softCategories, context.segment === 'business');
   return cards
     .map(deriveRankingCard)
@@ -629,10 +632,10 @@ function rankByValue(cards: CreditCard[], context: PublicRankingContext, softCat
       } satisfies RankedCardResult;
     })
     .sort((a, b) => b.finalScore - a.finalScore || a.card.name.localeCompare(b.card.name))
-    .slice(0, DECK_MAX);
+    .slice(0, limit);
 }
 
-export function getTop15Cards(cards: CreditCard[], context: PublicRankingContext): RankedCardResult[] {
+export function getTopCards(cards: CreditCard[], context: PublicRankingContext, limit = RANKED_MAX): RankedCardResult[] {
   const resolved = { ...filtersToContext(context.filters || []), ...context };
   const explicitSegment = resolved.segment;
   const softCategories = resolved.softCategories || [];
@@ -641,7 +644,7 @@ export function getTop15Cards(cards: CreditCard[], context: PublicRankingContext
   // building credit, not rewards — they keep their purpose-built scores.
   // Every other search ranks by dollars, the same figure shown on the card.
   if (explicitSegment !== 'balance_transfer' && explicitSegment !== 'student') {
-    return rankByValue(cards, resolved, softCategories);
+    return rankByValue(cards, resolved, softCategories, limit);
   }
 
   const ranked = cards
@@ -684,7 +687,7 @@ export function getTop15Cards(cards: CreditCard[], context: PublicRankingContext
       (b.hardScore || 0) - (a.hardScore || 0) ||
       a.card.name.localeCompare(b.card.name),
     )
-    .slice(0, DECK_MAX);
+    .slice(0, limit);
 
   return ranked;
 }
@@ -1010,14 +1013,18 @@ export function buildDeck(
   answers?: Record<string, unknown>,
 ): DeckResult {
   const owned = new Set(ownedIds);
-  const pool = all.filter((card) => !owned.has(card.id));
+  // Retired cards can't be applied for, so they never enter a deck — but
+  // one the user owns still counts as part of their wallet below.
+  const pool = all.filter((card) => !owned.has(card.id) && !card.retired);
   const wantRanked = matchMode || filters.length > 0;
   if (!wantRanked) {
-    return { deck: shuffle(pool).slice(0, DECK_MAX), ranked: false, complement: false, results: [] };
+    return { deck: shuffle(pool), ranked: false, complement: false, results: [] };
   }
 
   if (matchMode) {
-    const result = recommendCards(all, matchResultToUser(filters, ownedIds, answers), DECK_MAX);
+    const candidates = all.filter((card) => !card.retired || owned.has(card.id));
+    const result = recommendCards(candidates, matchResultToUser(filters, ownedIds, answers), RANKED_MAX);
+    result.recommendations = result.recommendations.filter((r) => !r.card.retired);
     return {
       deck: result.recommendations.map((r) => r.card),
       ranked: true,
@@ -1027,7 +1034,7 @@ export function buildDeck(
     };
   }
 
-  const results = getTop15Cards(pool, { filters });
+  const results = getTopCards(pool, { filters });
   return {
     deck: results.map((r) => r.card),
     ranked: true,

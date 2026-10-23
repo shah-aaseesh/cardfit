@@ -4,7 +4,7 @@ import {
   annualRewards,
   computeApprovalLikelihood,
   deriveRankingCard,
-  getTop15Cards,
+  getTopCards,
   recommendCards,
   RankingDebugOutput,
   rankValue,
@@ -34,7 +34,7 @@ console.log(`Loaded ${cards.length} cards from snapshot.`);
 // export_snapshot.py) legitimately changes how many cards there are.
 assert(cards.length >= 100, `Expected at least 100 snapshot cards, got ${cards.length}.`);
 
-const groceryCash = getTop15Cards(cards, {
+const groceryCash = getTopCards(cards, {
   filters: ['personal', 'cashback', 'no-fee', 'gas'],
 });
 
@@ -59,7 +59,7 @@ for (const r of groceryCash) {
   assert(Math.abs(r.finalScore - expected) < 0.01, `${r.card.name}: score ${r.finalScore} != value ${expected}.`);
 }
 // With no chips, the #1 card's score is exactly the headline value shown on it.
-const plain = getTop15Cards(cards, { filters: ['rewards'] });
+const plain = getTopCards(cards, { filters: ['rewards'] });
 const shown = estimateValue(plain[0].card);
 assert(Math.round(plain[0].finalScore) === shown.average, `Rank value ${plain[0].finalScore} != shown ${shown.average}.`);
 for (let i = 1; i < plain.length; i++) {
