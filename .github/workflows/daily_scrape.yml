@@ -22,8 +22,11 @@ name: Daily Credit Card Crawl
 #   - The bot rebases onto main before pushing, so it never clobbers a
 #     commit you made while the crawl was running.
 #
-# Setup: add repo secret OPENAI_API_KEY (Settings -> Secrets and variables ->
-# Actions), and tick "Allow GitHub Actions to create and approve pull
+# Setup: secrets live in the "crawl" environment (Settings -> Environments),
+# which only main can use, so workflows on collaborators' branches can't read
+# them: OPENAI_API_KEY, plus CRAWLER_DEPLOY_KEY (private half of the write
+# deploy key; main's ruleset lets that key push the snapshot straight to
+# main). Without CRAWLER_DEPLOY_KEY, checkout falls back to GITHUB_TOKEN. Tick "Allow GitHub Actions to create and approve pull
 # requests" (Settings -> Actions -> General) for the review PRs. Optional:
 # SUPABASE_URL + SUPABASE_SERVICE_KEY to also publish to Supabase,
 # SLACK_WEBHOOK_URL for failure alerts.
@@ -47,6 +50,7 @@ jobs:
   crawl:
     name: crawl (${{ matrix.provider }})
     runs-on: ubuntu-latest
+    environment: crawl  # secrets are scoped to this environment (main only)
     timeout-minutes: 45
     strategy:
       fail-fast: false  # one issuer failing must not cancel the others
@@ -112,13 +116,18 @@ jobs:
     needs: crawl
     if: always()  # publish whatever issuers succeeded
     runs-on: ubuntu-latest
+    environment: crawl
     timeout-minutes: 20
     defaults:
       run:
         working-directory: crawler
 
     steps:
+      # Checked out with the deploy key so the push below may bypass main's
+      # "PRs only" ruleset (GITHUB_TOKEN can't be a bypass actor).
       - uses: actions/checkout@v7
+        with:
+          ssh-key: ${{ secrets.CRAWLER_DEPLOY_KEY }}
 
       - uses: actions/setup-python@v7
         with:

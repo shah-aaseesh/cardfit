@@ -1,0 +1,21 @@
+# Who must approve a pull request into main (enforced by the "main" ruleset:
+# PRs required, code-owner review required, 0 other approvals).
+#
+# Everything is owned by @shah-aaseesh by default. The paths at the bottom
+# have NO owner, so a collaborator can merge PRs that only touch them -
+# that's the site's look. A PR touching anything else (crawler, ranking
+# logic in web/src/lib, card data, package.json, workflows, this file)
+# waits for @shah-aaseesh. Later lines win, so keep the frontend list last.
+
+*                       @shah-aaseesh
+
+# Frontend look - no owner, collaborators merge these themselves.
+/web/src/components/
+/web/src/index.css
+/web/src/App.tsx
+/web/public/
+/web/index.html
+/web/DESIGN.md
+
+# Card art is written by the daily crawl, not hand-edited.
+/web/public/card-art/   @shah-aaseesh
